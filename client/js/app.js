@@ -22,6 +22,14 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'EasyRas
       templateUrl: 'templates/account.html',
       controller: 'AccountCtrl'
     }).
+    when('/login', {
+      templateUrl: 'templates/login.html',
+      controller: 'LoginCtrl'
+    }).
+    when('/events', {
+      templateUrl: 'templates/events.html',
+      controller: 'EventsCtrl'
+    }).
     otherwise({
       redirectTo: '/dash'
     });
