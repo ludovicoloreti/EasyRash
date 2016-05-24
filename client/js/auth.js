@@ -72,6 +72,7 @@ angular.module('EasyRashApp.authServices', ['EasyRashApp.config'])
   var login = function(user) {
     return $q(function(resolve, reject) {
       $http.post(CONFIG.endpoint + CONFIG.login, user).then(function(result) {
+        console.log(result);
         if (result.data.success) {
           storeUserCredentials(result.data.token);
           resolve(result.data.msg);

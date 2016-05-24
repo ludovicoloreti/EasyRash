@@ -27,15 +27,15 @@ checkAuth = function(req, res, next) {
     User.findOne({
       email: decoded.email
     }, function(err, user) {
-        if (err) throw err;
+      if (err) throw err;
 
-        if (!user) {
-          return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
-        } else {
-          console.log("Authentication success");
-          //res.json({success: true, msg: 'Welcome in the member area ' + user.name + '!'});
-          next();
-        }
+      if (!user) {
+        return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+      } else {
+        console.log("Authentication success");
+        //res.json({success: true, msg: 'Welcome in the member area ' + user.name + '!'});
+        next();
+      }
     });
   } else {
     return res.status(403).send({success: false, msg: 'No token provided.'});
@@ -89,9 +89,12 @@ module.exports = function (app) {
 
   app.post('/api/signup', function(req, res) {
     // TODO control everything
-    if (!req.body.email || !req.body.password) {
+    console.log(req.body);
+    if (!req.body.email || !req.body.pass) {
+      console.info("Error email/pass")
       res.json({success: false, msg: 'Please insert at least email and password.'});
     } else {
+      console.log("ok!");
       var newUser = new User({
         given_name: req.body.given_name,
         family_name: req.body.family_name,
@@ -102,8 +105,10 @@ module.exports = function (app) {
       // save the user
       newUser.save(function(err) {
         if (err) {
+          console.log(err)
           return res.json({success: false, msg: 'email already exists.'});
         }
+        console.log("pare vada");
         res.json({success: true, msg: 'Successful created new user.'});
       });
     }
@@ -111,6 +116,7 @@ module.exports = function (app) {
 
   // route to authenticate a user (POST http://localhost:8080/api/authenticate)
   app.post('/api/authenticate', function(req, res) {
+    console.log(req.body)
     User.findOne({
       email: req.body.email,
       pass: req.body.pass

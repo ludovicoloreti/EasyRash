@@ -3,7 +3,7 @@ angular.module('EasyRashApp.controllers', [])
 .controller('AppCtrl', function($scope, $window, AuthService, AUTH_EVENTS) {
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
     AuthService.logout();
-    $window.location.href = "/dash";
+    $window.location.href = "/#/dash";
     var alertPopup = alert("Session Lost.\nSorry you have to login again.");
   });
 
@@ -19,7 +19,7 @@ angular.module('EasyRashApp.controllers', [])
 
   $scope.logout = function() {
     AuthService.logout();
-    $window.location.href = "/login";
+    $window.location.href = "/#/login";
   };
 })
 
@@ -45,29 +45,35 @@ angular.module('EasyRashApp.controllers', [])
 .controller('LoginCtrl', function($scope, AuthService, $window) {
   console.log("login")
   $scope.user = {
-    name: '',
-    password: ''
+    email: '',
+    pass: ''
   };
 
   $scope.login = function() {
+    console.log($scope.user);
     AuthService.login($scope.user).then(function(msg) {
       //$state.go('inside');
-      $window.location.href = "/dash";
+      console.log(msg)
+      $window.location.href = "/#/dash";
     }, function(errMsg) {
-      var alertPopup = alert("Login failed!\nTry again.");
+      var alertPopup = alert("Login failed!\nTry again.\n\n"+errMsg);
     });
   };
 })
 
-.controller('RegisterCtrl', function($scope, AuthService) {
+.controller('RegisterCtrl', function($scope, $window, AuthService) {
   $scope.user = {
-    name: '',
-    password: ''
+    email: '',
+    pass: '',
+    given_name: '',
+    family_name: '',
+    sex: ''
   };
 
   $scope.signup = function() {
+    console.log($scope.user)
     AuthService.register($scope.user).then(function(msg) {
-      $window.location.href = "/dash";
+      $window.location.href = "/#/dash";
       var alertPopup = alert("Registered successfully!\nThank you.");
     }, function(errMsg) {
       var alertPopup = alert("Register failed!\nPlease, try again.");
