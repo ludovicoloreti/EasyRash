@@ -11,5 +11,8 @@ angular.module("EasyRashApp.config", [])
   "articles": "/articles",
   "article": "/article",
   "event": "/event",
-  "events": "/events"
+  "events": "/events",
+  "register": "/signup",
+  "login": "/authenticate",
+  "userinfo": "/memberinfo"
 });

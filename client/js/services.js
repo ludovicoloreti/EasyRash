@@ -4,7 +4,7 @@ angular.module('EasyRashApp.services', ['EasyRashApp.config'])
   var self = this;
 
   self.getUsers = function() {
-    return $http.get(CONFIG.users).then(
+    return $http.get(CONFIG.endpoint+CONFIG.users).then(
       function(response) {
         return response.data;
       },function(error) {
@@ -13,7 +13,7 @@ angular.module('EasyRashApp.services', ['EasyRashApp.config'])
     };
 
     self.getEvents = function() {
-      return $http.get(CONFIG.events).then(
+      return $http.get(CONFIG.endpoint+CONFIG.events).then(
         function(response) {
           return response.data;
         },function(error) {
@@ -23,21 +23,4 @@ angular.module('EasyRashApp.services', ['EasyRashApp.config'])
 
 
       return self;
-    })
-
-    .factory('$localstorage', ['$window', function($window) {
-      return {
-        set: function(key, value) {
-          $window.localStorage[key] = value;
-        },
-        get: function(key, defaultValue) {
-          return $window.localStorage[key] || defaultValue;
-        },
-        setObject: function(key, value) {
-          $window.localStorage[key] = JSON.stringify(value);
-        },
-        getObject: function(key) {
-          return JSON.parse($window.localStorage[key] || '{}');
-        }
-      }
-    }]);
+    });
