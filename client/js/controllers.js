@@ -3,7 +3,7 @@ angular.module('EasyRashApp.controllers', [])
 .controller('AppCtrl', function($scope, $window, AuthService, AUTH_EVENTS) {
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
     AuthService.logout();
-    $window.location.href = "/#/dash";
+    $window.location.href = "/#/login";
     var alertPopup = alert("Session Lost.\nSorry you have to login again.");
   });
 

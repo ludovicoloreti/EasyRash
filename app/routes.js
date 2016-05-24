@@ -33,7 +33,6 @@ checkAuth = function(req, res, next) {
         return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
       } else {
         console.log("Authentication success");
-        //res.json({success: true, msg: 'Welcome in the member area ' + user.name + '!'});
         next();
       }
     });
@@ -61,6 +60,7 @@ module.exports = function (app) {
   app.get('/api/events', passport.authenticate('jwt', {session: false}), checkAuth,  function(req, res, next) {
     Event.find(function (err, events) {
       if (err) return next(err);
+      //else
       res.json(events);
     });
   });
@@ -68,6 +68,7 @@ module.exports = function (app) {
   app.get('/api/events/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res, next) {
     Event.findById(req.params.id, function (err, post) {
       if (err) return next(err);
+      //else
       res.json(post);
     });
   });
@@ -76,6 +77,7 @@ module.exports = function (app) {
   app.get('/api/users',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res, next) {
     User.find(function (err, users) {
       if (err) return next(err);
+      //else
       res.json(users);
     });
   });
@@ -83,18 +85,19 @@ module.exports = function (app) {
   app.get('/api/users/:id', passport.authenticate('jwt', {session: false}), checkAuth,  function(req, res, next) {
     User.findById(req.params.id, function (err, post) {
       if (err) return next(err);
+      //else
       res.json(post);
     });
   });
 
   app.post('/api/signup', function(req, res) {
     // TODO control everything
-    console.log(req.body);
+    console.log("Request body >\n"+req.body);
     if (!req.body.email || !req.body.pass) {
       console.info("Error email/pass")
       res.json({success: false, msg: 'Please insert at least email and password.'});
     } else {
-      console.log("ok!");
+      // Create a new user
       var newUser = new User({
         given_name: req.body.given_name,
         family_name: req.body.family_name,
@@ -108,7 +111,7 @@ module.exports = function (app) {
           console.log(err)
           return res.json({success: false, msg: 'email already exists.'});
         }
-        console.log("pare vada");
+        console.log("New user created");
         res.json({success: true, msg: 'Successful created new user.'});
       });
     }
@@ -116,7 +119,7 @@ module.exports = function (app) {
 
   // route to authenticate a user (POST http://localhost:8080/api/authenticate)
   app.post('/api/authenticate', function(req, res) {
-    console.log(req.body)
+    console.log("Request body >\n"+req.body);
     User.findOne({
       email: req.body.email,
       pass: req.body.pass
@@ -124,7 +127,7 @@ module.exports = function (app) {
       if (err) throw err;
 
       if (user) {
-        console.log("user correct");
+        console.log("User correct");
         console.log(user);
         // if user is found and password is right create a token
         var token = jwt.encode(user, config.secret);
