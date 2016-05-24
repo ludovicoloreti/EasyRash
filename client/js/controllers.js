@@ -21,7 +21,7 @@ angular.module('EasyRashApp.controllers', [])
     AuthService.logout();
     $window.location.href = "/login";
   };
-});
+})
 
 .controller('DashCtrl', function($scope, Api) {
   console.log("dash");
