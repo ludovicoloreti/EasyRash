@@ -18,14 +18,14 @@ function getTodos(res) {
 
 module.exports = function (app) {
 
-  app.get('/events', function(req, res, next) {
+  app.get('/api/events', function(req, res, next) {
     Event.find(function (err, events) {
       if (err) return next(err);
       res.json(events);
     });
   });
 
-  app.get('/events/:id', function(req, res, next) {
+  app.get('/api/events/:id', function(req, res, next) {
     Event.findById(req.params.id, function (err, post) {
       if (err) return next(err);
       res.json(post);
@@ -33,14 +33,14 @@ module.exports = function (app) {
   });
 
   /* GET users listing. */
-  app.get('/users', function(req, res, next) {
+  app.get('/api/users', function(req, res, next) {
     User.find(function (err, users) {
       if (err) return next(err);
       res.json(users);
     });
   });
 
-  app.get('/users/:id', function(req, res, next) {
+  app.get('/api/users/:id', function(req, res, next) {
     User.findById(req.params.id, function (err, post) {
       if (err) return next(err);
       res.json(post);
