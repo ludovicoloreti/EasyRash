@@ -1,0 +1,35 @@
+#article-page::before {
+  -webkit-background-clip: border-box;
+  -webkit-background-origin: padding-box;
+  -webkit-background-size: 20px 20px;
+  background-clip: border-box;
+  background-color: rgb(240, 243, 249);
+  background-image: url(../img/img_bg_pattern_2x.png);
+  background-origin: padding-box;
+  background-size: 20px 20px;
+  box-sizing: border-box;
+
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+
+#article-page {
+  overflow: auto;
+  position: relative;
+}
+
+#article-container {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.highlight {
+  background-color: rgba(255, 241, 151, 0.91);
+  border-radius: 3px;
+}

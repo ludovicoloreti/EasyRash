@@ -28,6 +28,11 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'EasyRas
     templateUrl: 'templates/article.html',
     controller: 'ArticleCtrl'
   }).
+  // TODO da rivedere
+  when('/annotation-page', {
+    templateUrl: 'templates/annotation-page.html',
+    controller: 'AnnotatorCtrl'
+  }).
   when('/account', {
     templateUrl: 'templates/account.html',
     controller: 'AccountCtrl'

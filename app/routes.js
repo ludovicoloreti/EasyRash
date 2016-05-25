@@ -6,6 +6,7 @@ var passport	= require('passport');
 var jwt = require('jwt-simple');
 var config = require('../config/server/database'); // get db config file
 
+var path = require('path');
 /*
 function getTodos(res) {
 Todo.find(function (err, todos) {
@@ -89,6 +90,10 @@ module.exports = function (app) {
       res.json(post);
     });
   });
+
+  app.get('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
+    res.sendFile(path.resolve('db/articles/'+req.params.id+'.html') );
+});
 
   app.post('/api/signup', function(req, res) {
     // TODO control everything
