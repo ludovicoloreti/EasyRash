@@ -44,7 +44,7 @@ angular.module('EasyRashApp.controllers', [])
   console.log("Article - ", $routeParams.articleId)
 })
 
-.controller('AnnotatorCtrl', function($scope, $routeParams, Api) {
+.controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, Api) {
   console.log("Annotator")
 
   var parser = new DOMParser();
@@ -53,15 +53,55 @@ angular.module('EasyRashApp.controllers', [])
   Api.getArticle($routeParams.articleId).then(function(response) {
     //console.log("> Articolo:\n",response);
     var doc = parser.parseFromString(response, 'text/html');
-    var annotationsList = doc.querySelectorAll('[type="application/ld+json"]');
+    var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
     var docBody = doc.getElementsByTagName("body")[0];
-    $scope.articleBody = docBody.innerHTML;
-    $scope.annotationsList = annotationsList;
+    $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
     console.log($scope.articleBody )
-    console.log($scope.annotationsList )
 
+    // Prova
+    var annotations = new Array();
+
+    for (i=0; i < scriptList.length; i++) {
+      annotations.push( JSON.parse(scriptList[i].textContent) );
+    }
+
+    console.log(annotations)
+
+    var annotation = annotations[0];
+
+    var commentsList = new Array();
+    for (i=0; i < annotation.length; i++) {
+      if(annotation[i]['@type'] == "comment") {
+        commentsList.push( annotation[i] );
+      }
+    }
+    $scope.commentsList = commentsList;
+
+    // Fine Prova
 
   })
+
+  $scope.showSelection = function(index){
+    var elementId = $scope.commentsList[index]["ref"];
+    //elementId = elementId.replace('#', '');
+    console.log(elementId);
+    console.log($document[0].getElementById(elementId));
+    //console.log(angular.element(elementId));
+    var element = $document[0].getElementById(elementId);
+    element.className += " highlight";
+
+  };
+
+  $scope.hideSelection = function(index){
+    var elementId = $scope.commentsList[index]["ref"];
+    //elementId = elementId.replace('#', '');
+    console.log(elementId);
+    console.log($document[0].getElementById(elementId));
+    console.log(angular.element(elementId));
+    var element = $document[0].getElementById(elementId);
+    element.classList.remove('highlight');
+
+  };
 
   $scope.highlight = function(e){
     console.log("highlighting")

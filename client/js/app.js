@@ -1,4 +1,4 @@
-angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'EasyRashApp.config', 'EasyRashApp.controllers', 'EasyRashApp.authServices', 'EasyRashApp.services'])
+angular.module('EasyRashApp', ['ngRoute', 'ngSanitize','ui.bootstrap', 'EasyRashApp.config', 'EasyRashApp.controllers', 'EasyRashApp.authServices', 'EasyRashApp.services'])
 
 .run(function($rootScope, AuthService, AUTH_EVENTS, $window) {
   console.info("EasyRashApp is running bitchh!");

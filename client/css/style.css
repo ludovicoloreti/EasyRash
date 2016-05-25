@@ -28,8 +28,17 @@
   padding: 40px 30px;
   box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.5);
 }
-
+#meta-container {
+  position: -webkit-sticky; 
+  position: sticky;
+  top: 0;
+}
 .highlight {
   background-color: rgba(255, 241, 151, 0.91);
   border-radius: 3px;
+
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+  transition: all 0.3s linear;
 }
