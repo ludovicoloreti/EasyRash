@@ -30,6 +30,14 @@
           <h1>Doc header</h1>
           <h2>Doc subheader</h2>
           <p>Here we palce the doc content</p>
+          <button ng-click="getInfo()">GET INFO</button>
+          <p ng-if="memberinfo">
+            {{memberinfo}}
+          </p>
+          <br><br>
+          <button ng-click="destroySession()">DESTROY SESSION</button>
+          <br><br>
+          <button ng-click="logout()">LOGOUT</button>
         </div>
       </div>
     </div>

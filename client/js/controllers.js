@@ -1,11 +1,12 @@
 angular.module('EasyRashApp.controllers', [])
 
-.controller('AppCtrl', function($scope, $window, AuthService, AUTH_EVENTS) {
+.controller('AppCtrl', function($scope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
     AuthService.logout();
     $window.location.href = "/#/login";
-    var alertPopup = alert("Session Lost.\nSorry you have to login again.");
+    var alertPopup = console.error("Session Lost.\nSorry you have to login again.");
   });
+
 
   $scope.destroySession = function() {
     AuthService.logout();
@@ -13,6 +14,7 @@ angular.module('EasyRashApp.controllers', [])
 
   $scope.getInfo = function() {
     $http.get(CONFIG.endpoint + CONFIG.userinfo).then(function(result) {
+      console.log(result.data)
       $scope.memberinfo = result.data.msg;
     });
   };
@@ -89,12 +91,14 @@ function getRangeObject(selectionObject){
 })
 
 .controller('LoginCtrl', function($scope, AuthService, $window) {
-  console.log("login")
+  console.log("login");
+  if (AuthService.isAuthenticated() === true) {
+    $window.location.href = "/#/dash";
+  }
   $scope.user = {
     email: '',
     pass: ''
   };
-
   $scope.login = function() {
     console.log($scope.user);
     AuthService.login($scope.user).then(function(msg) {
@@ -108,6 +112,11 @@ function getRangeObject(selectionObject){
 })
 
 .controller('RegisterCtrl', function($scope, $window, AuthService) {
+  console.log("register");
+  if (AuthService.isAuthenticated() === true) {
+    $window.location.href = "/#/dash";
+  }
+
   $scope.user = {
     email: '',
     pass: '',
