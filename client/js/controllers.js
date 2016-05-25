@@ -44,8 +44,24 @@ angular.module('EasyRashApp.controllers', [])
   console.log("Article - ", $routeParams.articleId)
 })
 
-.controller('AnnotatorCtrl', function($scope) {
+.controller('AnnotatorCtrl', function($scope, $routeParams, Api) {
   console.log("Annotator")
+
+  var parser = new DOMParser();
+
+
+  Api.getArticle($routeParams.articleId).then(function(response) {
+    //console.log("> Articolo:\n",response);
+    var doc = parser.parseFromString(response, 'text/html');
+    var annotationsList = doc.querySelectorAll('[type="application/ld+json"]');
+    var docBody = doc.getElementsByTagName("body")[0];
+    $scope.articleBody = docBody.innerHTML;
+    $scope.annotationsList = annotationsList;
+    console.log($scope.articleBody )
+    console.log($scope.annotationsList )
+
+
+  })
 
   $scope.highlight = function(e){
     console.log("highlighting")

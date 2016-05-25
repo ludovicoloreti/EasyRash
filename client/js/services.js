@@ -21,6 +21,15 @@ angular.module('EasyRashApp.services', ['EasyRashApp.config'])
         });
       };
 
+      self.getArticle = function( articleName ) {
+        return $http.get(CONFIG.endpoint+CONFIG.article+"/"+articleName).then(
+          function(response) {
+            return response.data;
+          },function(error) {
+            return error;
+          });
+      };
+
 
       return self;
     });
