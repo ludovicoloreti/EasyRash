@@ -13,7 +13,7 @@ var methodOverride = require('method-override');
 var jwt = require('jwt-simple');
 var passport	= require('passport');
 var open = require('open');
-var color = require('colors-cli/safe')
+var color = require('colors-cli/safe');
 /*
 Connection
 Connect to local MongoDB instance. A remoteUrl is also available (modulus.io)

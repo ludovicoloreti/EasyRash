@@ -10,6 +10,8 @@ var color = require('colors-cli/safe')
 var error = color.red.bold;
 var warn = color.yellow;
 var notice = color.x45;
+
+var rash = require('./rash');
 /*
 function getTodos(res) {
 Todo.find(function (err, todos) {
@@ -105,8 +107,14 @@ module.exports = function (app) {
   });
 
   app.get('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
-    res.sendFile(path.resolve('db/articles/'+req.params.id+'.html') );
+    // Come ti mando il risultato?
+    // In rash.prepare ho prepareto l'html e ho una stringa, come te la mando al client?
+    rash.prepare( path.resolve('db/articles/'+req.params.id+'.html') );
+
+    //res.sendFile(path.resolve('db/articles/'+req.params.id+'.html') );
   });
+
+
 
   app.post('/api/signup', function(req, res) {
     // TODO control everything

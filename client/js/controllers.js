@@ -53,6 +53,7 @@ angular.module('EasyRashApp.controllers', [])
   Api.getArticle($routeParams.articleId).then(function(response) {
     //console.log("> Articolo:\n",response);
     var doc = parser.parseFromString(response, 'text/html');
+    console.log(doc);
     var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
     var docBody = doc.getElementsByTagName("body")[0];
     $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
