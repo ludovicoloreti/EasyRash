@@ -1,4 +1,4 @@
-angular.module('EasyRashApp.services', [])
+angular.module('EasyRashApp.utils', [])
 
 /*.directive('myTooltip', function () {
     return {
