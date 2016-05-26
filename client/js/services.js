@@ -1,35 +1,14 @@
-angular.module('EasyRashApp.services', ['EasyRashApp.config'])
+angular.module('EasyRashApp.services', [])
 
-.factory('Api', function($http,CONFIG,$window,$timeout,$q) {
-  var self = this;
-
-  self.getUsers = function() {
-    return $http.get(CONFIG.endpoint+CONFIG.users).then(
-      function(response) {
-        return response.data;
-      },function(error) {
-        return error;
-      });
+/*.directive('myTooltip', function () {
+    return {
+        restrict: 'AC',
+        link: function (scope, element, attrs) {
+            element.qtip();
+        }server
     };
+});
 
-    self.getEvents = function() {
-      return $http.get(CONFIG.endpoint+CONFIG.events).then(
-        function(response) {
-          return response.data;
-        },function(error) {
-          return error;
-        });
-      };
-
-      self.getArticle = function( articleName ) {
-        return $http.get(CONFIG.endpoint+CONFIG.article+"/"+articleName).then(
-          function(response) {
-            return response.data;
-          },function(error) {
-            return error;
-          });
-      };
-
-
-      return self;
-    });
+// l'html diventa:
+<span my-tooltip title="Testo nel tooltip">Testo nel box</span>
+*/
