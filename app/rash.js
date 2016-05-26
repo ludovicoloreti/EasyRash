@@ -2,10 +2,10 @@ var jsdom = require('jsdom');
 const fs = require('fs');
 
 // Mi viene passato il path del file html
-var prepare = function( htmlFilePath ){
+var prepare = function( htmlFilePath, callback ){
   //Leggo il file
   fs.readFile(htmlFilePath, 'utf8', function(error, html) {
-    console.log("AAAAAAAAAAAAAAAAAAA>>>>>>> "+html + " BBBBBBBBB");
+    console.log("AAAAAAAAAAAAAAAAAAA>>>>>>> "+ html + " BBBBBBBBB");
     // uso jsdom per creare il dom e appliacrci jquery
      jsdom.env(html, [], function (errors, window) {
         var $ = require('jquery')(window);
@@ -528,7 +528,7 @@ var prepare = function( htmlFilePath ){
         // fine parte copiata dal prof
         // stampo l'html che ne viene fuori
         console.log( window.document.documentElement.outerHTML );
-        return window.document.documentElement.outerHTML;
+        callback(window.document.documentElement.outerHTML);
         // TODO
         // 1- ritornare non so cosa e non so come
     });
