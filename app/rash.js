@@ -5,6 +5,7 @@ const fs = require('fs');
 var prepare = function( htmlFilePath ){
   //Leggo il file
   fs.readFile(htmlFilePath, 'utf8', function(error, html) {
+    console.log("AAAAAAAAAAAAAAAAAAA>>>>>>> "+html + " BBBBBBBBB");
     // uso jsdom per creare il dom e appliacrci jquery
      jsdom.env(html, [], function (errors, window) {
         var $ = require('jquery')(window);
@@ -516,7 +517,7 @@ var prepare = function( htmlFilePath ){
         /* /END Heading dimensions */
 
         /* Set header */
-        //$(this).addHeaderHTML();
+        $(this).addHeaderHTML();
         /* /END Set header */
 
         /* Bibliography */
@@ -526,8 +527,8 @@ var prepare = function( htmlFilePath ){
 
         // fine parte copiata dal prof
         // stampo l'html che ne viene fuori
-        console.log( window.document.documentElement.outerHTML);
-
+        console.log( window.document.documentElement.outerHTML );
+        return window.document.documentElement.outerHTML;
         // TODO
         // 1- ritornare non so cosa e non so come
     });

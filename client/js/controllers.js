@@ -52,31 +52,31 @@ angular.module('EasyRashApp.controllers', [])
 
   Api.getArticle($routeParams.articleId).then(function(response) {
     //console.log("> Articolo:\n",response);
-    var doc = parser.parseFromString(response, 'text/html');
-    console.log(doc);
-    var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
-    var docBody = doc.getElementsByTagName("body")[0];
-    $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
-    console.log($scope.articleBody )
-
-    // Prova
-    var annotations = new Array();
-
-    for (i=0; i < scriptList.length; i++) {
-      annotations.push( JSON.parse(scriptList[i].textContent) );
-    }
-
-    console.log(annotations)
-
-    var annotation = annotations[0];
-
-    var commentsList = new Array();
-    for (i=0; i < annotation.length; i++) {
-      if(annotation[i]['@type'] == "comment") {
-        commentsList.push( annotation[i] );
-      }
-    }
-    $scope.commentsList = commentsList;
+    // var doc = parser.parseFromString(response, 'text/html');
+    // console.log(doc);
+    // var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
+    // var docBody = doc.getElementsByTagName("body")[0];
+    // $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
+    // console.log($scope.articleBody )
+    //
+    // // Prova
+    // var annotations = new Array();
+    //
+    // for (i=0; i < scriptList.length; i++) {
+    //   annotations.push( JSON.parse(scriptList[i].textContent) );
+    // }
+    //
+    // console.log(annotations)
+    //
+    // var annotation = annotations[0];
+    //
+    // var commentsList = new Array();
+    // for (i=0; i < annotation.length; i++) {
+    //   if(annotation[i]['@type'] == "comment") {
+    //     commentsList.push( annotation[i] );
+    //   }
+    // }
+    // $scope.commentsList = commentsList;
 
     // Fine Prova
 
