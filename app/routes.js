@@ -191,7 +191,9 @@ module.exports = function (app) {
           if (!user) {
             return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
           } else {
-            res.json({success: true, msg: 'Welcome in the member area ' + user.email + '!'});
+            strToSplit = user.email;
+            var usrname = strToSplit.split("@");
+            res.json({success: true, msg: 'Welcome in the member area ' + usrname[0] + '!'});
           }
       });
     } else {
