@@ -107,8 +107,7 @@ module.exports = function (app) {
   });
 
   app.get('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
-    // Come ti mando il risultato?
-    // In rash.prepare ho prepareto l'html e ho una stringa, come te la mando al client?
+    /* Prepare the rash file */
     rash.prepare( path.resolve('db/articles/'+req.params.id+'.html'), function( preparationResult ){
       res.json( preparationResult );
     });

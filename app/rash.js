@@ -5,7 +5,6 @@ const fs = require('fs');
 var prepare = function( htmlFilePath, callback ){
   //Leggo il file
   fs.readFile(htmlFilePath, 'utf8', function(error, html) {
-    console.log("AAAAAAAAAAAAAAAAAAA>>>>>>> "+ html + " BBBBBBBBB");
     // uso jsdom per creare il dom e appliacrci jquery
      jsdom.env(html, [], function (errors, window) {
         var $ = require('jquery')(window);
@@ -174,7 +173,7 @@ var prepare = function( htmlFilePath, callback ){
                 if (keywords.length > 0) {
                     var list_of_keywords = $("<ul class=\"list-inline\"></ul>");
                     keywords.each(function() {
-                        list_of_keywords.append("<li><code>" + $(this).attr("content") + "</code></li>");
+                        list_of_keywords.append("<li class='list-inline-item'><code>" + $(this).attr("content") + "</code></li>");
                     });
                     $("<p class=\"keywords\"><strong>Keywords</strong></p>").append(list_of_keywords).appendTo(header);
                 }
@@ -279,6 +278,7 @@ var prepare = function( htmlFilePath, callback ){
                     }
                 });
             }
+
         });
         var figurebox_selector_img = "p > img:not([role=math])";
         var figurebox_selector_svg = "p > svg";
@@ -498,6 +498,31 @@ var prepare = function( htmlFilePath, callback ){
         });
         /* /END Footnotes (part 2) */
 
+        /*** START ADDING ***/
+        /* Footnotes (part 3) */
+        /* add a scroll function that replace anchor linking*/
+        $("a[name]").each(function(){
+            var link = $(this).attr('name').trim();
+            //var angularAttribute = "scrollTo('"+link+"')";
+            var angularAttribute = "document.querySelectorAll(\"a[name='"+link+"']\").scrollIntoView()";
+            $(this).attr('onclick', angularAttribute);
+
+        });
+        
+        $("a[href]").each(function(){
+          if( $(this).attr('href').startsWith('#')){
+            console.log("href"+$(this));
+            var link = $(this).attr('href').trim().substr(1);
+            //var angularAttribute = "scrollTo('"+link+"')";
+            var angularAttribute = "document.getElementById('"+link+"').scrollIntoView()";
+            $(this).removeAttr('href');
+            $(this).attr('onclick', angularAttribute);
+          }
+        });
+
+
+        /*** FINISH ADDING ***/
+
         /* Container sections */
         $(
             "body > section , section[role=doc-abstract] , section[role=doc-acknowledgements] , " +
@@ -518,6 +543,7 @@ var prepare = function( htmlFilePath, callback ){
 
         /* Set header */
         $(this).addHeaderHTML();
+
         /* /END Set header */
 
         /* Bibliography */
@@ -527,7 +553,7 @@ var prepare = function( htmlFilePath, callback ){
 
         // fine parte copiata dal prof
         // stampo l'html che ne viene fuori
-        console.log( window.document.documentElement.outerHTML );
+        //console.log( window.document.documentElement.outerHTML );
         callback(window.document.documentElement.outerHTML);
         // TODO
         // 1- ritornare non so cosa e non so come

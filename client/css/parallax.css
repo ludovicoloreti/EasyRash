@@ -11,7 +11,7 @@
 
 }
 body {}
-  
+
 #content:before {
   content: "";
   position: fixed;
@@ -65,6 +65,10 @@ body {}
 .vertical-offset-100 {
   padding-top: 100px;
 }
+.vertical-offset-50 {
+  padding-top: 50px;
+}
+
 .img-responsive {
   display: block;
   max-width: 50%;

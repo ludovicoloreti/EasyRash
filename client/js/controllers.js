@@ -1,6 +1,7 @@
 angular.module('EasyRashApp.controllers', [])
 
 .controller('AppCtrl', function($scope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
+
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
     AuthService.logout();
     $window.location.href = "/#/login";
@@ -44,7 +45,7 @@ angular.module('EasyRashApp.controllers', [])
   console.log("Article - ", $routeParams.articleId)
 })
 
-.controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, Api) {
+.controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $anchorScroll, Api) {
   console.log("Annotator")
 
   var parser = new DOMParser();
@@ -66,16 +67,18 @@ angular.module('EasyRashApp.controllers', [])
     }
 
     console.log(annotations)
-
-    var annotation = annotations[0];
-
     var commentsList = new Array();
-    for (i=0; i < annotation.length; i++) {
-      if(annotation[i]['@type'] == "comment") {
-        commentsList.push( annotation[i] );
+    for (i=0; i < annotations.length; i++) {
+      var annotation = annotations[i];
+      for (j=0; j < annotation.length; j++) {
+
+        if(annotation[j]['@type'] == "comment") {
+          commentsList.push( annotation[j] );
+        }
       }
     }
     $scope.commentsList = commentsList;
+
 
     // Fine Prova
 
@@ -103,46 +106,58 @@ angular.module('EasyRashApp.controllers', [])
 
   };
 
-  $scope.highlight = function(e){
-    console.log("highlighting")
-    var text;
-    if (window.getSelection) {
-        /* get the Selection object */
-        userSelection = window.getSelection()
+  /*
+    Angular doesn't handle anchor hash linking due to its routeProvider module.
+    It is necessary to implement a function that handles this behavior.
+  */
+  $scope.scrollTo = function(id) {
+    console.log("cliccato");
+    $location.hash(id);
+    console.log($location.hash());
+    $anchorScroll();
+  };
 
-        /* get the innerText (without the tags) */
-        text = userSelection.toString();
 
-        /* Creating Range object based on the userSelection object */
-        var rangeObject = getRangeObject(userSelection);
+//   $scope.highlight = function(e){
+//     console.log("highlighting")
+//     var text;
+//     if (window.getSelection) {
+//         /* get the Selection object */
+//         userSelection = window.getSelection()
+//
+//         /* get the innerText (without the tags) */
+//         text = userSelection.toString();
+//
+//         /* Creating Range object based on the userSelection object */
+//         var rangeObject = getRangeObject(userSelection);
+//
+//         /*
+//            This extracts the contents from the DOM literally, inclusive of the tags.
+//            The content extracted also disappears from the DOM
+//         */
+//         contents = rangeObject.extractContents();
+//
+//         var span = document.createElement("span");
+//         span.className = "highlight";
+//         span.appendChild(contents);
+//
+//         /* Insert your new span element in the same position from where the selected text was extracted */
+//         rangeObject.insertNode(span);
+//
+//     } else if (document.selection && document.selection.type != "Control") {
+//             text = document.selection.createRange().text;
+//     }
+// };
 
-        /*
-           This extracts the contents from the DOM literally, inclusive of the tags.
-           The content extracted also disappears from the DOM
-        */
-        contents = rangeObject.extractContents();
-
-        var span = document.createElement("span");
-        span.className = "highlight";
-        span.appendChild(contents);
-
-        /* Insert your new span element in the same position from where the selected text was extracted */
-        rangeObject.insertNode(span);
-
-    } else if (document.selection && document.selection.type != "Control") {
-            text = document.selection.createRange().text;
-    }
-};
-
-function getRangeObject(selectionObject){
-    try{
-        if(selectionObject.getRangeAt)
-            return selectionObject.getRangeAt(0);
-    }
-    catch(ex){
-        console.log(ex);
-    }
-}
+// function getRangeObject(selectionObject){
+//     try{
+//         if(selectionObject.getRangeAt)
+//             return selectionObject.getRangeAt(0);
+//     }
+//     catch(ex){
+//         console.log(ex);
+//     }
+// }
 
 })
 

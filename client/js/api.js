@@ -24,7 +24,6 @@ angular.module('EasyRashApp.api', ['EasyRashApp.config'])
       self.getArticle = function( articleName ) {
         return $http.get(CONFIG.endpoint+CONFIG.article+"/"+articleName).then(
           function(response) {
-            console.log(response)
             return response.data;
           },function(error) {
             return error;
