@@ -217,6 +217,16 @@ angular.module('EasyRashApp.controllers', [])
   })
 })
 
+.controller('EventCtrl', function($scope, $routeParams, Api) {
+
+  console.log("event");
+
+  Api.getEvent($routeParams.eventId).then(function(response) {
+    console.log("> Evento:\n",response);
+    $scope.eventInfo = response;
+  })
+})
+
 .controller('AccountCtrl', function($scope) {
   console.log("account")
 });

@@ -51,6 +51,10 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'EasyRashApp.config', 'E
     templateUrl: 'templates/events.html',
     controller: 'EventsCtrl'
   }).
+  when('/event/:eventId', {
+    templateUrl: 'templates/event.html',
+    controller: 'EventCtrl'
+  }).
   otherwise({
     redirectTo: '/login'
   });

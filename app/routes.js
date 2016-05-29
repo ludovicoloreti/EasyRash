@@ -81,7 +81,7 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/api/events/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res, next) {
+  app.get('/api/event/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res, next) {
     Event.findById(req.params.id, function (err, post) {
       if (err) return next(err);
       //else
@@ -108,8 +108,17 @@ module.exports = function (app) {
 
   app.get('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
     /* Prepare the rash file */
-    rash.prepare( path.resolve('db/articles/'+req.params.id+'.html'), function( preparationResult ){
-      res.json( preparationResult );
+    var file = path.resolve('db/articles/'+req.params.id+'.html');
+    console.log('File: '+req.params.id+'.html');
+
+    rash.prepare( file , function( error, preparationResult ){
+      if (error) {
+        console.log(error.message);
+        res.json( {success: false, message: error.message} );
+      }else{
+        res.json( preparationResult );
+      }
+
     });
 
 

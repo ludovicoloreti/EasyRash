@@ -4,7 +4,9 @@
       <div class="card card-block">
         <h3 class="card-title">{{event.acronym}}</h3>
         <p class="card-text">{{event.conference}}</p>
-        <a href="#" class="btn btn-primary">View</a>
+        <h4>Chairs:</h4>
+        <p class="small" ng-repeat="chair in event.chairs">{{chair}}</p>
+        <a ng-href="/#/event/{{event._id}}" class="btn btn-primary">View</a>
       </div>
     </div>
   </div>
