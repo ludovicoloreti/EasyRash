@@ -228,5 +228,7 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('AccountCtrl', function($scope) {
-  console.log("account")
+  console.log("account");
+  // Get user info
+
 });

@@ -1,34 +1,4 @@
-angular.module('EasyRashApp.utils', [])
-
-.filter('cut', function () {
-        return function (value, wordwise, max, tail) {
-            if (!value) return '';
-
-            max = parseInt(max, 10);
-            if (!max) return value;
-            if (value.length <= max) return value;
-
-            value = value.substr(0, max);
-            if (wordwise) {
-                var lastspace = value.lastIndexOf(' ');
-                if (lastspace != -1) {
-                    value = value.substr(0, lastspace);
-                }
-            }
-
-            return value + (tail || ' …');
-        };
-    })
-
-    .directive('particles', function($window) {
-    	return {
-    		restrict: 'A',
-            replace: true,
-            template: '<div class="particleJs" id="particleJs"></div>',
-    		link: function(scope, element, attrs, fn) {
-
-                $window.particlesJS('particleJs',
-                {
+{
   "particles": {
     "number": {
       "value": 80,
@@ -38,7 +8,7 @@ angular.module('EasyRashApp.utils', [])
       }
     },
     "color": {
-      "value": "#feb131"
+      "value": "#ffffff"
     },
     "shape": {
       "type": "circle",
@@ -66,7 +36,7 @@ angular.module('EasyRashApp.utils', [])
       }
     },
     "size": {
-      "value": 3,
+      "value": 5,
       "random": true,
       "anim": {
         "enable": false,
@@ -84,12 +54,11 @@ angular.module('EasyRashApp.utils', [])
     },
     "move": {
       "enable": true,
-      "speed": 2,
+      "speed": 6,
       "direction": "none",
       "random": false,
       "straight": false,
       "out_mode": "out",
-      "bounce": false,
       "attract": {
         "enable": false,
         "rotateX": 600,
@@ -98,11 +67,11 @@ angular.module('EasyRashApp.utils', [])
     }
   },
   "interactivity": {
-    "detect_on": "window",
+    "detect_on": "canvas",
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "grab"
+        "mode": "repulse"
       },
       "onclick": {
         "enable": true,
@@ -112,7 +81,7 @@ angular.module('EasyRashApp.utils', [])
     },
     "modes": {
       "grab": {
-        "distance": 100,
+        "distance": 400,
         "line_linked": {
           "opacity": 1
         }
@@ -125,8 +94,7 @@ angular.module('EasyRashApp.utils', [])
         "speed": 3
       },
       "repulse": {
-        "distance": 100,
-        "duration": 0.4
+        "distance": 200
       },
       "push": {
         "particles_nb": 4
@@ -136,23 +104,13 @@ angular.module('EasyRashApp.utils', [])
       }
     }
   },
-  "retina_detect": true
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#b61924",
+    "background_image": "",
+    "background_position": "50% 50%",
+    "background_repeat": "no-repeat",
+    "background_size": "cover"
+  }
 }
-);
-
-    		}
-    	};
-    });
-
-/*.directive('myTooltip', function () {
-    return {
-        restrict: 'AC',
-        link: function (scope, element, attrs) {
-            element.qtip();
-        }server
-    };
-});
-
-// l'html diventa:
-<span my-tooltip title="Testo nel tooltip">Testo nel box</span>
-*/

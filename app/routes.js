@@ -98,7 +98,7 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/api/users/:id', passport.authenticate('jwt', {session: false}), checkAuth,  function(req, res, next) {
+  app.get('/api/user/:id', passport.authenticate('jwt', {session: false}), checkAuth,  function(req, res, next) {
     User.findById(req.params.id, function (err, post) {
       if (err) return next(err);
       //else
