@@ -2,7 +2,7 @@ var jsdom = require('jsdom');
 const fs = require('fs');
 
 // Mi viene passato il path del file html
-var prepare = function( htmlFilePath, callback ){
+var prepareForReading = function( htmlFilePath, callback ){
   //Leggo il file
   fs.readFile(htmlFilePath, 'utf8', function(error, html) {
     if( error ){
@@ -569,7 +569,44 @@ var prepare = function( htmlFilePath, callback ){
 };
 
 
-module.exports.prepare = prepare;
+var prepareForAnnotation = function(htmlFilePath, callback) {
+  fs.readFile(htmlFilePath, 'utf8', function(error, html) {
+    if( error ){
+      // The file is not in the provided dataset
+      error.message = "No such file found";
+      callback( error, null );
+    } else {
+      // Create the DOM from the read html file
+      jsdom.env(html, [], function (errors, window) {
+        // JQuery
+        var $ = require('jquery')(window);
+
+        // List of tags "script"
+        var scripts = $('[type="application/ld+json"]');
+        var annotations = new Array();
+        // LIst of annotations
+        for (i=0; i < scripts.length; i++) {
+          annotations.push( JSON.parse(scripts[i].text) );
+        }
+
+        // Text inside the body
+        var body =  window.document.getElementsByTagName("body")[0].outerHTML;
+
+        var returnObject = {}
+        returnObject.annotations = annotations;
+        returnObject.body = body;
+
+        //returnObject.file = window.document.documentElement.outerHTML;
+
+        callback(null, returnObject);
+       });
+    }
+  });
+};
+
+
+module.exports.prepareForReading = prepareForReading;
+module.exports.prepareForAnnotation = prepareForAnnotation;
 
 /*
 Utils: writing on html document

@@ -1,11 +1,11 @@
-<div id="background-image">
+<div id="background-image"></div>
 
-</div>
 <div id="article-page">
   <div class="container">
     <div class="row vertical-offset-50">
       <div id="meta-container" class="col-lg-4" >
-        <div class="card animated fadeInLeft" ng-repeat="comment in commentsList" ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)">
+        <div class="card animated fadeInLeft" ng-repeat="comment in commentsList">
+          <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
           <div class="card-block">
             <h4>{{comment["@type"]}}</h4>
             <p class="card-text"><i>"{{comment.text | cut:true:100:' ...'}}"</i></p>
@@ -13,13 +13,26 @@
           </div>
         </div>
       </div>
-      <div id="article-container"
-      class="col-xs-12 col-sm-12 col-md-12 col-lg-8 animated fadeInUp"
-      ng-mousedown="highlight(event)"
-      ng-bind-html="articleBody">
+      <!-- Start error alert -->
+      <div class="alert alert-danger alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Error: </strong> {{message}}
       </div>
-      <div>
-        <a ng-click="scrollTo('meta-container')">Prova</a>
+      <!--  End error alert -->
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 animated fadeInUp">
+
+        <div>
+          <button class="btn btn-primary pull-right" ng-click="loadRash()">Annotate</button>
+          <button class="btn btn-primary btn-warning pull-right" ng-click="highlight()">Verify</button>
+          <button class="btn btn-primary btn-danger pull-right" ng-click="exit()">Exit</button>
+        </div>
+        <img id="spinner" src="img/loader.gif" class="img-responsive center-block" ng-show="loading" />
+        <article id="article-container"
+        class=""
+        ng-bind-html="articleBody">
+        </article>
       </div>
     </div>
   </div>

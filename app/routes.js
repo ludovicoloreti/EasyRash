@@ -12,6 +12,7 @@ var warn = color.yellow;
 var notice = color.x45;
 
 var rash = require('./rash');
+var lockManager = require("./lock-manager");
 /*
 function getTodos(res) {
 Todo.find(function (err, todos) {
@@ -44,6 +45,7 @@ checkAuth = function(req, res, next) {
         return res.status(403).send(errToSend);
       } else {
         console.log(notice("Authentication success"));
+        req.user = user;
         next();
       }
     });
@@ -111,7 +113,7 @@ module.exports = function (app) {
     var file = path.resolve('db/articles/'+req.params.id+'.html');
     console.log('File: '+req.params.id+'.html');
 
-    rash.prepare( file , function( error, preparationResult ){
+    rash.prepareForReading( file , function( error, preparationResult ){
       if (error) {
         console.log(error.message);
         res.json( {success: false, message: error.message} );
@@ -120,12 +122,49 @@ module.exports = function (app) {
       }
 
     });
-
-
-
-    //res.sendFile(path.resolve('db/articles/'+req.params.id+'.html') );
   });
 
+
+  app.get('/api/raw-article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
+    var fileName = req.params.id;
+    var file = path.resolve('db/articles/'+fileName+'.html');
+
+    console.log('File: '+fileName+'.html');
+
+    var userId = req.user.id;
+    console.log(userId);
+    lockManager.acquireLock(fileName, userId, function(resourceAcquired){
+      if(resourceAcquired){
+        rash.prepareForAnnotation( file , function( error, preparationResult ){
+          if (error) {
+            console.log(error.message);
+            res.json( {success: false, message: error.message} );
+          }else{
+            res.json( preparationResult );
+          }
+
+        });
+      }else {
+        res.json( {success: false, message: "Document already under review"} );
+      }
+    });
+
+  });
+
+  app.post('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
+    /* Prepare the rash file */
+    var fileName = req.params.id;
+    var file = path.resolve('db/articles/'+fileName+'.html');
+    console.log('File: '+req.params.id+'.html');
+
+    lockManager.releaseLock(fileName, function(result){
+      if(result){
+        res.json( {success: true, message: "Lock released successfully"} );
+      }else {
+        res.json( {success: false, message: "Error in releasing the lock"} );
+      }
+    });
+  });
 
 
   app.post('/api/signup', function(req, res) {
@@ -206,15 +245,15 @@ module.exports = function (app) {
       User.findOne({
         email: decoded.email
       }, function(err, user) {
-          if (err) throw err;
+        if (err) throw err;
 
-          if (!user) {
-            return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
-          } else {
-            strToSplit = user.email;
-            var usrname = strToSplit.split("@");
-            res.json({success: true, msg: 'Welcome in the member area ' + usrname[0] + '!'});
-          }
+        if (!user) {
+          return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+        } else {
+          strToSplit = user.email;
+          var usrname = strToSplit.split("@");
+          res.json({success: true, msg: 'Welcome in the member area ' + usrname[0] + '!'});
+        }
       });
     } else {
       return res.status(403).send({success: false, msg: 'No token provided.'});

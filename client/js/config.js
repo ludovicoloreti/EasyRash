@@ -10,6 +10,7 @@ angular.module("EasyRashApp.config", [])
   "user": "/user",
   "articles": "/articles",
   "article": "/article",
+  "raw_article": "/raw-article",
   "event": "/event",
   "events": "/events",
   "register": "/signup",

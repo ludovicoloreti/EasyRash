@@ -45,19 +45,22 @@ angular.module('EasyRashApp.controllers', [])
   console.log("Article - ", $routeParams.articleId)
 })
 
-.controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $anchorScroll, Api) {
+.controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $anchorScroll, $timeout, Api) {
   console.log("Annotator")
-
+  $scope.loading = true;
   var parser = new DOMParser();
 
 
-  Api.getArticle($routeParams.articleId).then(function(response) {
-    console.log("> Articolo:\n",response);
+  Api.getArticle($routeParams.articleId, "processed").then(function(response) {
+    // console.log("> Articolo:\n",response);
     var doc = parser.parseFromString(response, 'text/html');
     var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
     var docBody = doc.getElementsByTagName("body")[0];
+
+    $scope.loading = false;
+
     $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
-    console.log($scope.articleBody )
+    // console.log($scope.articleBody )
 
     // Prova
     var annotations = new Array();
@@ -66,7 +69,7 @@ angular.module('EasyRashApp.controllers', [])
       annotations.push( JSON.parse(scriptList[i].textContent) );
     }
 
-    console.log(annotations)
+    // console.log(annotations)
     var commentsList = new Array();
     for (i=0; i < annotations.length; i++) {
       var annotation = annotations[i];
@@ -83,6 +86,24 @@ angular.module('EasyRashApp.controllers', [])
     // Fine Prova
 
   })
+
+  $scope.loadRash = function(){
+    Api.getArticle($routeParams.articleId, "unprocessed").then(function(response) {
+      //var rawArticle = parser.parseFromString(response.body, 'text/html');
+      console.log(response);
+      $scope.articleBody = $sce.trustAsHtml(response.body);
+      console.log($scope.articleBody);
+    });
+
+  }
+
+  $scope.exit = function(){
+    Api.saveAnnotations($routeParams.articleId).then(function(response) {
+      console.log(response);
+    });
+
+  }
+
 
   $scope.showSelection = function(index){
     var elementId = $scope.commentsList[index]["ref"];
@@ -107,8 +128,8 @@ angular.module('EasyRashApp.controllers', [])
   };
 
   /*
-    Angular doesn't handle anchor hash linking due to its routeProvider module.
-    It is necessary to implement a function that handles this behavior.
+  Angular doesn't handle anchor hash linking due to its routeProvider module.
+  It is necessary to implement a function that handles this behavior.
   */
   $scope.scrollTo = function(id) {
     console.log("cliccato");
@@ -117,47 +138,91 @@ angular.module('EasyRashApp.controllers', [])
     $anchorScroll();
   };
 
+  function selection(){
+    if (window.getSelection) {
+      console.log(1)
+      return window.getSelection();
+    } else if (document.getSelection) {
+      console.log(2)
+      return document.getSelection();
+    } else if (document.selection) {
+      console.log(3)
+      return document.selection.createRange().text;
+    }
+  }
 
-//   $scope.highlight = function(e){
-//     console.log("highlighting")
-//     var text;
-//     if (window.getSelection) {
-//         /* get the Selection object */
-//         userSelection = window.getSelection()
-//
-//         /* get the innerText (without the tags) */
-//         text = userSelection.toString();
-//
-//         /* Creating Range object based on the userSelection object */
-//         var rangeObject = getRangeObject(userSelection);
-//
-//         /*
-//            This extracts the contents from the DOM literally, inclusive of the tags.
-//            The content extracted also disappears from the DOM
-//         */
-//         contents = rangeObject.extractContents();
-//
-//         var span = document.createElement("span");
-//         span.className = "highlight";
-//         span.appendChild(contents);
-//
-//         /* Insert your new span element in the same position from where the selected text was extracted */
-//         rangeObject.insertNode(span);
-//
-//     } else if (document.selection && document.selection.type != "Control") {
-//             text = document.selection.createRange().text;
-//     }
-// };
+  // indexOf method added for range selection pourposes
+  NodeList.prototype.indexOf = function(n) {
+    var i=-1;
+    while (this.item(i) !== n) {i++} ;
+    return i
+  }
 
-// function getRangeObject(selectionObject){
-//     try{
-//         if(selectionObject.getRangeAt)
-//             return selectionObject.getRangeAt(0);
-//     }
-//     catch(ex){
-//         console.log(ex);
-//     }
-// }
+  function compatibleExtremes(n) {
+    var res = (n.anchorNode === n.focusNode  && n.type=='Range');
+    console.log(res);
+    return res;
+  }
+
+  count = 0;
+
+  $scope.highlight = function() {
+    // Get the selection
+    var s = selection()
+    console.log(s)
+    // Get the anchor's parent element
+    var dad = s.anchorNode.parentElement
+    // var guida = s.anchorNode.substringData(s.anchorOffset,20)
+    if (compatibleExtremes(s)) { // compatibleExtremes(s)
+      var spanId = 'span-'+ ($('#article-container span').length+1)
+      // Prendo l'elemento dal padre in base all'indexOf
+      var pos = dad.childNodes.indexOf(s.anchorNode)
+      var n = {
+        id: spanId,
+        node: dad.id ? dad.id: createId(dad),
+        pos: pos,
+        // guide: guida,
+        start: Math.min(s.anchorOffset,s.focusOffset),
+        end: Math.max(s.anchorOffset,s.focusOffset)
+      }
+      insertNote(n,true)
+    }else {
+      var message = "Uncorrect selection";
+      showErrors(message);
+    }
+
+  };
+
+  function createId(element){
+    element.setAttribute('id', 'parent-'+count)
+    count++;
+    return element.getAttribute('id');
+  }
+
+  function insertNote(note,active) {
+		// Creo un range
+		var r = document.createRange()
+		var node = $('#'+note.node)[0].childNodes[note.pos]
+		// Setto il range
+		r.setStart(node,note.start);
+		r.setEnd(node,note.end)
+		// Creo lo span
+		var span = document.createElement('span')
+		span.setAttribute('id',note.id)
+		span.setAttribute('class','highlight')
+		// Avvolgo il range con lo span
+		r.surroundContents(span)
+	}
+
+  function showErrors(message){
+    $scope.error = true;
+    $scope.message = message;
+  }
+
+  function hideErrors(){
+    $scope.error = true;
+    $scope.message = "";
+  }
 
 })
 
