@@ -29,11 +29,8 @@
     <script src="lib/angular-route/angular-route.js"></script>
     <script src="lib/angular-sanitize/angular-sanitize.js"></script>
 
-
-
     <!-- bootstrap ui js -->
     <!-- <script src="lib/angular-bootstrap/ui-bootstrap.min.js"></script> -->
-
 
     <!-- FILES TO INCLUDE IN DEV MODE -->
     <!-- main app's js -->
@@ -55,36 +52,35 @@
     <!-- // FILES TO INCLUDE IN PRODUCTION -->
   </head>
   <body ng-app="EasyRashApp" ng-controller="AppCtrl">
-
+    <!-- Start app header -->
     <nav class="navbar navbar-full navbar-light" ng-show="true">
       <div class="container-fluid">
-        <!-- <a class="navbar-brand" href="#">
-        <img class="" src="img/logo.png">
-      </a> -->
-      <ul class="nav navbar-nav pull-lg-right">
-        <li class="nav-item active">
-          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/#/events">Events</a>
-        </li>
-        <li class="nav-item dropdown">
-          <div class="dropdown">
-            <a class="nav-link active" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span class="fa fa-cog" style="font-size:24px"></span>
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-              <a class="dropdown-item" href="#/account">Get info</a>
-              <a class="dropdown-item" href="#">Dest. session</a>
-              <a class="dropdown-item" ng-click="logout()">Logout</a>
+        <!-- <a class="navbar-brand" href="#"><img class="" src="img/logo.png"></a> -->
+        <ul class="nav navbar-nav pull-lg-right">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/#/events">Events</a>
+          </li>
+          <li class="nav-item dropdown">
+            <div class="dropdown">
+              <a class="nav-link active" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="fa fa-cog" style="font-size:24px"></span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <a class="dropdown-item" href="#/account">Get info</a>
+                <a class="dropdown-item" href="#">Dest. session</a>
+                <a class="dropdown-item" ng-click="logout()">Logout</a>
+              </div>
             </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
+    </nav><!-- End app header  -->
 
-    </div>
-  </nav>
-
+    <!-- View where all templates will be loaded -->
     <div ng-view></div>
+
   </body>
 </html>

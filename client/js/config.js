@@ -1,3 +1,7 @@
+/*
+ * Configuration module
+ * Contains constants and url abbreviations
+*/
 angular.module("EasyRashApp.config", [])
 .constant('AUTH_EVENTS', {
   notAuthenticated: 'auth-not-authenticated'

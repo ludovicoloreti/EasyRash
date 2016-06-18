@@ -1,5 +1,6 @@
+// Imports
 var Todo = require('./models/todo');
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'); // Mongodb connection
 var Event = require('./models/event');
 var User = require('./models/user');
 var passport	= require('passport');
@@ -10,23 +11,11 @@ var color = require('colors-cli/safe')
 var error = color.red.bold;
 var warn = color.yellow;
 var notice = color.x45;
-
+// Custom module import
 var rash = require('./rash');
 var lockManager = require("./lock-manager");
-/*
-function getTodos(res) {
-Todo.find(function (err, todos) {
 
-// if there is an error retrieving, send the error. nothing after res.send(err) will execute
-if (err) {
-res.send(err);
-}
-
-res.json(todos); // return all todos in JSON format
-});
-}
-;*/
-
+// Checks if the user is authenticated
 checkAuth = function(req, res, next) {
   var token = getToken(req.headers);
   if (token) {
@@ -59,6 +48,7 @@ checkAuth = function(req, res, next) {
   }
 };
 
+// Get the token from the HTTP header
 getToken = function (headers) {
   if (headers && headers.authorization) {
     var parted = headers.authorization.split(' ');
@@ -72,9 +62,10 @@ getToken = function (headers) {
   }
 };
 
-
+// Routing module related to app
 module.exports = function (app) {
 
+  // Get all events
   app.get('/api/events', passport.authenticate('jwt', {session: false}), checkAuth,  function(req, res, next) {
     Event.find(function (err, events) {
       if (err) return next(err);
@@ -83,6 +74,7 @@ module.exports = function (app) {
     });
   });
 
+  // Get an event with a given id
   app.get('/api/event/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res, next) {
     Event.findById(req.params.id, function (err, post) {
       if (err) return next(err);
@@ -91,7 +83,7 @@ module.exports = function (app) {
     });
   });
 
-  /* GET users listing. */
+  // Get the list of users
   app.get('/api/users',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res, next) {
     User.find(function (err, users) {
       if (err) return next(err);
@@ -100,6 +92,7 @@ module.exports = function (app) {
     });
   });
 
+  // Get a user by id
   app.get('/api/user/:id', passport.authenticate('jwt', {session: false}), checkAuth,  function(req, res, next) {
     User.findById(req.params.id, function (err, post) {
       if (err) return next(err);
@@ -108,6 +101,7 @@ module.exports = function (app) {
     });
   });
 
+  // Get an article by name with RASH style applied
   app.get('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
     /* Prepare the rash file */
     var file = path.resolve('db/articles/'+req.params.id+'.html');
@@ -124,7 +118,7 @@ module.exports = function (app) {
     });
   });
 
-
+  // Get the raw RASH document prepared for annotation  (a simple html file).
   app.get('/api/raw-article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
     var fileName = req.params.id;
     var file = path.resolve('db/articles/'+fileName+'.html');
@@ -151,6 +145,7 @@ module.exports = function (app) {
 
   });
 
+  // Unset the lock for the specified article name
   app.post('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
     /* Prepare the rash file */
     var fileName = req.params.id;
@@ -166,7 +161,7 @@ module.exports = function (app) {
     });
   });
 
-
+  // User registration
   app.post('/api/signup', function(req, res) {
     // TODO control everything
     console.log(warn("»   /api/signup called. Request Body is: \n" + JSON.stringify(req.body)));
@@ -206,7 +201,7 @@ module.exports = function (app) {
     }
   });
 
-  // route to authenticate a user (POST http://localhost:8080/api/authenticate)
+  // Route to authenticate a user (POST http://localhost:8080/api/authenticate)
   app.post('/api/authenticate', function(req, res) {
     console.log(warn("»   /api/authenticate called. Request Body is: \n"+JSON.stringify(req.body)));
     User.findOne({
@@ -237,7 +232,7 @@ module.exports = function (app) {
     });
   });
 
-
+  // Route to get user's info
   app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
     var token = getToken(req.headers);
     if (token) {
@@ -296,9 +291,9 @@ getTodos(res);
 });
 });*/
 
-// application -------------------------------------------------------------
-app.get('*', function (req, res) {
-  // console.log(res)
-  res.sendFile(__dirname + '/client/index.html'); // load the single view file (angular will handle the page changes on the front-end)
-});
+  // Otherwise return the index.html
+  app.get('*', function (req, res) {
+    // console.log(res)
+    res.sendFile(__dirname + '/client/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+  });
 };

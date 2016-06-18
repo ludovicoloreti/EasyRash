@@ -1,3 +1,7 @@
+/*
+ * Authorization module
+ * Contains services useful for the authorization 
+*/
 angular.module('EasyRashApp.authServices', ['EasyRashApp.config'])
 
 /**

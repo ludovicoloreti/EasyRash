@@ -1,3 +1,9 @@
+/*
+ * Controllers module
+ *
+ * Contains all the controllers related to each view of the application
+ */
+
 angular.module('EasyRashApp.controllers', [])
 
 .controller('AppCtrl', function($scope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
