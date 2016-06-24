@@ -13,27 +13,52 @@
           </div>
         </div>
       </div>
+
       <!-- Start error alert -->
       <div class="alert alert-danger alert-dismissible fade in" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         <strong>Error: </strong> {{message}}
+      </div><!--  End error alert -->
+      <div id="toolkit">
+        <div class="btn-group pull-md-right">
+          <button class="btn btn-secondary" ng-click="loadRash()"><span class="fa fa-pencil"></span></button>
+          <button class="btn btn-secondary  " ng-click="highlight()"><span class="fa fa-check"></span></button>
+          <button class="btn btn-secondary " ng-click="exit()"><span class="fa fa-remove"></span></button>
+        </div>
+
       </div>
-      <!--  End error alert -->
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 animated fadeInUp">
 
-        <div>
-          <button class="btn btn-primary pull-right" ng-click="loadRash()">Annotate</button>
-          <button class="btn btn-primary btn-warning pull-right" ng-click="highlight()">Verify</button>
-          <button class="btn btn-primary btn-danger pull-right" ng-click="exit()">Exit</button>
-        </div>
         <img id="spinner" src="img/loader.gif" class="img-responsive center-block" ng-show="loading" />
         <article id="article-container"
         class=""
         ng-bind-html="articleBody">
         </article>
       </div>
-    </div>
-  </div>
-</div>
+
+      <!-- START Comment modal -->
+      <div id="comment-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog" id="comment-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-body">
+              <fieldset class="form-group">
+                <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Insert your comment here." ng-model="text"></textarea>
+              </fieldset>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(text)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- END #comment-modal -->
+
+    </div><!-- END .row -->
+  </div><!-- END .container -->
+</div><!-- END #article-page -->

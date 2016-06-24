@@ -1,4 +1,4 @@
-angular.module('EasyRashApp.utils', [])
+angular.module('EasyRashApp.interfaceUtils', [])
 
 .filter('cut', function () {
   return function (value, wordwise, max, tail) {
@@ -131,7 +131,7 @@ angular.module('EasyRashApp.utils', [])
     },
     "retina_detect": true
   };
-  
+
 	return {
 		restrict: 'A',
     replace: true,
