@@ -21,22 +21,24 @@
         </button>
         <strong>Error: </strong> {{message}}
       </div><!--  End error alert -->
+
       <div id="toolkit">
         <div class="btn-group pull-md-right">
-          <button class="btn btn-secondary" ng-click="loadRash()"><span class="fa fa-pencil"></span></button>
-          <button class="btn btn-secondary  " ng-click="highlight()"><span class="fa fa-check"></span></button>
-          <button class="btn btn-secondary " ng-click="exit()"><span class="fa fa-remove"></span></button>
+          <button class="btn btn-secondary" title="Annotator mode" ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
+          <button class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
+          <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
+          <button class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
         </div>
-
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 animated fadeInUp">
 
+      <!-- START Right col -->
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 animated fadeInUp">
         <img id="spinner" src="img/loader.gif" class="img-responsive center-block" ng-show="loading" />
         <article id="article-container"
         class=""
         ng-bind-html="articleBody">
         </article>
-      </div>
+      </div><!-- END Right col -->
 
       <!-- START Comment modal -->
       <div id="comment-modal" class="modal fade" role="dialog">
@@ -46,9 +48,42 @@
           <div class="modal-content">
             <div class="modal-body">
               <fieldset class="form-group">
-                <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Insert your comment here." ng-model="text"></textarea>
+                <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Insert your comment here." ng-model="commentText"></textarea>
               </fieldset>
 
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(commentText)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- END #comment-modal -->
+
+      <!-- START #comment-list-modal modal -->
+      <div id="comment-list-modal" class="modal fade  bd-example-modal-lg" role="dialog">
+        <div class="modal-dialog modal-lg" id="comment-list-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-body">
+              <table class="table table-hover" id="comments-table">
+                <thead class="thead-inverse">
+                  <tr><th>Fragment id</th><th>Comment id</th><th>Comment text</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="c in cs">
+                    <td>{{v.value.ref}}</td>
+                    <td>{{c.key}}</td>
+                    <td>{{c.value.text}}</td>
+                    <td>{{c.value.date | date: "MMMM dd 'at' H:mm"}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div ng-if="!cs || cs.lenght == 0">
+                <p class="text-center">No comments yet...</p>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(text)">Save</button>
@@ -57,7 +92,7 @@
           </div>
 
         </div>
-      </div><!-- END #comment-modal -->
+      </div><!-- END #comment-list-modal -->
 
     </div><!-- END .row -->
   </div><!-- END .container -->

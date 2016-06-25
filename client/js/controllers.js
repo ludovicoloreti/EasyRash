@@ -51,30 +51,39 @@ angular.module('EasyRashApp.controllers', [])
   console.log("Article - ", $routeParams.articleId)
 })
 
-.controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $uibModal, $anchorScroll, $timeout, Api) {
+.controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $uibModal, $anchorScroll, $timeout,$compile, Api) {
   console.log("Annotator")
   // *** START SETUP
   $scope.loading = true;
   var parser = new DOMParser();
   var review = null;
-  // Contains the list of annotations
-  var counter = 0;
+
   // Get the article
   callApiService();
   // *** END SETUP
 
   // Currently logged user
-  function Person(){}
+  function Person(){} // TODO implement
 
   // Currently dislayed article
-  function Article(){}
+  function Article(){} // TODO implement
 
   // Review object for the specified article
   function Review(article){
-    this.type = "review";
-    this.id = "#review1";
-    this.article = article
-    this.comments = new Map()
+    this["@type"] = "review";
+    this["@id"] = "#review"+$scope.reviewCounter;
+    this["article"] = {
+      "@id": "",
+      "@id": "",
+      "eval": {
+        "@id": this["@id"]+"-eval",
+        "@type": "score",
+        "status": "",
+        "author": "",
+        "date": ""
+      }
+    };
+    this["comments"] = new Array()
   }
 
   // Review handling funtions
@@ -82,48 +91,56 @@ angular.module('EasyRashApp.controllers', [])
 
     generateId: function(comment){
       // TODO implement
-      counter++;
-      return this.id+"-c"+counter;
+      $scope.commentCounter++;
+      return this["@id"]+"-c"+$scope.commentCounter;
     },
     pushComment: function(comment){
 
       comment.setId( this.generateId(comment) );
-      this.comments.set(comment.getId(), comment);
+      this["comments"].push({"key": comment.getId(),"value": comment});
       return comment;
     },
     getComment: function(commentId){
-      return this.comments.get(commentId);
-
+      for (var i=0; i<this.comments.length; i++) {
+        if (this.comments[i].key == commentId) {
+           return this.comments[i].value ;
+        }
+      }
     },
     deleteComment: function(commentId){
-      this.comments.delete(commentId);
+      for (var i=0; i<this.comments.length; i++) {
+        if (this.comments[i].key == commentId) {
+          this.comments.splice(i,1) ;
+        }
+      }
     }
   }
 
 
   // Comment on article part
-  function Comment(ref, text, author){
-    this.id = null;
-    this.type = "comment";
-    this.text = text;
-    this.ref = ref;
-    this.author = author;
-    this.date = new Date();
+  function Comment(ref, text, author) {
+    this["@context"] = "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json";
+    this["@type"] = "comment";
+    this["@id"] = null;
+    this["text"] = text;
+    this["ref"] = ref;
+    this["author"] = author;
+    this["date"] = new Date();
   }
 
   // Comment handling methods
   Comment.prototype = {
     setId: function(id){
-      this.id = id;
+      this["@id"] = id;
     },
     getId: function(){
-      return this.id;
+      return this["@id"];
     },
     setText: function(text){
-      this.text = text;
+      this["text"] = text;
     },
     getText: function(){
-      return this.text;
+      return this["text"];
     }
   }
 
@@ -160,6 +177,12 @@ angular.module('EasyRashApp.controllers', [])
           }
         }
       }
+
+      $scope.reviewCounter = scriptList.length; // TODO check for the type
+      console.log($scope.reviewCounter);
+      $scope.commentCounter = commentsList.length; // TODO find a better solution
+      console.log($scope.commentCounter);
+
       $scope.commentsList = commentsList;
       // Fine Prova
 
@@ -179,6 +202,10 @@ angular.module('EasyRashApp.controllers', [])
   }
 
   $scope.exit = function(){
+    if(review.comments.length > 0){
+      alert("All your work will be lost. Are you sure to exit?")
+    }
+
     Api.saveAnnotations($routeParams.articleId).then(function(response) {
       console.log(response);
       callApiService();
@@ -187,13 +214,19 @@ angular.module('EasyRashApp.controllers', [])
   }
 
   $scope.saveComment = function(text){
+    // TODO handle comment
     var comment = new Comment("ref-to-implement", text, "author-to-implement");
     console.log(comment.getText());
     review.pushComment(comment);
     console.log(review);
+    $scope.commentText = "";
 
   }
-
+  $scope.showComments= function(){
+    //console.log(review.comments);
+    $scope.cs = review.comments;
+    console.log($scope.cs);
+  }
 
   $scope.showSelection = function(index){
     var elementId = $scope.commentsList[index]["ref"];
@@ -295,6 +328,11 @@ angular.module('EasyRashApp.controllers', [])
   //
   // };
 
+  $scope.setupCommentOnModal = function($event){
+    console.log("click");
+    console.log($event);
+  }
+
   $scope.highlight = function(){
     var s = selection();
     console.log(s);
@@ -304,12 +342,15 @@ angular.module('EasyRashApp.controllers', [])
         range.startPoint = s.anchorOffset;
         range.endPoint = s.extentOffset;
         var newNode = document.createElement("span");
-        var spanId = 'span-'+ ($('#article-container span').length+1)
+        var spanId = 'fragment-'+ ($('#article-container span[id~="fragment"]').length+1);
+        // TODO come compilare in angular il contenuto aggiunto?
         newNode.setAttribute('id', spanId);
         newNode.setAttribute('data-toggle', 'modal');
         newNode.setAttribute('data-target', '#comment-modal');
+        newNode.setAttribute('ng-click', 'setupCommentOnModal($event)');
         newNode.setAttribute("class", "highlight");
         range.surroundContents(newNode);
+
     }else {
       console.log("Selection too short to be meaningful");
     }
@@ -366,7 +407,7 @@ angular.module('EasyRashApp.controllers', [])
       console.log(msg)
       $window.location.href = "/#/dash";
     }, function(errMsg) {
-      var alertPopup = alert("Login failed!\nTry again.\n\n"+errMsg);
+      $scope.error = errMsg;
     });
   };
 })
@@ -391,7 +432,7 @@ angular.module('EasyRashApp.controllers', [])
       $window.location.href = "/#/dash";
       var alertPopup = alert("Registered successfully!\nThank you.");
     }, function(errMsg) {
-      var alertPopup = alert("Register failed!\nPlease, try again.");
+      $scope.error = errMsg;
     });
   };
 })

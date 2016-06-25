@@ -43,7 +43,9 @@
   text-shadow: 2px 2px #000000;
 
 }
-
+.text-center {
+  text-align: center;
+}
 
 .event-title {
   color: #ffffff !important;
@@ -81,7 +83,7 @@ span.fa-cog:hover {
 .highlight {
   background-color: rgba(255, 241, 151, 0.51);
   border-radius: 3px;
-  font-weight: 500;
+  /*font-weight: 500;*/
   -webkit-transition: all 0.3s linear;
   -moz-transition: all 0.3s linear;
   -o-transition: all 0.3s linear;
@@ -117,6 +119,9 @@ span.fa-cog:hover {
   right: 40px;
   top:100px;
   z-index: 100;
+}
+#comments-table thead{
+  text-transform: uppercase;
 }
 #comment-dialog .modal-body {
   padding-bottom: 0px;

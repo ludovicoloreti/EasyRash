@@ -1,4 +1,4 @@
-/* 
+/*
 rash.css - Version 0.4, February 16, 2016
 by Silvio Peroni
 
@@ -22,8 +22,8 @@ body { font-size: 12pt; }
 
 /* Footnote counters */
 body { counter-reset: fn_pointer; }
-section[role=doc-footnotes] { counter-reset: fn; }
-section[role=doc-footnotes] > section[role=doc-footnote]:before {
+#article-container section[role=doc-footnotes] { counter-reset: fn; }
+#article-container section[role=doc-footnotes] > section[role=doc-footnote]:before {
     counter-increment: fn;
     content: counter(fn);
     float: left;
@@ -32,51 +32,51 @@ section[role=doc-footnotes] > section[role=doc-footnote]:before {
 /* /END Footnote counters */
 
 /* Figure, table and formula */
-img {
+#article-container img {
     max-width:90%;
     height:auto;
 }
 
-table {
+#article-container table {
     max-width:90%;
 }
 
-figure {
+#article-container figure {
     margin-top: 2em;
     margin-bottom: 2em;
     text-align:center;
 }
 
-figure > p:not(mathml|math) {
+#article-container figure > p:not(mathml|math) {
     margin-bottom:0px;
 }
 
-figure img:not([role=math]), figure svg {
+#article-container figure img:not([role=math]), figure svg {
     border: 1px solid black;
 }
 
-figure > pre {
+#article-container figure > pre {
     text-align:left;
 }
 
-figcaption {
+#article-container figcaption {
     margin-top:5px;
 }
 
-table {
+#article-container table {
     margin: 0 auto;
 }
 
-td , th {
+#article-container td , #article-container th {
     border:1px solid black;
     padding:5px;
 }
 
-td p {
+#article-container td p {
     margin-bottom:0px;
 }
 
-th {
+#article-container th {
     background-color: #606060;
     color: white;
     text-align:center;
@@ -85,45 +85,41 @@ th {
 
 /* Heading counters */
 body { counter-reset: h1; }
-h1 { counter-reset: h2; }
-h2 { counter-reset: h3; }
-h3 { counter-reset: h4; }
-h4 { counter-reset: h5; }
-h5 { counter-reset: h6; }
+#article-container h1 { counter-reset: h2; }
+#article-containerh2 { counter-reset: h3; }
+#article-containerh3 { counter-reset: h4; }
+#article-containerh4 { counter-reset: h5; }
+#article-containerh5 { counter-reset: h6; }
 
-section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h1:before {
+#article-containersection:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h1:before {
     counter-increment: h1;
     content: counter(h1) ". ";
 }
-
-section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h2:before{
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h2:before{
     counter-increment: h2;
     content: counter(h1) "." counter(h2) ". ";
 }
-
-section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h3:before{
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h3:before{
     counter-increment: h3;
     content: counter(h1) "." counter(h2) "." counter(h3) ". ";
 }
-
-section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h4:before{
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h4:before{
     counter-increment: h4;
     content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) ". ";
 }
-
-section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h5:before{
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h5:before{
     counter-increment: h5;
     content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) ". ";
 }
 
-section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h6:before{
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h6:before{
     counter-increment: h6;
     content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) "." counter(h6) ". ";
 }
 /* /END Heading counters */
 
 /* Header */
-.title {
+#article-container .title {
     font-size: 300%;
 }
 /* /END Header */
@@ -139,7 +135,7 @@ body {
   margin-bottom: 60px;
 }
 
-.footer {
+#article-container .footer {
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -149,7 +145,7 @@ body {
   padding: 20px;
 }
 
-.footer span , .footer div {
+#article-container .footer span , #article-container .footer div {
     margin-left: 30px;
 }
 
@@ -158,17 +154,17 @@ body {
     margin-right: 5px;
 }
 
-.footer div {
+#article-container .footer div {
     margin-top:-5px;
 }
 
-.footer p {
+#article-container .footer p {
     display: inline;
 }
 /* /END Footer */
 
 /* Not cited */
-.notcited {
+#article-container .notcited {
     color: lightgrey;
     font-style:italic;
     cursor:help;
@@ -176,14 +172,14 @@ body {
 /* /END Not cited */
 
 /* Error */
-.error {
+#article-container .error {
     color: red;
     font-weight:bold;
 }
-.error:before {
+#article-container .error:before {
     content: "[[";
 }
-.error:after {
+#article-container .error:after {
     content: "]]";
 }
 /* /END Error */
@@ -194,57 +190,57 @@ body {
         size: A4;
         margin: 20mm 0mm 20mm 0mm;
     }
-    
+
     html, body {
         width: 210mm;
         height: 297mm;
     }
-    
+
     p {
-        font-size: 10pt; 
+        font-size: 10pt;
         text-align:justify;
     }
-    
+
     pre {
         text-align:left;
     }
-    
+
     figcaption , figure > p {
         text-align:center;
     }
-    
+
     .title {
         font-size: 16pt !important;
     }
-    
+
     h1 {
         font-size: 14pt !important;
     }
-    
+
     h2 {
         font-size: 12pt !important;
     }
-    
+
     h3 {
         font-size: 11pt !important;
     }
-    
+
     h4, h5, h6 {
         font-size: 10pt !important;
     }
-    
+
     pre {
         font-size: 8pt !important;
     }
-    
+
     blockquote {
         font-size: 10pt !important;
     }
-    
+
     address {
         font-size: 12pt !important;
     }
-    
+
     table {
         max-width:100%;
         font-size: 80%;

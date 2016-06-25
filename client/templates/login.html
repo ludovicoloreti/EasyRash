@@ -20,7 +20,11 @@
                 </label>
                 <input class="form-control" placeholder="Username" id="username" type="text" ng-model="user.email">
                 <input class="form-control" placeholder="Password" id="password" type="password" ng-model="user.pass">
-                <br><br>
+                <div>
+                  <p class="text-danger">
+                    <b>{{error}}</b>
+                  </p>
+                </div>
                 <input class="btn btn-lg btn-success btn-block" type="button" ng-click="login()" id="login" value="Login">
                 <div id="register">  <a href="/#/register">Register</a>  </div>
 

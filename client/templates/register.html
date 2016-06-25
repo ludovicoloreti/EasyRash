@@ -18,7 +18,7 @@
                 </label>
                 <input class="form-control" placeholder="Name" name="given_name" type="text" ng-model="user.given_name">
                 <input class="form-control" placeholder="Surame" name="family_name" type="text" ng-model="user.family_name">
-                <input class="form-control" placeholder="Email" name="email" type="text" ng-model="user.email">
+                <input class="form-control" placeholder="Email" name="email" type="email" ng-model="user.email">
                 <input class="form-control" placeholder="Password" name="pass" type="passwod" ng-model="user.pass">
                 <br>
                 <div align="center">
@@ -31,7 +31,9 @@
                     <span class="glyphicon glyphicon-user">Female</span>
                   </label>
                 </div>
-                <br></br>
+                <p class="text-danger">
+                  <b>{{error}}</b>
+                </p>
                 <input class="btn btn-lg btn-success btn-block" type="button" id="reg" ng-click="signup()" value="Signup">
                 <div id="register">  <a href="/#/login">Login</a>  </div>
               </fieldset>
