@@ -2,14 +2,25 @@
 
 <div id="article-page">
   <div class="container">
-    <div class="row vertical-offset-50">
-      <div id="meta-container" class="col-lg-4" >
-        <div class="card animated fadeInLeft" ng-repeat="comment in commentsList">
-          <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
-          <div class="card-block">
-            <h4>{{comment["@type"]}}</h4>
-            <p class="card-text"><i>"{{comment.text | cut:true:100:' ...'}}"</i></p>
-            <p class="small text-muted"><a ng-href="{{comment.author}}">{{comment.author}}</a> on {{comment.date | date :  mediumDate}}</p>
+    <div class="row">
+      <div  class="col-lg-4">
+        <div>
+          <div id="doc-list">
+            
+          </div>
+          <div id="meta-list">
+            <div class="card animated fadeInLeft" ng-repeat="comment in commentsList">
+              <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
+              <div class="card-block">
+                <h4>{{comment["@type"]}}</h4>
+                <p class="card-text"><i>"{{comment.text | cut:true:100:' ...'}}"</i></p>
+                <p class="small text-muted"><a ng-href="{{comment.author}}">{{comment.author}}</a> on {{comment.date | date :  mediumDate}}</p>
+              </div>
+            </div>
+            <div ng-if="commentsList.length == 0" class="animated fadeInLeft text-center vertical-offset-70">
+              <span class="fa fa-paperclip fa-3x"></span>
+              <h4 class="">No metadata...</h4>
+            </div>
           </div>
         </div>
       </div>

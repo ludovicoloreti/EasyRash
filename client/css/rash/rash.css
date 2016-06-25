@@ -22,6 +22,7 @@ body { font-size: 12pt; }
 
 /* Footnote counters */
 body { counter-reset: fn_pointer; }
+#article-container section p { text-align: justify;}
 #article-container section[role=doc-footnotes] { counter-reset: fn; }
 #article-container section[role=doc-footnotes] > section[role=doc-footnote]:before {
     counter-increment: fn;
