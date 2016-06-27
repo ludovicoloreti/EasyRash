@@ -193,10 +193,16 @@ angular.module('EasyRashApp.controllers', [])
   $scope.loadRash = function(){
     Api.getArticle($routeParams.articleId, "unprocessed").then(function(response) {
       //var rawArticle = parser.parseFromString(response.body, 'text/html');
+
       console.log(response);
-      review = new Review("bella");
-      $scope.articleBody = $sce.trustAsHtml(response.body);
-      console.log($scope.articleBody);
+      if(response.success){
+        review = new Review("bella");
+        $scope.articleBody = $sce.trustAsHtml(response.data.body);
+        console.log($scope.articleBody);
+      }else{
+        showErrors(response.message)
+      }
+
     });
 
   }

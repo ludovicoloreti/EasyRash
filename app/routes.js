@@ -134,7 +134,8 @@ module.exports = function (app) {
             console.log(error.message);
             res.json( {success: false, message: error.message} );
           }else{
-            res.json( preparationResult );
+
+            res.json( { success: true, message:"Resource aquired succesfully", data: preparationResult } );
           }
 
         });
