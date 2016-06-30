@@ -443,6 +443,7 @@ angular.module('EasyRashApp.controllers', [])
       $window.location.href = "/#/dash";
       var alertPopup = alert("Registered successfully!\nThank you.");
     }, function(errMsg) {
+      console.log(errMsg)
       $scope.error = errMsg;
     });
   };

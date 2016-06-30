@@ -174,16 +174,19 @@ module.exports = function (app) {
   app.post('/api/signup', function(req, res) {
     // TODO control everything
     console.log(warn("»   /api/signup called. Request Body is: \n" + JSON.stringify(req.body)));
-    if (!req.body.email || !req.body.pass) {
+    if (!req.body.email || !req.body.pass || !req.body.given_name || !req.body.family_name) {
       errToSend = {
         success: false,
-        msg: 'Please insert at least email and password.'
+        msg: 'Please insert at least email, password, name and surname'
       };
-      console.info(warn("Error email/pass"),warn(errToSend));
+      console.info(warn("Error email/pass/name/surname"),warn(errToSend));
       res.json(errToSend);
     } else {
       // Create a new user
+      // generating _id for Mongodb
+      var user_id = req.body.given_name + " " + req.body.family_name + " <" + req.body.email + ">";
       var newUser = new User({
+        _id: user_id,
         given_name: req.body.given_name,
         family_name: req.body.family_name,
         email: req.body.email,
@@ -195,14 +198,15 @@ module.exports = function (app) {
         if (err) {
           errToSend = {
             success: false,
-            msg: 'email already exists.'
+            err: err,
+            msg: 'The triple Name, Surname and Email already exists.'
           };
           console.log(error(err),error(errToSend));
           return res.json(errToSend);
         }
         msgToSend = {
           success: true,
-          msg: 'Successful created new user.'
+          msg: 'User successfully created.'
         };
         console.log(notice("New user created"),notice(JSON.stringify(msgToSend)));
         res.json(msgToSend);
@@ -300,9 +304,9 @@ getTodos(res);
 });
 });*/
 
-  // Otherwise return the index.html
-  app.get('*', function (req, res) {
-    // console.log(res)
-    res.sendFile(__dirname + '/client/index.html'); // load the single view file (angular will handle the page changes on the front-end)
-  });
+// Otherwise return the index.html
+app.get('*', function (req, res) {
+  // console.log(res)
+  res.sendFile(__dirname + '/client/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+});
 };

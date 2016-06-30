@@ -1,6 +1,6 @@
 /*
  * Authorization module
- * Contains services useful for the authorization 
+ * Contains services useful for the authorization
 */
 angular.module('EasyRashApp.authServices', ['EasyRashApp.config'])
 
@@ -65,8 +65,10 @@ angular.module('EasyRashApp.authServices', ['EasyRashApp.config'])
     return $q(function(resolve, reject) {
       $http.post(CONFIG.endpoint + CONFIG.register, user).then(function(result) {
         if (result.data.success) {
+          console.info(result.data)
           resolve(result.data.msg);
         } else {
+          console.info(result.data)
           reject(result.data.msg);
         }
       });
