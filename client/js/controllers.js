@@ -72,7 +72,7 @@ angular.module('EasyRashApp.controllers', [])
     }
     $scope.getSelectedRating = function (rating) {
           console.log(rating);
-      }  
+      }
   // *** END SETUP
 
   // Currently logged user
@@ -208,7 +208,7 @@ angular.module('EasyRashApp.controllers', [])
       console.log($scope.reviewCounter);
       $scope.commentCounter = commentsList.length; // TODO find a better solution
       console.log($scope.commentCounter);
-
+      console.log(commentsList);
       $scope.commentsList = commentsList;
       // Fine Prova
 
@@ -501,8 +501,24 @@ angular.module('EasyRashApp.controllers', [])
   })
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('HelpCtrl', function($scope, $routeParams, Api) {
+  console.log("help");
+})
+
+.controller('AccountCtrl', function($scope, Api) {
   console.log("account");
+
+  $scope.clicked = false;
+
   // Get user info
+  Api.getCurrentUser().then(function(response) {
+    console.log(response.data);
+    $scope.user = response.data;
+  })
+
+  $scope.edit = function(){
+    $scope.clicked = true;
+
+  }
 
 });

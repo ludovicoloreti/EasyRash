@@ -5,7 +5,7 @@
     <div class="row">
       <div  class="col-lg-4">
         <div>
-          <div id="doc-list">
+          <div id="doc-list" class="animated fadeInDown" >
             <h3>You can review: </h3>
             <div class="list-group">
               <a ng-repeat="sub in submissions" ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}" class="list-group-item">
@@ -13,16 +13,17 @@
               </a>
             </div>
           </div>
-          <div id="meta-list">
+          <div id="meta-list" class="animated fadeInLeft">
             <h3>Metadata: </h3>
-            <div class="card animated fadeInLeft" ng-repeat="comment in commentsList">
-              <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
-              <div class="card-block">
-                <h4>{{comment["@type"]}}</h4>
+            <div class="list-group">
+              <div class="list-group-item" ng-repeat="comment in commentsList">
+                <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
                 <p class="card-text"><i>"{{comment.text | cut:true:100:' ...'}}"</i></p>
-                <p class="small text-muted"><a ng-href="{{comment.author}}">{{comment.author}}</a> on {{comment.date | date :  mediumDate}}</p>
+                <p class="small text-muted"><a ng-href="{{comment.author}}">{{comment.author.replace("mailto:","")}}</a> on {{comment.date | date :  mediumDate}}</p>
+                <span class="label label-primary">{{comment["@type"]}}</span>
               </div>
             </div>
+
             <div ng-if="commentsList.length == 0" class="animated fadeInLeft text-center vertical-offset-70">
               <span class="fa fa-paperclip fa-3x"></span>
               <h4 class="">No metadata...</h4>
@@ -121,8 +122,8 @@
           <div class="modal-content">
             <div class="modal-body">
               <h3>Vote this article</h3>
-              <h2>{{vote.current}} / {{vote.max}}</h2>
-              <div star-rating rating-value="vote.current" max="vote.max" on-rating-selected="getSelectedRating(rating)"></div>
+              <h2 id="rating-title">{{vote.current}} / {{vote.max}}</h2>
+              <div id="rating-container" star-rating rating-value="vote.current" max="vote.max" on-rating-selected="getSelectedRating(rating)"></div>
 
             </div>
             <div class="modal-footer">

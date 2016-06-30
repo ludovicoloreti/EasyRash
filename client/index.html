@@ -29,6 +29,9 @@
     <script src="lib/angular-route/angular-route.js"></script>
     <script src="lib/angular-sanitize/angular-sanitize.js"></script>
 
+    <script src="lib/angular-strap/dist/angular-strap.min.js"></script>
+    <script src="lib/angular-strap/dist/angular-strap.tpl.min.js"></script>
+
     <!-- bootstrap ui js -->
     <script src="lib/angular-bootstrap/ui-bootstrap.min.js"></script>
     <script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
@@ -71,7 +74,7 @@
               </a>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                 <a class="dropdown-item" href="#/account">User info</a>
-                <a class="dropdown-item" href="#/manual">Manual</a>
+                <a class="dropdown-item" href="#/help">Manual</a>
                 <a class="dropdown-item" href="#/dash">Dest. session</a>
                 <a class="dropdown-item" ng-click="logout()">Logout</a>
               </div>
@@ -83,6 +86,15 @@
 
     <!-- View where all templates will be loaded -->
     <div ng-view></div>
-
+    <footer class="footer" ng-show="navbar">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 col-sm-8 col-xs-12 col-lg-8 ">
+            <p class="text-muted">Copyright &copy; EasyRash 2016</p>
+            <p class="text-muted">Contacts: <a href="mailto:easyrash2016@gmail.com">EasyRash mail</a></p>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
