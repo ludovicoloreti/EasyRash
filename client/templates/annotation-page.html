@@ -12,9 +12,6 @@
                 {{sub.title | cut:true:50:' ...'}}
               </a>
             </div>
-            <ul>
-              <a >{{sub.title | cut:true:50:' ...'}}</a>
-            </ul>
           </div>
           <div id="meta-list">
             <h3>Metadata: </h3>
@@ -35,7 +32,7 @@
       </div>
 
       <!-- Start error alert -->
-      <div class="alert alert-danger alert-dismissible fade in" role="alert">
+      <div ng-if="error" class="alert alert-danger alert-dismissible fade in" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
