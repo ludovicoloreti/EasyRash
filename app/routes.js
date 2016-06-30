@@ -14,6 +14,13 @@ var notice = color.x45;
 // Custom module import
 var rash = require('./rash');
 var lockManager = require("./lock-manager");
+var email   = require("emailjs/email");
+var server  = email.server.connect({
+  user:    "easyrash2016@gmail.com",
+  password:"ludovicofilippo",
+  host:    "smtp.gmail.com",
+  ssl:     true
+});
 
 // Middleware: Checks if a lock is sat while the user is navigating in other pages
 checkLock = function(req, res, next){
@@ -203,13 +210,25 @@ module.exports = function (app) {
           };
           console.log(error(err),error(errToSend));
           return res.json(errToSend);
+        } else {
+          strToSplit = req.body.email;
+          var usrname = strToSplit.split("@");
+          var usrForMail = newUser;
+          usrForMail._id = undefined;
+          // send the message and get a callback with an error or details of the message that was sent
+          server.send({
+            text:    "Hey, " + usrname + "!\nHere is your data: "+JSON.stringify(usrForMail),
+            from:    "EasyRash <easyrash2016@gmail.com>",
+            to:      user_id,
+            subject: "EasyRash Confirm Registration"
+          }, function(err, message) { console.log(err || message); });
+          msgToSend = {
+            success: true,
+            msg: 'User successfully created. Mail sent to '+req.body.email
+          };
+          console.log(notice("New user created"),notice(JSON.stringify(msgToSend)));
+          res.json(msgToSend);
         }
-        msgToSend = {
-          success: true,
-          msg: 'User successfully created.'
-        };
-        console.log(notice("New user created"),notice(JSON.stringify(msgToSend)));
-        res.json(msgToSend);
       });
     }
   });
