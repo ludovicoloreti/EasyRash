@@ -59,8 +59,20 @@ angular.module('EasyRashApp.controllers', [])
   var review = null;
   // Get the user
   getCurrentUser();
+  // Get list of documents to reviewer
+  getDocList();
   // Get the article
   callApiService();
+
+  // Rating
+  $scope.rating = 0;
+    $scope.vote = {
+        current: 1,
+        max: 5
+    }
+    $scope.getSelectedRating = function (rating) {
+          console.log(rating);
+      }  
   // *** END SETUP
 
   // Currently logged user
@@ -152,6 +164,13 @@ angular.module('EasyRashApp.controllers', [])
     })
   }
 
+  function getDocList(){
+    Api.getArticlesToReview().then(function(response) {
+      console.log(response.data);
+      $scope.submissions = response.data;
+    })
+  }
+
   // Get the article
   function callApiService(){
     // Get the article when the page loadthrough the Api service, the article type is processed
@@ -232,6 +251,8 @@ angular.module('EasyRashApp.controllers', [])
     });
 
   }
+
+
 
   $scope.saveComment = function(text){
     // TODO handle comment

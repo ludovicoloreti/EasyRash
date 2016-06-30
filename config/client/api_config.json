@@ -12,8 +12,7 @@
     "events": "/events",
     "register": "/signup",
     "login": "/authenticate",
-    "userinfo": "/memberinfo",
-    "docsList": "/doc-list"
+    "userinfo": "/memberinfo"
 
   }
 }

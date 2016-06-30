@@ -516,7 +516,6 @@ var prepareForReading = function( htmlFilePath, callback ){
 
           $("a[href]").each(function(){
             if( $(this).attr('href').startsWith('#')){
-              console.log("href"+$(this));
               var link = $(this).attr('href').trim().substr(1);
               //var angularAttribute = "scrollTo('"+link+"')";
               var angularAttribute = "document.getElementById('"+link+"').scrollIntoView()";

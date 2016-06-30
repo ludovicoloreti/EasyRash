@@ -57,14 +57,13 @@ angular.module('EasyRashApp.api', ['EasyRashApp.config'])
     };
 
   self.getArticlesToReview = function(){
-    return $http.get(CONFIG.endpoint+CONFIG.docsList).then(
+    return $http.get(CONFIG.endpoint+CONFIG.doclist).then(
       function(response) {
         return response.data;
       },function(error) {
         return error;
       });
-    }
-  };
+    };
 
   // TODO : da rivedere
   self.saveAnnotations = function( articleName ) {

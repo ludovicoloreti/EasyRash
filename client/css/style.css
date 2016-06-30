@@ -143,3 +143,35 @@ span.fa-cog:hover {
   padding: 0px 15px 15px 15px;
   border-top: none;
 }
+
+.rating {
+    color: #a9a9a9;
+    margin: 0;
+    padding: 0;
+}
+ul.rating {
+    display: inline-block;
+    width: 100%;
+}
+.rating li {
+    list-style-type: none;
+    display: inline-block;
+    padding: 1px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    font-size:20px;
+    background-color: #c7c7c8;
+    width: 10%;
+    height: 8px;
+    margin-right: 6px;
+}
+.rating li:hover{
+   background-color: #4dc440;
+}
+.rating .filled {
+    background-color: #4dc440;
+}
+.clear{
+  margin-top:20px;
+}

@@ -133,8 +133,37 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/api/doc-list',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
-    Event.find
+  app.get('/api/doclist',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
+    var userId = req.user.id;
+    console.log(userId);
+    Event.find({
+      "submissions": {
+          "$elemMatch": {
+              "reviewers": {
+                 "$all": [userId]
+              }
+          }
+      }
+    },
+    {"submissions": 1},
+    function (err, events) {
+      if (err) return next(err);
+      var docList = new Array();
+      //else
+      for(var event of events){
+        console.log("event - "+event)
+        for(var sub of event.submissions){
+          console.log("sub - "+sub);
+          for(var rev of sub.reviewers){
+            console.log("rev - "+rev);
+            if(rev === userId){
+              docList.push(sub);
+            }
+          }
+        }
+      }
+      res.json({data: docList});
+  });
 
   });
 

@@ -6,9 +6,18 @@
       <div  class="col-lg-4">
         <div>
           <div id="doc-list">
-            
+            <h3>You can review: </h3>
+            <div class="list-group">
+              <a ng-repeat="sub in submissions" ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}" class="list-group-item">
+                {{sub.title | cut:true:50:' ...'}}
+              </a>
+            </div>
+            <ul>
+              <a >{{sub.title | cut:true:50:' ...'}}</a>
+            </ul>
           </div>
           <div id="meta-list">
+            <h3>Metadata: </h3>
             <div class="card animated fadeInLeft" ng-repeat="comment in commentsList">
               <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
               <div class="card-block">
@@ -36,8 +45,10 @@
       <div id="toolkit">
         <div class="btn-group pull-md-right">
           <button class="btn btn-secondary" title="Annotator mode" ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
+          <button class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
+
           <button class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
-          <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
+          <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-sticky-note-o"></span></button>
           <button class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
         </div>
       </div>
@@ -104,6 +115,28 @@
 
         </div>
       </div><!-- END #comment-list-modal -->
+
+      <!-- START #evaluate-article-modal -->
+      <div id="evaluate-article-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog" id="evaluate-article-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-body">
+              <h3>Vote this article</h3>
+              <h2>{{vote.current}} / {{vote.max}}</h2>
+              <div star-rating rating-value="vote.current" max="vote.max" on-rating-selected="getSelectedRating(rating)"></div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(text)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- END#evaluate-article-modal -->
+
 
     </div><!-- END .row -->
   </div><!-- END .container -->
