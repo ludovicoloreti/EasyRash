@@ -57,7 +57,8 @@ angular.module('EasyRashApp.controllers', [])
   $scope.loading = true;
   var parser = new DOMParser();
   var review = null;
-
+  // Get the user
+  getCurrentUser();
   // Get the article
   callApiService();
   // *** END SETUP
@@ -144,6 +145,12 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
+  function getCurrentUser(){
+    Api.getCurrentUser().then(function(response) {
+      console.log(response.data);
+      $scope.reviewer = response.data;
+    })
+  }
 
   // Get the article
   function callApiService(){
@@ -201,8 +208,10 @@ angular.module('EasyRashApp.controllers', [])
 
       console.log(response);
       if(response.success){
+        // TODO
         review = new Review("bella");
         $scope.articleBody = $sce.trustAsHtml(response.data.body);
+        // console.log(response.data.info);
         console.log($scope.articleBody);
       }else{
         showErrors(response.message)

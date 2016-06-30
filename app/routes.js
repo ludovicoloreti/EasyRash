@@ -133,6 +133,11 @@ module.exports = function (app) {
     });
   });
 
+  app.get('/api/doc-list',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
+    Event.find
+
+  });
+
   // Get the raw RASH document prepared for annotation  (a simple html file).
   app.get('/api/raw-article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
     var fileName = req.params.id;
