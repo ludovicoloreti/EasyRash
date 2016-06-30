@@ -2,6 +2,15 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize','ui.bootstrap', 'EasyRash
 
 .run(function($rootScope, AuthService, AUTH_EVENTS, $window) {
   console.info("EasyRashApp is running bitchh!");
+  $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+        console.log(current.$$route.controller)
+        if (current.$$route.controller === "RegisterCtrl" || current.$$route.controller === "LoginCtrl")
+        {
+          $rootScope.navbar = false;
+        } else {
+          $rootScope.navbar = true;
+        }
+    });
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
 
     if (!AuthService.isAuthenticated()) {

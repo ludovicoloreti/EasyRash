@@ -251,16 +251,16 @@ module.exports = function (app) {
     if (token) {
       var decoded = jwt.decode(token, config.secret);
       User.findOne({
-        email: decoded.email
+        email: decoded.email,
       }, function(err, user) {
         if (err) throw err;
-
         if (!user) {
           return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
         } else {
           strToSplit = user.email;
           var usrname = strToSplit.split("@");
-          res.json({success: true, msg: 'Welcome in the member area ' + usrname[0] + '!'});
+          user.pass = undefined;
+          res.json({success: true, msg: 'Welcome in the member area ' + usrname[0] + '!', data: user});
         }
       });
     } else {

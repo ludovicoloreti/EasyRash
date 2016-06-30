@@ -1,12 +1,12 @@
 /*
- * Controllers module
- *
- * Contains all the controllers related to each view of the application
- */
+* Controllers module
+*
+* Contains all the controllers related to each view of the application
+*/
 
 angular.module('EasyRashApp.controllers', [])
 
-.controller('AppCtrl', function($scope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
+.controller('AppCtrl', function($scope, Api, $rootScope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
 
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
     AuthService.logout();
@@ -19,12 +19,12 @@ angular.module('EasyRashApp.controllers', [])
     AuthService.logout();
   };
 
-  $scope.getInfo = function() {
-    $http.get(CONFIG.endpoint + CONFIG.userinfo).then(function(result) {
-      console.log(result.data)
-      $scope.memberinfo = result.data.msg;
-    });
-  };
+  Api.getCurrentUser().then(function(response) {
+    $scope.memberinfo = response.msg;
+    console.log(response.data);
+    console.log("> Chi sono:\n",response);
+  })
+
 
   $scope.logout = function() {
     AuthService.logout();
@@ -103,7 +103,7 @@ angular.module('EasyRashApp.controllers', [])
     getComment: function(commentId){
       for (var i=0; i<this.comments.length; i++) {
         if (this.comments[i].key == commentId) {
-           return this.comments[i].value ;
+          return this.comments[i].value ;
         }
       }
     },
@@ -350,17 +350,17 @@ angular.module('EasyRashApp.controllers', [])
     var range = s.getRangeAt(0);
 
     if(s.toString().length > 2){
-        range.startPoint = s.anchorOffset;
-        range.endPoint = s.extentOffset;
-        var newNode = document.createElement("span");
-        var spanId = 'fragment-'+ ($('#article-container span[id~="fragment"]').length+1);
-        // TODO come compilare in angular il contenuto aggiunto?
-        newNode.setAttribute('id', spanId);
-        newNode.setAttribute('data-toggle', 'modal');
-        newNode.setAttribute('data-target', '#comment-modal');
-        newNode.setAttribute('ng-click', 'setupCommentOnModal($event)');
-        newNode.setAttribute("class", "highlight");
-        range.surroundContents(newNode);
+      range.startPoint = s.anchorOffset;
+      range.endPoint = s.extentOffset;
+      var newNode = document.createElement("span");
+      var spanId = 'fragment-'+ ($('#article-container span[id~="fragment"]').length+1);
+      // TODO come compilare in angular il contenuto aggiunto?
+      newNode.setAttribute('id', spanId);
+      newNode.setAttribute('data-toggle', 'modal');
+      newNode.setAttribute('data-target', '#comment-modal');
+      newNode.setAttribute('ng-click', 'setupCommentOnModal($event)');
+      newNode.setAttribute("class", "highlight");
+      range.surroundContents(newNode);
 
     }else {
       console.log("Selection too short to be meaningful");
@@ -374,21 +374,21 @@ angular.module('EasyRashApp.controllers', [])
   }
 
   function insertNote(note,active) {
-		// Creo un range
-		var r = document.createRange()
-		var node = $('#'+note.node)[0];
-		// Setto il range
-		r.setStart(node,note.start);
-		r.setEnd(node,note.end)
-		// Creo lo span
-		var span = document.createElement('span')
-		span.setAttribute('id',note.id);
+    // Creo un range
+    var r = document.createRange()
+    var node = $('#'+note.node)[0];
+    // Setto il range
+    r.setStart(node,note.start);
+    r.setEnd(node,note.end)
+    // Creo lo span
+    var span = document.createElement('span')
+    span.setAttribute('id',note.id);
     span.setAttribute('data-toggle', 'modal');
     span.setAttribute('data-target', '#comment-modal');
-		span.setAttribute('class','highlight');
-		// Avvolgo il range con lo span
-		r.surroundContents(span)
-	}
+    span.setAttribute('class','highlight');
+    // Avvolgo il range con lo span
+    r.surroundContents(span)
+  }
 
   function showErrors(message){
     $scope.error = true;
@@ -402,8 +402,9 @@ angular.module('EasyRashApp.controllers', [])
 
 })
 
-.controller('LoginCtrl', function($scope, AuthService, $window) {
+.controller('LoginCtrl', function($scope, AuthService, $rootScope, $window) {
   console.log("login");
+  $rootScope.navbar = false;
   if (AuthService.isAuthenticated() === true) {
     $window.location.href = "/#/dash";
   }
@@ -423,8 +424,9 @@ angular.module('EasyRashApp.controllers', [])
   };
 })
 
-.controller('RegisterCtrl', function($scope, $window, AuthService) {
+.controller('RegisterCtrl', function($scope, $rootScope, $window, AuthService) {
   console.log("register");
+  $rootScope.navbar = false;
   if (AuthService.isAuthenticated() === true) {
     $window.location.href = "/#/dash";
   }
