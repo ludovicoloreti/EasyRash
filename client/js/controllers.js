@@ -189,6 +189,11 @@ angular.module('EasyRashApp.controllers', [])
     });
   }
 
+  $scope.$on('$locationChangeStart', function(event, next, current) {
+    if(review.comments.length > 0){
+      alert("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
+    }
+  });
 
   $scope.loadRash = function(){
     Api.getArticle($routeParams.articleId, "unprocessed").then(function(response) {

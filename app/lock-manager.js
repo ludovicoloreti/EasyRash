@@ -67,6 +67,18 @@ function LockManager(){
     }
   };
 
+  // Search if a user has a lock and release it
+  self.searchAndRelease = function(userId, callback){
+    // Iterate over the set of values
+    for (var lock of lockDictionary.values()) {
+      if(lock.userId === userId){
+        lockDictionary.delete(lock.name);
+      }
+    }
+
+    callback(true);
+  };
+
   return self;
 }
 

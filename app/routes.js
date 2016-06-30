@@ -15,7 +15,15 @@ var notice = color.x45;
 var rash = require('./rash');
 var lockManager = require("./lock-manager");
 
-// Checks if the user is authenticated
+// Middleware: Checks if a lock is sat while the user is navigating in other pages
+checkLock = function(req, res, next){
+  var userId = req.user.id;
+  // Checks if a user has a lock that shounldn't be present
+  lockManager.searchAndRelease(userId, function(result){
+    next();
+  });
+}
+// Middleware: Checks if the user is authenticated
 checkAuth = function(req, res, next) {
   var token = getToken(req.headers);
   if (token) {
@@ -66,7 +74,7 @@ getToken = function (headers) {
 module.exports = function (app) {
 
   // Get all events
-  app.get('/api/events', passport.authenticate('jwt', {session: false}), checkAuth,  function(req, res, next) {
+  app.get('/api/events', passport.authenticate('jwt', {session: false}), checkAuth, checkLock,  function(req, res, next) {
     Event.find(function (err, events) {
       if (err) return next(err);
       //else
@@ -75,7 +83,7 @@ module.exports = function (app) {
   });
 
   // Get an event with a given id
-  app.get('/api/event/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res, next) {
+  app.get('/api/event/:id',passport.authenticate('jwt', {session: false}), checkAuth, checkLock, function(req, res, next) {
     Event.findById(req.params.id, function (err, post) {
       if (err) return next(err);
       //else
@@ -84,7 +92,7 @@ module.exports = function (app) {
   });
 
   // Get the list of users
-  app.get('/api/users',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res, next) {
+  app.get('/api/users',passport.authenticate('jwt', {session: false}), checkAuth, checkLock, function(req, res, next) {
     User.find(function (err, users) {
       if (err) return next(err);
       //else
@@ -93,7 +101,7 @@ module.exports = function (app) {
   });
 
   // Get a user by id
-  app.get('/api/user/:id', passport.authenticate('jwt', {session: false}), checkAuth,  function(req, res, next) {
+  app.get('/api/user/:id', passport.authenticate('jwt', {session: false}), checkAuth, checkLock,  function(req, res, next) {
     User.findById(req.params.id, function (err, post) {
       if (err) return next(err);
       //else
@@ -102,7 +110,7 @@ module.exports = function (app) {
   });
 
   // Get an article by name with RASH style applied
-  app.get('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
+  app.get('/api/article/:id',passport.authenticate('jwt', {session: false}), checkAuth, checkLock, function(req, res) {
     /* Prepare the rash file */
     var file = path.resolve('db/articles/'+req.params.id+'.html');
     console.log('File: '+req.params.id+'.html');
@@ -234,7 +242,7 @@ module.exports = function (app) {
   });
 
   // Route to get user's info
-  app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
+  app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), checkAuth, checkLock, function(req, res) {
     var token = getToken(req.headers);
     if (token) {
       var decoded = jwt.decode(token, config.secret);
