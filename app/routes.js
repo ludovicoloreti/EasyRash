@@ -19,7 +19,8 @@ var server  = email.server.connect({
   user:    "easyrash2016@gmail.com",
   password:"ludovicofilippo",
   host:    "smtp.gmail.com",
-  ssl:     true
+  ssl:     true,
+  port:    465
 });
 
 // Middleware: Checks if a lock is sat while the user is navigating in other pages
@@ -251,11 +252,12 @@ module.exports = function (app) {
           usrForMail._id = undefined;
           // send the message and get a callback with an error or details of the message that was sent
           server.send({
-            text:    "Hey, " + usrname + "!\nHere is your data: "+JSON.stringify(usrForMail),
+            text:    "Hey, " + newUser.given_name + "!\nHere is your data.\n mail: "+ newUser.email+"\npassword: "+newUser.pass,
             from:    "EasyRash <easyrash2016@gmail.com>",
             to:      user_id,
             subject: "EasyRash Confirm Registration"
           }, function(err, message) { console.log(err || message); });
+
           msgToSend = {
             success: true,
             msg: 'User successfully created. Mail sent to '+req.body.email
