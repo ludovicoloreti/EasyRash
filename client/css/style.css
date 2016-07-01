@@ -20,6 +20,8 @@
 }*/
 body {
   padding-top: 70px;
+  margin-bottom: 70px;
+  padding-bottom: 70px;
 }
 .navbar-light {
   background-color: #ffffff;
@@ -62,12 +64,15 @@ body {
   overflow: auto;
   position: relative;
 }
-
+#article-page > .container {
+  margin-left: 0.4rem;
+}
 #article-container {
   background-color: #ffffff;
   padding: 40px 30px;
   /*box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.5);*/
 }
+
 .outer {
   position: relative;
 }
@@ -214,7 +219,7 @@ footer {
   position: absolute;
   width: 100%;
   bottom:0px;
-  height: 120px;
+  height: 70px;
   background-color:#414141;
 }
 

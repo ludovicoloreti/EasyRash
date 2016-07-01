@@ -31,7 +31,7 @@ angular.module('EasyRashApp.interfaceUtils', [])
                 $('html,body').animate({scrollTop: $(scope.scrollTo).offset().top }, "slow");
             });
         }
-    }}) 
+    }})
 .directive('starRating', function () {
     return {
         restrict: 'A',

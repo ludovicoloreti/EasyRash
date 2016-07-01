@@ -1,62 +1,65 @@
 <div id="background-image"></div>
 
-<div id="article-page">
-  <div class="container">
-    <div class="row">
-      <div  class="col-lg-4">
-        <div>
-          <div id="doc-list" class="animated fadeInDown" >
-            <h3>You can review: </h3>
-            <div class="list-group">
-              <a ng-repeat="sub in submissions" ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}" class="list-group-item">
-                {{sub.title | cut:true:50:' ...'}}
-              </a>
+<div id="article-page" ng-class="toggled">
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+    <div class="sidebar-nav animated fadeInLeft">
+      <div class="content">
+        <div id="doc-list" >
+          <h3>You can review: </h3>
+          <div class="list-group">
+            <a ng-repeat="sub in submissions" ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}" class="list-group-item">
+              {{sub.title | cut:true:50:' ...'}}
+            </a>
+          </div>
+        </div>
+        <div id="meta-list">
+          <h3>Metadata: </h3>
+          <div class="list-group">
+            <div class="list-group-item" ng-repeat="comment in commentsList" scroll-to-item scroll-to="{{comment.ref}}">
+              <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
+              <p class="card-text"><i>"{{comment.text | cut:true:100:' ...'}}"</i></p>
+              <p class="small text-muted"><a ng-href="{{comment.author}}">{{comment.author.replace("mailto:","")}}</a> on {{comment.date | date :  mediumDate}}</p>
+              <span class="label label-primary">{{comment["@type"]}}</span>
             </div>
           </div>
-          <div id="meta-list" class="animated fadeInLeft">
-            <h3>Metadata: </h3>
-            <div class="list-group">
-              <div class="list-group-item" ng-repeat="comment in commentsList">
-                <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
-                <p class="card-text"><i>"{{comment.text | cut:true:100:' ...'}}"</i></p>
-                <p class="small text-muted"><a ng-href="{{comment.author}}">{{comment.author.replace("mailto:","")}}</a> on {{comment.date | date :  mediumDate}}</p>
-                <span class="label label-primary">{{comment["@type"]}}</span>
-              </div>
-            </div>
 
-            <div ng-if="commentsList.length == 0" class="animated fadeInLeft text-center vertical-offset-70">
-              <span class="fa fa-paperclip fa-3x"></span>
-              <h4 class="">No metadata...</h4>
-            </div>
+          <div ng-if="commentsList.length == 0" class="animated fadeInLeft text-center vertical-offset-70">
+            <span class="fa fa-paperclip fa-3x"></span>
+            <h4 class="">No metadata...</h4>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Start error alert -->
+        <div ng-if="error" class="alert alert-danger alert-dismissible fade in" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <strong>Error: </strong> {{message}}
+        </div><!--  End error alert -->
 
-      <!-- Start error alert -->
-      <div ng-if="error" class="alert alert-danger alert-dismissible fade in" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Error: </strong> {{message}}
-      </div><!--  End error alert -->
+        <div id="toolkit">
+          <div class="btn-group pull-md-right">
+            <button class="btn btn-secondary" title="Annotator mode" ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
+            <button class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
 
-      <div id="toolkit">
-        <div class="btn-group pull-md-right">
-          <button class="btn btn-secondary" title="Annotator mode" ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
-          <button class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
-
-          <button class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
-          <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-sticky-note-o"></span></button>
-          <button class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
+            <button class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
+            <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-sticky-note-o"></span></button>
+            <button class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
+          </div>
         </div>
-      </div>
 
-      <!-- START Right col -->
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 animated fadeInUp">
-        <img id="spinner" src="img/loader.gif" class="img-responsive center-block" ng-show="loading" />
-        <article id="article-container"
-        class=""
-        ng-bind-html="articleBody">
+        <!-- START Right col -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInUp">
+          <img id="spinner" src="img/loader.gif" class="img-responsive center-block" ng-show="loading" />
+          <article id="article-container"
+          class=""
+          ng-bind-html="articleBody">
         </article>
       </div><!-- END Right col -->
 
@@ -138,7 +141,10 @@
 
     </div><!-- END .row -->
   </div><!-- END .container -->
+</div>
+
 </div><!-- END #article-page -->
 <div scroll-to-item scroll-to="body" id="go-back">
   <span class="fa fa-arrow-up"></span>
 </div>
+<span class="btn btn-secondary fa fa-plus" id="navigation-toggle" ng-click="toggleSidebar()"></span>

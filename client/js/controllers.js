@@ -66,34 +66,44 @@ angular.module('EasyRashApp.controllers', [])
 
   // Rating
   $scope.rating = 0;
-    $scope.vote = {
-        current: 1,
-        max: 5
-    }
-    $scope.getSelectedRating = function (rating) {
-          console.log(rating);
-      }
+  $scope.vote = {
+      current: 1,
+      max: 5
+  }
+
+  $scope.getSelectedRating = function (rating) {
+    console.log(rating);
+  }
   // *** END SETUP
 
   // Currently logged user
-  function Person(){} // TODO implement
+  function Person(){
+    this["@context"] = "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json";
+    this["@type"] = "person";
+    this["@id"] = "mailto:"+$scope.reviewer.email;
+    this["name"] = $scope.reviewer.given_name+" "+$scope.reviewer.family_name;
+    this["as"] =  {
+      "@id": "#role2",
+      "@type": "role",
+      "role_type": "pro:reviewer",
+      "in": ""
+    }
+  } // TODO implement
 
-  // Currently dislayed article
-  function Article(){} // TODO implement
 
   // Review object for the specified article
   function Review(article){
+    this["@context"] = "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json";
     this["@type"] = "review";
     this["@id"] = "#review"+$scope.reviewCounter;
     this["article"] = {
-      "@id": "",
       "@id": "",
       "eval": {
         "@id": this["@id"]+"-eval",
         "@type": "score",
         "status": "",
-        "author": "",
-        "date": ""
+        "author": "mailto:"+$scope.reviewer.email,
+        "date": new Date().toISOString()
       }
     };
     this["comments"] = new Array()
@@ -131,14 +141,14 @@ angular.module('EasyRashApp.controllers', [])
 
 
   // Comment on article part
-  function Comment(ref, text, author) {
+  function Comment(ref, text) {
     this["@context"] = "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json";
     this["@type"] = "comment";
     this["@id"] = null;
     this["text"] = text;
     this["ref"] = ref;
-    this["author"] = author;
-    this["date"] = new Date();
+    this["author"] = "mailto:"+$scope.reviewer.email;
+    this["date"] = new Date().toISOString();
   }
 
   // Comment handling methods
@@ -256,7 +266,7 @@ angular.module('EasyRashApp.controllers', [])
 
   $scope.saveComment = function(text){
     // TODO handle comment
-    var comment = new Comment("ref-to-implement", text, "author-to-implement");
+    var comment = new Comment("ref-to-implement", text);
     console.log(comment.getText());
     review.pushComment(comment);
     console.log(review);
@@ -268,6 +278,11 @@ angular.module('EasyRashApp.controllers', [])
     $scope.cs = review.comments;
     console.log($scope.cs);
   }
+  $scope.toggled = null;
+
+    $scope.toggleSidebar = function() {
+        $scope.toggled = $scope.toggled ? null: "toggled";
+    };
 
   $scope.showSelection = function(index){
     var elementId = $scope.commentsList[index]["ref"];
