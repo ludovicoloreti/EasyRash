@@ -1,26 +1,31 @@
 <div id="background-image"></div>
 
-<div id="article-page" ng-class="toggled">
+<div id="article-page" ng-class="sidebarClosed">
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
     <div class="sidebar-nav animated fadeInLeft">
       <div class="content">
         <div id="doc-list" >
-          <h3>You can review: </h3>
-          <div class="list-group">
-            <a ng-repeat="sub in submissions" ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}" class="list-group-item">
-              {{sub.title | cut:true:50:' ...'}}
-            </a>
-          </div>
+          <h4>Assigned Reviews: </h4>
+          <ol>
+            <li ng-repeat="sub in submissions">
+              <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">
+                <i>"{{sub.title | cut:true:50:' ...'}}"</i>
+              </a>
+            </li>
+          </ol>
         </div>
         <div id="meta-list">
-          <h3>Metadata: </h3>
+          <h4>Article info: </h4>
           <div class="list-group">
-            <div class="list-group-item" ng-repeat="comment in commentsList" scroll-to-item scroll-to="{{comment.ref}}">
+            <div class="list-group-item" ng-repeat="comment in commentsList" scroll-to-item scroll-to="{{comment.ref}}" ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)">
               <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
-              <p class="card-text"><i>"{{comment.text | cut:true:100:' ...'}}"</i></p>
-              <p class="small text-muted"><a ng-href="{{comment.author}}">{{comment.author.replace("mailto:","")}}</a> on {{comment.date | date :  mediumDate}}</p>
-              <span class="label label-primary">{{comment["@type"]}}</span>
+              <p class="small text-muted">{{comment.date | date:"dd MMM yyyy 'at' HH:mm"}}</p>
+              <blockquote class="blockquote">
+                <p class="m-b-0 small">{{comment.text | cut:true:100:' ...'}}</p>
+              </blockquote>
+              <span class="label label-primary">{{comment["@type"]}}</span> <a class="small" ng-href="{{comment.author}}"> {{comment.author.replace("mailto:","")}}</a>
+
             </div>
           </div>
 
@@ -45,12 +50,21 @@
 
         <div id="toolkit">
           <div class="btn-group pull-md-right">
-            <button class="btn btn-secondary" title="Annotator mode" ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
-            <button class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
+            <button ng-hide="annotatorMode" class="btn btn-secondary" title="Annotator mode"  ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
+            <button ng-show="annotatorMode" class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
 
-            <button class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
-            <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-sticky-note-o"></span></button>
-            <button class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
+            <button ng-show="annotatorMode" class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
+            <button ng-show="annotatorMode" class="btn btn-secondary" title="Pick a color" uib-tooltip="Pick a color" tooltip-placement="bottom" tooltip-append-to-body="true" id="dropdown-menu-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-adjust"></span></button>
+            <div class="dropdown-menu" aria-labelledby="dropdown-menu-2" >
+              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('yellow')"><span class="pick-color-circle yellow-intense"></span><span class="color-name">Yellow</span></div>
+              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('orange')"><span class="pick-color-circle orange-intense"></span><span class="color-name">Orange</span></div>
+              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('green')"><span class="pick-color-circle green-intense"></span><span class="color-name">Green</span></div>
+              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('blue')"><span class="pick-color-circle blue-intense"></span><span class="color-name">Blue</span></div>
+              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('purple')"><span class="pick-color-circle purple-intense"></span><span class="color-name">Purple</span></div>
+
+            </div>
+            <button ng-show="annotatorMode" class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-sticky-note-o"></span></button>
+            <button ng-show="annotatorMode" class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
           </div>
         </div>
 
@@ -120,14 +134,18 @@
       <!-- START #evaluate-article-modal -->
       <div id="evaluate-article-modal" class="modal fade" role="dialog">
         <div class="modal-dialog" id="evaluate-article-dialog">
-
-          <!-- Modal content-->
-          <div class="modal-content">
+          <div class="modal-content"><!-- Modal content-->
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Vote this article</h4>
+            </div>
             <div class="modal-body">
-              <h3>Vote this article</h3>
-              <h2 id="rating-title">{{vote.current}} / {{vote.max}}</h2>
-              <div id="rating-container" star-rating rating-value="vote.current" max="vote.max" on-rating-selected="getSelectedRating(rating)"></div>
+              <p>Every comment is useful for the chair in order to accept or reject an article.</p>
+              <p><b>Your judgement: </b></p>
+              <textarea class="form-control" id="exampleTextarea" rows="4" placeholder="Insert your comment here." ng-model="commentText"></textarea>
 
+              <div id="rating-container" star-rating rating-value="vote.current" max="vote.max" on-rating-selected="getSelectedRating(rating)"></div>
+              <h4 id="rating-title">{{vote.current}} / {{vote.max}}</h4>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(text)">Save</button>
@@ -147,4 +165,4 @@
 <div scroll-to-item scroll-to="body" id="go-back">
   <span class="fa fa-arrow-up"></span>
 </div>
-<span class="btn btn-secondary fa fa-plus" id="navigation-toggle" ng-click="toggleSidebar()"></span>
+<span class="btn btn-secondary fa fa-plus animated fadeInLeft" id="navigation-toggle" ng-click="toggleSidebar()"></span>

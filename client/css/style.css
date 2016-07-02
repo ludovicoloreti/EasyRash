@@ -85,8 +85,22 @@ body {
   width:80%;
   margin: 30px auto;
 }
-.dropdown-menu {
+#dropdown-menu-1 + .dropdown-menu {
   left: -140px;
+}
+#dropdown-menu-2 + .dropdown-menu {
+  left: 32px;
+}
+span.pick-color-circle{
+  height: 19px;
+  width: 19px;
+  display: inline-block;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+span.color-name {
+  padding-left: 30px;
+
 }
 
 span.fa-cog {
@@ -115,9 +129,15 @@ span.fa-cog:hover {
 
 .blue {background-color: rgba(139, 200, 248, 0.52);}
 .green {background-color: rgba(124, 238, 61, 0.52);}
-.yellow {background-color: rgba(255, 226, 195, 0.91);}
+.yellow {background-color: rgba(255, 241, 151, 0.51);}
 .purple { background-color: rgba(248, 139, 247, 0.52);}
 .orange { background-color: rgb(245, 213, 167);}
+
+.blue-intense {background-color: rgba(139, 200, 248, 1);}
+.green-intense {background-color: rgba(124, 238, 61, 1);}
+.yellow-intense {background-color: rgba(255, 241, 151, 1);}
+.purple-intense { background-color: rgba(248, 139, 247, 1);}
+.orange-intense { background-color: rgba(245, 213, 167, 1);}
 
 #spinner {
   margin-top: 40px;
@@ -131,12 +151,21 @@ span.fa-cog:hover {
   left: 0;
   margin: 10px 10%;
 }
+#doc-list ol {
+  height: 150px;
+  margin-bottom: 25px;
+  overflow-y: auto;
+}
 #meta-list .list-group-item {
   padding: .55rem .95rem;
-  margin-bottom: 4px;
+  border-radius: 0;
 }
 #meta-list .list-group-item p{
   margin-bottom: 0.4rem
+}
+.blockquote {
+  font-size: 1.10rem;
+  margin-bottom: 0px;
 }
 #toolkit {
   position: fixed;
@@ -156,12 +185,13 @@ span.fa-cog:hover {
 }
 
 #rating-title {
-  width:18%;
+  width:10%;
   display: inline-block;
+  text-align: right;
 }
 #rating-container {
   display: inline-block;
-  width:78%;
+  width:89%;
 }
 
 .rating {
@@ -178,11 +208,12 @@ ul.rating {
     display: inline-block;
     padding: 1px;
     text-align: center;
+    vertical-align: top;
     font-weight: bold;
     cursor: pointer;
     font-size:20px;
     background-color: #c7c7c8;
-    width: 10%;
+    width: 18.5%;
     height: 8px;
     margin-right: 6px;
 }
@@ -206,14 +237,14 @@ ul.rating {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  z-index: 9999;
+  z-index: 102;
 }
 #go-back:hover {
   background-color: #868484;
   color: #ffffff;
 }
 
-footer {
+footer#page-footer {
   margin: 20px 0 0 0;
   padding: 20px;
   position: absolute;
@@ -225,10 +256,17 @@ footer {
 
 @media screen and (max-width: 480px){
   #toolkit {
-    left: 0px;
+    right: 0px;
   }
   #toolkit .btn-group .btn{
     display: block;
     float:none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: .25rem;
+    border-bottom-left-radius: .25rem;
+  }
+  #toolkit #dropdown-menu-2 {
+    display: none;
   }
 }

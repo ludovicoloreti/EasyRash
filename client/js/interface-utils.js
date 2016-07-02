@@ -28,7 +28,7 @@ angular.module('EasyRashApp.interfaceUtils', [])
         link: function(scope, $elm,attr) {
 
             $elm.on('click', function() {
-                $('html,body').animate({scrollTop: $(scope.scrollTo).offset().top }, "slow");
+                $('html,body').animate({scrollTop: $(scope.scrollTo).offset().top-100 }, "slow");
             });
         }
     }})

@@ -63,12 +63,18 @@ angular.module('EasyRashApp.controllers', [])
   getDocList();
   // Get the article
   callApiService();
-
+  // Annotator mode
+  $scope.annotatorMode = false;
+  // highlight color
+  $scope.selectionColor = "yellow"
   // Rating
   $scope.rating = 0;
   $scope.vote = {
       current: 1,
       max: 5
+  }
+  $scope.setColor = function(color){
+    $scope.selectionColor = color;
   }
 
   $scope.getSelectedRating = function (rating) {
@@ -185,6 +191,7 @@ angular.module('EasyRashApp.controllers', [])
   function callApiService(){
     // Get the article when the page loadthrough the Api service, the article type is processed
     Api.getArticle($routeParams.articleId, "processed").then(function(response) {
+      $scope.annotatorMode = false; 
       // console.log("> Articolo:\n",response);
       var doc = parser.parseFromString(response, 'text/html');
       var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
@@ -237,6 +244,7 @@ angular.module('EasyRashApp.controllers', [])
 
       console.log(response);
       if(response.success){
+        $scope.annotatorMode = true;
         // TODO
         review = new Review("bella");
         $scope.articleBody = $sce.trustAsHtml(response.data.body);
@@ -278,32 +286,18 @@ angular.module('EasyRashApp.controllers', [])
     $scope.cs = review.comments;
     console.log($scope.cs);
   }
-  $scope.toggled = null;
+  $scope.sidebarClosed = null;
 
     $scope.toggleSidebar = function() {
-        $scope.toggled = $scope.toggled ? null: "toggled";
+        $scope.sidebarClosed = $scope.sidebarClosed ? null: "sidebar-closed";
     };
 
   $scope.showSelection = function(index){
-    var elementId = $scope.commentsList[index]["ref"];
-    //elementId = elementId.replace('#', '');
-    console.log(elementId);
-    console.log($document[0].getElementById(elementId));
-    //console.log(angular.element(elementId));
-    var element = $document[0].getElementById(elementId);
-    element.className += " highlight";
-
+    $($scope.commentsList[index]["ref"]).addClass("highlight");
   };
 
   $scope.hideSelection = function(index){
-    var elementId = $scope.commentsList[index]["ref"];
-    //elementId = elementId.replace('#', '');
-    console.log(elementId);
-    console.log($document[0].getElementById(elementId));
-    console.log(angular.element(elementId));
-    var element = $document[0].getElementById(elementId);
-    element.classList.remove('highlight');
-
+    $($scope.commentsList[index]["ref"]).removeClass("highlight");
   };
 
   /*
@@ -405,6 +399,7 @@ angular.module('EasyRashApp.controllers', [])
       newNode.setAttribute('data-target', '#comment-modal');
       newNode.setAttribute('ng-click', 'setupCommentOnModal($event)');
       newNode.setAttribute("class", "highlight");
+      newNode.setAttribute("class", $scope.selectionColor);
       range.surroundContents(newNode);
 
     }else {
