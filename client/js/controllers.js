@@ -191,7 +191,7 @@ angular.module('EasyRashApp.controllers', [])
   function callApiService(){
     // Get the article when the page loadthrough the Api service, the article type is processed
     Api.getArticle($routeParams.articleId, "processed").then(function(response) {
-      $scope.annotatorMode = false; 
+      $scope.annotatorMode = false;
       // console.log("> Articolo:\n",response);
       var doc = parser.parseFromString(response, 'text/html');
       var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
@@ -231,10 +231,12 @@ angular.module('EasyRashApp.controllers', [])
 
     });
   }
-
-  $scope.$on('$locationChangeStart', function(event, next, current) {
+  $scope.$on('$locationChangeStart', function( event ) {
     if(review.comments.length > 0){
-      alert("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
+      var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
+      if (!answer) {
+          event.preventDefault();
+      }
     }
   });
 
@@ -260,14 +262,15 @@ angular.module('EasyRashApp.controllers', [])
 
   $scope.exit = function(){
     if(review.comments.length > 0){
-      alert("All your work will be lost. Are you sure to exit?")
+      var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
+      if (answer) {
+        review = null; 
+        Api.saveAnnotations($routeParams.articleId).then(function(response) {
+          console.log(response);
+          callApiService();
+        });
+      }
     }
-
-    Api.saveAnnotations($routeParams.articleId).then(function(response) {
-      console.log(response);
-      callApiService();
-    });
-
   }
 
 
