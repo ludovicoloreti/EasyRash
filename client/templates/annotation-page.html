@@ -85,12 +85,12 @@
           <div class="modal-content">
             <div class="modal-body">
               <fieldset class="form-group">
-                <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Insert your comment here." ng-model="commentText"></textarea>
+                <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Insert your comment here." ng-model="commentModal.text">{{commentModal.text}}</textarea>
               </fieldset>
 
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(commentText)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(commentModal)">Save</button>
               <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Cancel</button>
             </div>
           </div>
@@ -111,8 +111,8 @@
                 </thead>
                 <tbody>
                   <tr ng-repeat="c in cs">
-                    <td>{{v.value.ref}}</td>
                     <td>{{c.key}}</td>
+                    <td>{{c.value.getId()}}</td>
                     <td>{{c.value.text}}</td>
                     <td>{{c.value.date | date: "MMMM dd 'at' H:mm"}}</td>
                   </tr>

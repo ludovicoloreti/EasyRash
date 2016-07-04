@@ -14,32 +14,33 @@ angular.module('EasyRashApp.controllers', [])
     var alertPopup = console.error("Session Lost.\nSorry you have to login again.");
   });
 
-
+  // Destroy Session
   $scope.destroySession = function() {
     AuthService.logout();
   };
 
+  // Get the logged user
   Api.getCurrentUser().then(function(response) {
     $scope.memberinfo = response.msg;
-    console.log(response.data);
-    console.log("> Chi sono:\n",response);
+    console.log("Current User:\n",response);
   })
 
-
+  // Logout service
   $scope.logout = function() {
     AuthService.logout();
+    // Redirect to login page
     $window.location.href = "/#/login";
   };
 })
 
 .controller('DashCtrl', function($scope, Api) {
-  console.log("dash");
+
   Api.getUsers().then(function(response) {
-    console.log("> Utenti:\n",response);
+    //console.log("Users:\n",response);
   })
 
   Api.getEvents().then(function(response) {
-    console.log("> Eventi:\n",response);
+    //console.log("Events:\n",response);
   })
 })
 
@@ -52,37 +53,58 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $uibModal, $anchorScroll, $timeout,$compile, Api) {
-  console.log("Annotator")
-  // *** START SETUP
+
+  /**** START SETUP ****/
+
+  // Loading gif activated
   $scope.loading = true;
+  // Object used to create a DOM representation of the RASH article
   var parser = new DOMParser();
+  // Review on the article
   var review = null;
-  // Get the user
+
+  // Get the logged user
   getCurrentUser();
-  // Get list of documents to reviewer
+
+  // Get list of documents the user can review
   getDocList();
-  // Get the article
+
+  // Get the RASH article
   callApiService();
-  // Annotator mode
+
+  // Annotator mode sat false
   $scope.annotatorMode = false;
-  // highlight color
+
+  // Default highlight color
   $scope.selectionColor = "yellow"
-  // Rating
+
+  // Sidebar set open
+  $scope.sidebarClosed = null;
+
+  // Article rating serttings
   $scope.rating = 0;
   $scope.vote = {
       current: 1,
       max: 5
   }
+
+  // Function: set the highlighting color
   $scope.setColor = function(color){
     $scope.selectionColor = color;
   }
 
+  // Function: toggle the sidebar
+  $scope.toggleSidebar = function() {
+      $scope.sidebarClosed = $scope.sidebarClosed ? null: "sidebar-closed";
+  };
+
+  // Function: set the article rating
   $scope.getSelectedRating = function (rating) {
     console.log(rating);
   }
-  // *** END SETUP
+  /**** END SETUP ****/
 
-  // Currently logged user
+  // Person object: RDF reviewer rapresentation
   function Person(){
     this["@context"] = "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json";
     this["@type"] = "person";
@@ -126,7 +148,7 @@ angular.module('EasyRashApp.controllers', [])
     pushComment: function(comment){
 
       comment.setId( this.generateId(comment) );
-      this["comments"].push({"key": comment.getId(),"value": comment});
+      this["comments"].push({"key": comment.getRef(),"value": comment});
       return comment;
     },
     getComment: function(commentId){
@@ -144,7 +166,6 @@ angular.module('EasyRashApp.controllers', [])
       }
     }
   }
-
 
   // Comment on article part
   function Comment(ref, text) {
@@ -170,9 +191,13 @@ angular.module('EasyRashApp.controllers', [])
     },
     getText: function(){
       return this["text"];
+    },
+    getRef: function(){
+      return this["ref"];
     }
   }
 
+  // Function: get the currently logged user
   function getCurrentUser(){
     Api.getCurrentUser().then(function(response) {
       console.log(response.data);
@@ -180,6 +205,7 @@ angular.module('EasyRashApp.controllers', [])
     })
   }
 
+  // Funciton: get the list of article to review
   function getDocList(){
     Api.getArticlesToReview().then(function(response) {
       console.log(response.data);
@@ -187,7 +213,7 @@ angular.module('EasyRashApp.controllers', [])
     })
   }
 
-  // Get the article
+  // Get the RASH article
   function callApiService(){
     // Get the article when the page loadthrough the Api service, the article type is processed
     Api.getArticle($routeParams.articleId, "processed").then(function(response) {
@@ -231,6 +257,8 @@ angular.module('EasyRashApp.controllers', [])
 
     });
   }
+
+  // Function: detects when a user clicks on a link. It prevents the action if the usr has unsaved annotations
   $scope.$on('$locationChangeStart', function( event ) {
     if(review.comments.length > 0){
       var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
@@ -240,10 +268,11 @@ angular.module('EasyRashApp.controllers', [])
     }
   });
 
+  // Funciton: Load the original RASH article prepared for the review
   $scope.loadRash = function(){
     Api.getArticle($routeParams.articleId, "unprocessed").then(function(response) {
-      //var rawArticle = parser.parseFromString(response.body, 'text/html');
 
+      //var rawArticle = parser.parseFromString(response.body, 'text/html');
       console.log(response);
       if(response.success){
         $scope.annotatorMode = true;
@@ -260,11 +289,13 @@ angular.module('EasyRashApp.controllers', [])
 
   }
 
+  // Function: exit the annotator mode
   $scope.exit = function(){
+    // If the user has unsaved annotations
     if(review.comments.length > 0){
       var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
       if (answer) {
-        review = null; 
+        review = null;
         Api.saveAnnotations($routeParams.articleId).then(function(response) {
           console.log(response);
           callApiService();
@@ -273,32 +304,44 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
-
-
-  $scope.saveComment = function(text){
-    // TODO handle comment
-    var comment = new Comment("ref-to-implement", text);
+  // Function:
+  $scope.saveComment = function(comment){
+    // TODO handle comment duplication
+    var comment = new Comment(comment.fragmentId, comment.text);
     console.log(comment.getText());
     review.pushComment(comment);
     console.log(review);
     $scope.commentText = "";
+  }
+
+  $scope.setupCommentOnModal = function(ref){
+    $scope.commentModal = {};
+    console.log(ref);
+    var comment = review.getComment(ref);
+    if (comment){
+      $scope.commentModal.fragmentId = comment.ref;
+      $scope.commentModal.text = comment.text;
+    }else {
+      // TODO Go in review db to get the comment
+      $scope.commentModal.fragmentId = ref;
+      $scope.commentModal.text = "";
+    }
 
   }
-  $scope.showComments= function(){
+
+  // Function:
+  $scope.showComments = function(){
     //console.log(review.comments);
     $scope.cs = review.comments;
     console.log($scope.cs);
   }
-  $scope.sidebarClosed = null;
 
-    $scope.toggleSidebar = function() {
-        $scope.sidebarClosed = $scope.sidebarClosed ? null: "sidebar-closed";
-    };
-
+  // Show the ref
   $scope.showSelection = function(index){
     $($scope.commentsList[index]["ref"]).addClass("highlight");
   };
 
+  // Hide the ref
   $scope.hideSelection = function(index){
     $($scope.commentsList[index]["ref"]).removeClass("highlight");
   };
@@ -313,6 +356,7 @@ angular.module('EasyRashApp.controllers', [])
     console.log($location.hash());
     $anchorScroll();
   };
+
 
   function selection(){
     if (window.getSelection) {
@@ -350,63 +394,76 @@ angular.module('EasyRashApp.controllers', [])
 
   count = 0;
 
-  // $scope.highlight = function() {
-  //   // Get the selection
-  //   var s = selection()
-  //   console.log(s)
-  //   // Get the anchor's parent element
-  //   var dad = s.anchorNode.parentElement
-  //   // var guida = s.anchorNode.substringData(s.anchorOffset,20)
-  //   if (compatibleExtremes(s)) { // compatibleExtremes(s)
-  //     var spanId = 'span-'+ ($('#article-container span').length+1)
-  //     // Prendo l'elemento dal padre in base all'indexOf
-  //     var pos = dad.childNodes.indexOf(s.anchorNode);
-  //     var extremes = findExtremes(s);
-  //     console.log(extremes);
-  //     var n = {
-  //       id: spanId,
-  //       node: dad.id ? dad.id: createId(dad),
-  //       pos: pos,
-  //       // guide: guida,
-  //       // start:   Math.max(s.anchorOffset,s.focusOffset),
-  //       // end: Math.min(s.anchorOffset,s.focusOffset)
-  //       start: extremes.start,
-  //       end: extremes.end
-  //     }
-  //     insertNote(n,true)
-  //   }else {
-  //     var message = "Uncorrect selection";
-  //     showErrors(message);
-  //   }
-  //
-  // };
-
-  $scope.setupCommentOnModal = function($event){
-    console.log("click");
-    console.log($event);
-  }
+  // $scope.setupCommentOnModal = function($event){
+  //   console.log("click");
+  //   console.log($event);
+  // }
 
   $scope.highlight = function(){
+    // Get the selection and the correspondent range.
     var s = selection();
     console.log(s);
     var range = s.getRangeAt(0);
 
+    // If the selection is longer than 2 chars
     if(s.toString().length > 2){
+
       range.startPoint = s.anchorOffset;
       range.endPoint = s.extentOffset;
-      var newNode = document.createElement("span");
-      var spanId = 'fragment-'+ ($('#article-container span[id~="fragment"]').length+1);
-      // TODO come compilare in angular il contenuto aggiunto?
-      newNode.setAttribute('id', spanId);
-      newNode.setAttribute('data-toggle', 'modal');
-      newNode.setAttribute('data-target', '#comment-modal');
-      newNode.setAttribute('ng-click', 'setupCommentOnModal($event)');
-      newNode.setAttribute("class", "highlight");
-      newNode.setAttribute("class", $scope.selectionColor);
-      range.surroundContents(newNode);
+      var commonContainer = range.commonAncestorContainer;
+
+      if( (commonContainer.nodeName === "P" ||  commonContainer.parentElement.nodeName === "P") && range.startPoint < 2 && commonContainer.toString().length - range.toString().length < 4 ){
+        console.log(range.commonAncestorContainer);
+        var paraId = null;
+
+        if(commonContainer.nodeName === "#text"){
+          ancestor = $(commonContainer.parentElement);
+        }else {
+          ancestor = $(commonContainer);
+        }
+
+        paraId = ancestor.attr('id');
+
+        if( !paraId ){
+          // Create Reference to p element
+          paraId = 'para-' + ($('#article-container p[id^="para-"]').length+1);
+          ancestor.attr('id', paraId);
+        }
+        var comment = new Comment(paraId, "");
+        ancestor.addClass('highlight');
+        $('#comment-modal').modal('show');
+
+        $scope.setupCommentOnModal(paraId);
+
+
+      } else {
+
+        var newNode = document.createElement("span");
+        var spanId = 'fragment-'+ ($('#article-container span[id^="fragment-"]').length+1);
+        console.log(range);
+
+        // TODO come compilare in angular il contenuto aggiunto?
+        newNode.setAttribute('id', spanId);
+        newNode.setAttribute('data-toggle', 'modal');
+        newNode.setAttribute('data-target', '#comment-modal');
+        newNode.setAttribute('ng-click', 'setupCommentOnModal("'+spanId+'")');
+
+        newNode.setAttribute("class", "highlight");
+        newNode.setAttribute("class", $scope.selectionColor);
+        $compile(newNode)($scope);
+
+        try {
+          range.surroundContents(newNode);
+          var comment = new Comment(spanId, "");
+          $('#comment-modal').modal('show');
+          $scope.setupCommentOnModal(spanId);
+        }catch(err) {
+          showErrors("This selection is not allowed!");
+        }
+      }
 
     }else {
-      console.log("Selection too short to be meaningful");
+      showErrors("The selection is too short to be meaningful");
     }
   }
 
@@ -431,13 +488,16 @@ angular.module('EasyRashApp.controllers', [])
     span.setAttribute('class','highlight');
     // Avvolgo il range con lo span
     r.surroundContents(span)
+    $compile(span)(scope);
   }
 
+  // Utility method: show errors
   function showErrors(message){
     $scope.error = true;
     $scope.message = message;
   }
 
+  // Utility method: hide errors
   function hideErrors(){
     $scope.error = true;
     $scope.message = "";
