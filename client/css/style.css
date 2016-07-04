@@ -152,7 +152,7 @@ span.fa-cog:hover {
   margin: 10px 10%;
 }
 #doc-list ol {
-  height: 150px;
+  height: 100px;
   margin-bottom: 25px;
   overflow-y: auto;
 }
@@ -163,9 +163,17 @@ span.fa-cog:hover {
 #meta-list .list-group-item p{
   margin-bottom: 0.4rem
 }
+.comment-list {
+  padding-top: 40px;
+}
 .blockquote {
   font-size: 1.10rem;
   margin-bottom: 0px;
+}
+.blockquote a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid red;
 }
 #toolkit {
   position: fixed;

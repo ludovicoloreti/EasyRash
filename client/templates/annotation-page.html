@@ -6,7 +6,7 @@
     <div class="sidebar-nav animated fadeInLeft">
       <div class="content">
         <div id="doc-list" >
-          <h4>Assigned Reviews: </h4>
+          <h4><span class="fa fa-edit"></span> Assigned Reviews: </h4>
           <ol>
             <li ng-repeat="sub in submissions">
               <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">
@@ -15,15 +15,27 @@
             </li>
           </ol>
         </div>
+        <hr />
         <div id="meta-list">
-          <h4>Article info: </h4>
-          <div class="list-group">
-            <div class="list-group-item" ng-repeat="comment in commentsList" scroll-to-item scroll-to="{{comment.ref}}" ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)">
+          <h4><span class="fa fa-bookmark-o"></span> Comments: </h4>
+          <div id="custom-search-input">
+            <div class="input-group col-md-12 ">
+              <input type="text" class="search-query form-control" placeholder="Search..." ng-model="commentFilter"/>
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button">
+                  <span class="fa fa-search text-primary"></span>
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="list-group comment-list">
+            <div class="list-group-item" ng-repeat="comment in commentsList | filter: commentFilter" scroll-to-item scroll-to="{{comment.ref}}" ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)">
               <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
               <p class="small text-muted">{{comment.date | date:"dd MMM yyyy 'at' HH:mm"}}</p>
               <blockquote class="blockquote">
-                <p class="m-b-0 small">{{comment.text | cut:true:100:' ...'}}</p>
+                <a class="m-b-0 small">{{comment.refText | cut:true:100:' ...'}}</a>
               </blockquote>
+              <p>{{comment.text | cut:true:100:' ...'}}</p>
               <span class="label label-primary">{{comment["@type"]}}</span> <a class="small" ng-href="{{comment.author}}"> {{comment.author.replace("mailto:","")}}</a>
 
             </div>

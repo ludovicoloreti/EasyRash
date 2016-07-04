@@ -146,14 +146,24 @@ angular.module('EasyRashApp.controllers', [])
       return this["@id"]+"-c"+$scope.commentCounter;
     },
     pushComment: function(comment){
+      // If the comment has an id it means it's already in the comments array
+      if( !comment['@id'] ){
+        comment.setId( this.generateId(comment) );
+        this["comments"].push({"key": comment.getRef(),"value": comment});
+      }else {
+        var index = 0;
+        for (var i=0; i<this.comments.length; i++) {
+          if (this.comments[i].key == comment.getRef()) { index = i; }
+        }
+        // Update the comment by replacing it in the array
+        this["comments"].splice(index, 1, {"key": comment.getRef(),"value": comment} );
+      }
 
-      comment.setId( this.generateId(comment) );
-      this["comments"].push({"key": comment.getRef(),"value": comment});
       return comment;
     },
-    getComment: function(commentId){
+    getComment: function(commentKey){
       for (var i=0; i<this.comments.length; i++) {
-        if (this.comments[i].key == commentId) {
+        if (this.comments[i].key == commentKey) {
           return this.comments[i].value ;
         }
       }
@@ -242,6 +252,8 @@ angular.module('EasyRashApp.controllers', [])
         for (j=0; j < annotation.length; j++) {
 
           if(annotation[j]['@type'] == "comment") {
+            console.log("#article-container "+annotation[j]['ref']);
+            annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0].innerText;
             commentsList.push( annotation[j] );
           }
         }
