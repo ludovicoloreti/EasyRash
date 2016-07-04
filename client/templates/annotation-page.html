@@ -96,14 +96,17 @@
           <!-- Modal content-->
           <div class="modal-content">
             <div class="modal-body">
+              <p><b>Insert your annotation:</b></p>
               <fieldset class="form-group">
-                <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Insert your comment here." ng-model="commentModal.text">{{commentModal.text}}</textarea>
+                <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Insert your comment here." ng-model="commentModal.text" >{{commentModal.text}}</textarea>
               </fieldset>
 
             </div>
             <div class="modal-footer">
+              <button type="button" class="btn btn-danger btn-sm pull-left" data-dismiss="modal" ng-click="deleteComment(commentModal)">Delete</button>
+
               <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(commentModal)">Save</button>
-              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="cancel(commentModal)">Cancel</button>
             </div>
           </div>
 
@@ -116,7 +119,12 @@
 
           <!-- Modal content-->
           <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">List of comments</h4>
+            </div>
             <div class="modal-body">
+              <p>Below you have the list of your annotations on this document.</p>
               <table class="table table-hover" id="comments-table">
                 <thead class="thead-inverse">
                   <tr><th>Fragment id</th><th>Comment id</th><th>Comment text</th><th>Date</th></tr>
@@ -135,7 +143,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(text)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="">Save</button>
               <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Cancel</button>
             </div>
           </div>

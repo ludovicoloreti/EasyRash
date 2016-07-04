@@ -175,6 +175,7 @@ span.fa-cog:hover {
   text-decoration: none;
   border-bottom: 1px solid red;
 }
+
 #toolkit {
   position: fixed;
   right: 30px;
@@ -190,6 +191,9 @@ span.fa-cog:hover {
 #comment-dialog .modal-footer {
   padding: 0px 15px 15px 15px;
   border-top: none;
+}
+.pull-left {
+  float: left;
 }
 
 #rating-title {

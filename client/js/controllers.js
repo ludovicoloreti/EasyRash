@@ -62,6 +62,8 @@ angular.module('EasyRashApp.controllers', [])
   var parser = new DOMParser();
   // Review on the article
   var review = null;
+  //List of comments from other reviewers
+  var commentsList = null;
 
   // Get the logged user
   getCurrentUser();
@@ -246,14 +248,14 @@ angular.module('EasyRashApp.controllers', [])
       }
 
       // console.log(annotations)
-      var commentsList = new Array();
+      commentsList = new Array();
       for (i=0; i < annotations.length; i++) {
         var annotation = annotations[i];
         for (j=0; j < annotation.length; j++) {
 
           if(annotation[j]['@type'] == "comment") {
             console.log("#article-container "+annotation[j]['ref']);
-            annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0].innerText;
+            annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0] ? docBody.querySelectorAll(annotation[j]['ref'])[0].innerText : "Error: no Reference detected";
             commentsList.push( annotation[j] );
           }
         }
@@ -289,7 +291,7 @@ angular.module('EasyRashApp.controllers', [])
       if(response.success){
         $scope.annotatorMode = true;
         // TODO
-        review = new Review("bella");
+        review = new Review("TODO-review-id");
         $scope.articleBody = $sce.trustAsHtml(response.data.body);
         // console.log(response.data.info);
         console.log($scope.articleBody);
@@ -317,13 +319,83 @@ angular.module('EasyRashApp.controllers', [])
   }
 
   // Function:
-  $scope.saveComment = function(comment){
-    // TODO handle comment duplication
-    var comment = new Comment(comment.fragmentId, comment.text);
-    console.log(comment.getText());
-    review.pushComment(comment);
-    console.log(review);
-    $scope.commentText = "";
+  $scope.saveComment = function(input){
+    if( input.text ){
+      var comment = review.getComment(input.fragmentId);
+      // If the comment already present, update the text
+      if( comment ){
+
+        comment.setText(input.text);
+
+      }else {
+        // If the comment is not present, create it
+        comment = new Comment(input.fragmentId, input.text);
+
+      }
+
+      console.log(comment.getText());
+      review.pushComment(comment);
+      console.log(review);
+    }
+  }
+
+  $scope.deleteComment = function(input){
+    console.log("Delete");
+    console.log(input)
+
+    var keepRef = false;
+    var isSpan = input.fragmentId.startsWith('fragment');
+
+    for(var i=0; i<commentsList.length; i++){
+      if (commentsList[i]['ref'] === input.fragmentId){
+        keepRef = true;
+      }
+    }
+
+    if( keepRef ){
+      $(input.fragmentId).removeClass();
+    }else if(isSpan) {
+      $(input.fragmentId).replaceWith(function() {
+         return $(this).contents();
+       });
+    }else {
+      $(input.fragmentId).removeClass();
+    }
+
+    review.deleteComment(input.fragmentId);
+  }
+
+  $scope.cancel = function(input){
+    // TODO resolve p deletion
+    console.log("Cancel");
+    var comment = review.getComment(input.fragmentId);
+    // If no comment is present, clear the selection
+    if ( !comment ){
+      var keepRef = false;
+      var isSpan = input.fragmentId.startsWith('fragment');
+
+      for(var i=0; i<commentsList.length; i++){
+        if (commentsList[i]['ref'] === input.fragmentId){
+          keepRef = true;
+        }
+      }
+
+      if( keepRef ){
+        $(input.fragmentId).removeClass("highlight");
+        $(input.fragmentId).removeAttr('data-toggle');
+        $(input.fragmentId).removeAttr('data-target');
+        $(input.fragmentId).removeAttr('ng-click');
+      }else if(isSpan) {
+        $(input.fragmentId).replaceWith(function() {
+           return $(this).contents();
+         });
+      }else {
+        $(input.fragmentId).removeClass("highlight");
+        $(input.fragmentId).removeAttr('data-toggle');
+        $(input.fragmentId).removeAttr('data-target');
+        $(input.fragmentId).removeAttr('ng-click');
+      }
+    }
   }
 
   $scope.setupCommentOnModal = function(ref){
@@ -334,7 +406,6 @@ angular.module('EasyRashApp.controllers', [])
       $scope.commentModal.fragmentId = comment.ref;
       $scope.commentModal.text = comment.text;
     }else {
-      // TODO Go in review db to get the comment
       $scope.commentModal.fragmentId = ref;
       $scope.commentModal.text = "";
     }
@@ -415,10 +486,11 @@ angular.module('EasyRashApp.controllers', [])
     // Get the selection and the correspondent range.
     var s = selection();
     console.log(s);
-    var range = s.getRangeAt(0);
-
+    var range = null;
     // If the selection is longer than 2 chars
     if(s.toString().length > 2){
+
+      range = s.getRangeAt(0);
 
       range.startPoint = s.anchorOffset;
       range.endPoint = s.extentOffset;
@@ -427,6 +499,7 @@ angular.module('EasyRashApp.controllers', [])
       if( (commonContainer.nodeName === "P" ||  commonContainer.parentElement.nodeName === "P") && range.startPoint < 2 && commonContainer.toString().length - range.toString().length < 4 ){
         console.log(range.commonAncestorContainer);
         var paraId = null;
+        var ancestor = null;
 
         if(commonContainer.nodeName === "#text"){
           ancestor = $(commonContainer.parentElement);
@@ -438,39 +511,79 @@ angular.module('EasyRashApp.controllers', [])
 
         if( !paraId ){
           // Create Reference to p element
-          paraId = 'para-' + ($('#article-container p[id^="para-"]').length+1);
+          paraId = generateParaId()
+
           ancestor.attr('id', paraId);
         }
-        var comment = new Comment(paraId, "");
+        // var comment = new Comment(paraId, "");
         ancestor.addClass('highlight');
+        ancestor.addClass($scope.selectionColor);
+
+        ancestor.attr('data-toggle', 'modal');
+        ancestor.attr('data-target', '#comment-modal');
+        ancestor.attr('ng-click', 'setupCommentOnModal("#'+paraId+'")');
+
         $('#comment-modal').modal('show');
 
-        $scope.setupCommentOnModal(paraId);
+        $scope.setupCommentOnModal("#"+paraId);
 
 
       } else {
+        if( (commonContainer.nodeName === "SPAN" ||  commonContainer.parentElement.nodeName === "SPAN") && range.startPoint == 0 && commonContainer.parentElement.innerText.length - range.toString().length == 0){
+          var spanId = null;
+          var ancestor = null;
 
-        var newNode = document.createElement("span");
-        var spanId = 'fragment-'+ ($('#article-container span[id^="fragment-"]').length+1);
-        console.log(range);
+          if(commonContainer.nodeName === "#text"){
+            ancestor = $(commonContainer.parentElement);
+          }else {
+            ancestor = $(commonContainer);
+          }
 
-        // TODO come compilare in angular il contenuto aggiunto?
-        newNode.setAttribute('id', spanId);
-        newNode.setAttribute('data-toggle', 'modal');
-        newNode.setAttribute('data-target', '#comment-modal');
-        newNode.setAttribute('ng-click', 'setupCommentOnModal("'+spanId+'")');
+          spanId = ancestor.attr('id');
 
-        newNode.setAttribute("class", "highlight");
-        newNode.setAttribute("class", $scope.selectionColor);
-        $compile(newNode)($scope);
+          if( !spanId ){
+            // Create Reference to p element
+            spanId = generateSpanId()
 
-        try {
-          range.surroundContents(newNode);
-          var comment = new Comment(spanId, "");
+            ancestor.attr('id', spanId);
+          }
+          // var comment = new Comment(paraId, "");
+          ancestor.addClass('highlight');
+          ancestor.addClass($scope.selectionColor);
+
+          ancestor.attr('data-toggle', 'modal');
+          ancestor.attr('data-target', '#comment-modal');
+          ancestor.attr('ng-click', 'setupCommentOnModal("#'+spanId+'")');
+
           $('#comment-modal').modal('show');
-          $scope.setupCommentOnModal(spanId);
-        }catch(err) {
-          showErrors("This selection is not allowed!");
+
+          $scope.setupCommentOnModal("#"+spanId);
+
+        }else{
+
+          var newNode = document.createElement("span");
+          var spanId = generateSpanId();
+          console.log(range);
+
+          // TODO come compilare in angular il contenuto aggiunto?
+          newNode.setAttribute('id', spanId);
+          newNode.setAttribute('data-toggle', 'modal');
+          newNode.setAttribute('data-target', '#comment-modal');
+          newNode.setAttribute('ng-click', 'setupCommentOnModal("#'+spanId+'")');
+
+          newNode.setAttribute("class", "highlight");
+          newNode.className += " "+$scope.selectionColor
+          $compile(newNode)($scope);
+
+          try {
+            range.surroundContents(newNode);
+            // var comment = new Comment(spanId, "");
+            $('#comment-modal').modal('show');
+            $scope.setupCommentOnModal("#"+spanId);
+          }catch(err) {
+            showErrors("This selection is not allowed!");
+          }
+
         }
       }
 
@@ -479,29 +592,58 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
-  function createId(element){
-    element.setAttribute('id', 'parent-'+count)
-    count++;
-    return element.getAttribute('id');
+  var maxCounterPara = 0;
+  var maxCounterSpan = 0;
+
+  function generateParaId(){
+
+    $('#article-container p[id^="para-"]').each(function( index ) {
+      var num = parseInt($( this ).attr('id').split("-")[1]);
+      if(num > maxCounterPara){
+        maxCounterPara = num;
+      }
+    });
+
+    var paraId = 'para-'+(maxCounterPara+1);
+    return paraId;
   }
 
-  function insertNote(note,active) {
-    // Creo un range
-    var r = document.createRange()
-    var node = $('#'+note.node)[0];
-    // Setto il range
-    r.setStart(node,note.start);
-    r.setEnd(node,note.end)
-    // Creo lo span
-    var span = document.createElement('span')
-    span.setAttribute('id',note.id);
-    span.setAttribute('data-toggle', 'modal');
-    span.setAttribute('data-target', '#comment-modal');
-    span.setAttribute('class','highlight');
-    // Avvolgo il range con lo span
-    r.surroundContents(span)
-    $compile(span)(scope);
+  function generateSpanId(){
+
+    $('#article-container span[id^="fragment-"]').each(function( index ) {
+      var num = parseInt($( this ).attr('id').split("-")[1]);
+      if(num > maxCounterSpan){
+        maxCounterSpan = num;
+      }
+    });
+
+    var spanId = 'fragment-'+(maxCounterSpan+1);
+    return spanId;
   }
+
+  // function createId(element){
+  //   element.setAttribute('id', 'parent-'+count)
+  //   count++;
+  //   return element.getAttribute('id');
+  // }
+
+  // function insertNote(note,active) {
+  //   // Creo un range
+  //   var r = document.createRange()
+  //   var node = $('#'+note.node)[0];
+  //   // Setto il range
+  //   r.setStart(node,note.start);
+  //   r.setEnd(node,note.end)
+  //   // Creo lo span
+  //   var span = document.createElement('span')
+  //   span.setAttribute('id',note.id);
+  //   span.setAttribute('data-toggle', 'modal');
+  //   span.setAttribute('data-target', '#comment-modal');
+  //   span.setAttribute('class','highlight');
+  //   // Avvolgo il range con lo span
+  //   r.surroundContents(span)
+  //   $compile(span)(scope);
+  // }
 
   // Utility method: show errors
   function showErrors(message){
