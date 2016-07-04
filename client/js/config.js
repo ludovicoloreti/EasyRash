@@ -20,5 +20,6 @@ angular.module("EasyRashApp.config", [])
   "register": "/signup",
   "login": "/authenticate",
   "userinfo": "/memberinfo",
-  "doclist": "/doclist"
+  "doclist": "/doclist",
+  "save_annotations": "/save-annotations"
 });

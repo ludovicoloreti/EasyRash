@@ -176,7 +176,29 @@ angular.module('EasyRashApp.controllers', [])
           this.comments.splice(i,1) ;
         }
       }
+    },
+    generateJsonLD: function(){
+      var list = new Array();
+      var jsonLD = {};
+      jsonLD["@context"] = this["@context"];
+      jsonLD["@type"] = this["@type"];
+      jsonLD["@id"] = this["@id"];
+      jsonLD["@article"]= this["article"];
+      jsonLD["comments"] = new Array();
+
+      for (var i=0; i<this.comments.length; i++) {
+        jsonLD["comments"].push(this.comments[i].value["@id"]);
+        list.push(this.comments[i].value);
+      }
+
+      list.unshift(jsonLD);
+      list.push(new Person());
+      return list;
+
+
+
     }
+
   }
 
   // Comment on article part
@@ -303,19 +325,58 @@ angular.module('EasyRashApp.controllers', [])
 
   }
 
+  function prepareArticle(){
+    var article = $("#article-container");
+    article.find('*').each(function( index ) {
+      if( $(this).attr('id') ){
+
+        if( $(this).attr('id').startsWith('para-') || $(this).attr('id').startsWith('fragment')){
+          $(this).removeClass("highlight");
+          $(this).removeClass("yellow");
+          $(this).removeClass("blue");
+          $(this).removeClass("purple");
+          $(this).removeClass("orange");
+          $(this).removeClass("green");
+          $(this).removeClass("ng-scope");
+          $(this).removeAttr('data-toggle');
+          $(this).removeAttr('data-target');
+          $(this).removeAttr('ng-click');
+        }
+      }
+
+    });
+    console.log(article.html());
+    return article.html();
+  }
+
+  $scope.saveAnnotations = function(){
+    console.log(review);
+    if(review.comments.length > 0){
+      var data = {};
+      data.annotations = review.generateJsonLD();
+      data.article = prepareArticle();
+      data.articleName = $routeParams.articleId;
+
+      Api.saveAnnotations(data).then(function(response) {
+        console.log(response);
+        //callApiService();
+      });
+    }
+  }
+
   // Function: exit the annotator mode
   $scope.exit = function(){
     // If the user has unsaved annotations
-    if(review.comments.length > 0){
-      var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
-      if (answer) {
-        review = null;
-        Api.saveAnnotations($routeParams.articleId).then(function(response) {
-          console.log(response);
-          callApiService();
-        });
-      }
-    }
+    // if(review.comments.length > 0){
+    //   var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
+    //   if (answer) {
+    //     review = null;
+    //     Api.saveAnnotations($routeParams.articleId).then(function(response) {
+    //       console.log(response);
+    //       callApiService();
+    //     });
+    //   }
+    // }
   }
 
   // Function:
@@ -353,6 +414,7 @@ angular.module('EasyRashApp.controllers', [])
     }
 
     if( keepRef ){
+      // TODO REMOVE ALL ATTRIBUTES
       $(input.fragmentId).removeClass();
     }else if(isSpan) {
       $(input.fragmentId).replaceWith(function() {

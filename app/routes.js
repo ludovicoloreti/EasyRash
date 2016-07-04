@@ -13,6 +13,7 @@ var warn = color.yellow;
 var notice = color.x45;
 // Custom module import
 var rash = require('./rash');
+var rashManager = require('./save-annotations');
 var lockManager = require("./lock-manager");
 var email   = require("emailjs/email");
 var server  = email.server.connect({
@@ -210,6 +211,33 @@ module.exports = function (app) {
         res.json( {success: false, message: "Error in releasing the lock"} );
       }
     });
+  });
+
+  app.post('/api/save-annotations/:id', passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
+    /* Prepare the rash file */
+    var fileName = req.params.id;
+    var file = path.resolve('db/articles/'+fileName+'.html');
+    console.log('File: '+req.params.id+'.html');
+    console.log('Data: '+req.body);
+
+    rashManager.saveRASH( file, req.body, function( error, result ){
+      if (error) {
+        console.log(error.message);
+        res.json( {success: false, message: error.message} );
+      }else{
+
+        res.json( { success: true, message:"Resource saved", data: result } );
+      }
+
+    });
+
+    // lockManager.releaseLock(fileName, function(result){
+    //   if(result){
+    //     res.json( {success: true, message: "Lock released successfully"} );
+    //   }else {
+    //     res.json( {success: false, message: "Error in releasing the lock"} );
+    //   }
+    // });
   });
 
   // User registration

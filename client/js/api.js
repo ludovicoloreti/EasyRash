@@ -66,8 +66,8 @@ angular.module('EasyRashApp.api', ['EasyRashApp.config'])
     };
 
   // TODO : da rivedere
-  self.saveAnnotations = function( articleName ) {
-    return $http.post(CONFIG.endpoint+CONFIG.article+"/"+articleName).then(
+  self.saveAnnotations = function( data ) {
+    return $http.post(CONFIG.endpoint+CONFIG.save_annotations+"/"+data.articleName, data).then(
       function(response) {
         return response.data;
       },function(error) {
