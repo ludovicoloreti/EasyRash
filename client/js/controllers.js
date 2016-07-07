@@ -45,11 +45,10 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('ArticlesCtrl', function($scope) {
-  console.log("articles")
 })
 
 .controller('ArticleCtrl', function($scope, $routeParams) {
-  console.log("Article - ", $routeParams.articleId)
+  // console.log("Article - ", $routeParams.articleId)
 })
 
 .controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $uibModal, $anchorScroll, $timeout,$compile, Api) {
@@ -406,8 +405,6 @@ angular.module('EasyRashApp.controllers', [])
 
   $scope.deleteComment = function(input){
     console.log("Delete");
-    console.log(input)
-
     var keepRef = false;
     var isSpan = input.fragmentId.startsWith('fragment');
 
@@ -734,7 +731,6 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('LoginCtrl', function($scope, AuthService, $rootScope, $window) {
-  console.log("login");
   $rootScope.navbar = false;
   if (AuthService.isAuthenticated() === true) {
     $window.location.href = "/#/dash";
@@ -748,7 +744,7 @@ angular.module('EasyRashApp.controllers', [])
     AuthService.login($scope.user).then(function(msg) {
       //$state.go('inside');
       console.log(msg)
-      $window.location.href = "/#/dash";
+      $window.location.reload();
     }, function(errMsg) {
       $scope.error = errMsg;
     });
@@ -756,7 +752,6 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('RegisterCtrl', function($scope, $rootScope, $window, AuthService) {
-  console.log("register");
   $rootScope.navbar = false;
   if (AuthService.isAuthenticated() === true) {
     $window.location.href = "/#/dash";
@@ -771,7 +766,6 @@ angular.module('EasyRashApp.controllers', [])
   };
 
   $scope.signup = function() {
-    console.log($scope.user)
     AuthService.register($scope.user).then(function(msg) {
       $window.location.href = "/#/dash";
       var alertPopup = alert("Registered successfully!\nThank you.");
@@ -783,19 +777,12 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('EventsCtrl', function($scope, Api) {
-
-  console.log("events");
-
   Api.getEvents().then(function(response) {
-    console.log("> Eventi:\n",response);
     $scope.eventsList = response;
   })
 })
 
 .controller('EventCtrl', function($scope, $routeParams, Api) {
-
-  console.log("event");
-
   Api.getEvent($routeParams.eventId).then(function(response) {
     console.log("> Evento:\n",response);
     $scope.eventInfo = response;
@@ -803,21 +790,30 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('HelpCtrl', function($scope, $routeParams, Api) {
-  console.log("help");
 })
 
 .controller('AccountCtrl', function($scope, Api) {
-  console.log("account");
 
+  $scope.update = function(data) {
+    console.log(data)
+    if(data.oldPass === undefined) {
+      alert("Devi inserire la password per effettuare le modifiche richieste!")
+    } else {
+      Api.updateUser(data).then(function(response) {
+        console.log(response)
+        // $scope.user = response.data;
+
+      })
+    }
+  }
   $scope.clicked = false;
 
   // Get user info
   Api.getCurrentUser().then(function(response) {
-    console.log(response.data);
     $scope.user = response.data;
   })
 
-  $scope.edit = function(){
+  $scope.edit = function(data){
     $scope.clicked = true;
 
   }

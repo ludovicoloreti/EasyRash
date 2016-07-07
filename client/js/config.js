@@ -7,7 +7,7 @@ angular.module("EasyRashApp.config", [])
   notAuthenticated: 'auth-not-authenticated'
 })
 .constant("CONFIG", {
-  "appVersion": "1.1.0",
+  "appVersion": "1.5.0",
   "base_url": "http://localhost:8080",
   "endpoint": "/api",
   "users": "/users",
@@ -21,5 +21,6 @@ angular.module("EasyRashApp.config", [])
   "login": "/authenticate",
   "userinfo": "/memberinfo",
   "doclist": "/doclist",
-  "save_annotations": "/save-annotations"
+  "save_annotations": "/save-annotations",
+  "updateUser": "/userUpdate"
 });
