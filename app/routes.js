@@ -427,7 +427,7 @@ module.exports = function (app) {
             return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
           } else {
             if (user.pass === req.body.oldPass) {
-              if(req.body.newPass === undefined) {
+              if( !req.body.newPass ) {
                 passwd = req.body.oldPass;
               } else {
                 passwd = req.body.newPass;
@@ -440,13 +440,13 @@ module.exports = function (app) {
                   given_name: req.body.given_name,
                   sex: req.body.sex,
                   pass: passwd
-                }), function(err, numberAffected, rawResponse) {
+                }, function(err, numberAffected, rawResponse) {
                     console.log(err,numberAffected,rawResponse)
                     if (err) {
                       return next(err);
                     }
                    res.json({success: true, rsp: rawResponse});
-                  };
+                 });
                 } else {
                   res.status(403).send({success: false, msg: 'Forbidden. Password incorrect.'});
                 }
