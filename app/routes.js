@@ -415,7 +415,7 @@ module.exports = function (app) {
       });
 
       // Update user
-      app.post('/api/userUpdate/',passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
+      app.post('/api/userUpdate', passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
         var userId = req.body._id;
         var passwd;
         console.log("userID: "+userId);
@@ -434,7 +434,7 @@ module.exports = function (app) {
               }
               console.log("updating user", req.body)
               User.findOneAndUpdate(
-                { id: req.body._id },
+                { _id: req.body._id },
                 { email: req.body.email,
                   family_name: req.body.family_name,
                   given_name: req.body.given_name,
@@ -445,7 +445,7 @@ module.exports = function (app) {
                     if (err) {
                       return next(err);
                     }
-                    return res.json({success: true, rsp: success});
+                   res.json({success: true, rsp: rawResponse});
                   };
                 } else {
                   res.status(403).send({success: false, msg: 'Forbidden. Password incorrect.'});

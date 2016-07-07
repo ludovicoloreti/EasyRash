@@ -802,7 +802,7 @@ angular.module('EasyRashApp.controllers', [])
       Api.updateUser(data).then(function(response) {
         console.log(response)
         // $scope.user = response.data;
-      })
+      });
     }
   }
   $scope.clicked = false;
@@ -810,11 +810,10 @@ angular.module('EasyRashApp.controllers', [])
   // Get user info
   Api.getCurrentUser().then(function(response) {
     $scope.user = response.data;
-  })
+  });
 
   $scope.edit = function(data){
     $scope.clicked = true;
-
-  }
+  };
 
 });
