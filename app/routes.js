@@ -429,25 +429,23 @@ module.exports = function (app) {
             if (user.pass === req.body.oldPass) {
               if(req.body.newPass === undefined) {
                 passwd = req.body.oldPass;
-                console.log("1", passwd);
               } else {
                 passwd = req.body.newPass;
-                console.log("2", passwd);
               }
-              console.log("updating user")
+              console.log("updating user", req.body)
               User.findOneAndUpdate(
-                { _id: req.body._id },
+                { id: req.body._id },
                 { email: req.body.email,
                   family_name: req.body.family_name,
                   given_name: req.body.given_name,
                   sex: req.body.sex,
-                  pass: passwd }), function(err, success) {
+                  pass: passwd
+                }), function(err, numberAffected, rawResponse) {
+                    console.log(err,numberAffected,rawResponse)
                     if (err) {
-                      console.log(err);
                       return next(err);
                     }
-                    console.log(success);
-                    res.json({success: true, rsp: success});
+                    return res.json({success: true, rsp: success});
                   };
                 } else {
                   res.status(403).send({success: false, msg: 'Forbidden. Password incorrect.'});

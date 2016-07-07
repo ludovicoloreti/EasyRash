@@ -797,12 +797,11 @@ angular.module('EasyRashApp.controllers', [])
   $scope.update = function(data) {
     console.log(data)
     if(data.oldPass === undefined) {
-      alert("Devi inserire la password per effettuare le modifiche richieste!")
+      alert("Devi inserire la password attuale per effettuare le modifiche richieste!")
     } else {
       Api.updateUser(data).then(function(response) {
         console.log(response)
         // $scope.user = response.data;
-
       })
     }
   }
