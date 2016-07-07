@@ -35,12 +35,12 @@ angular.module('EasyRashApp.controllers', [])
 
 .controller('DashCtrl', function($scope, Api) {
 
-  Api.getUsers().then(function(response) {
-    //console.log("Users:\n",response);
+  Api.getArticlesToReview().then(function(response) {
+    $scope.submissions = response.data;
   })
 
   Api.getEvents().then(function(response) {
-    //console.log("Events:\n",response);
+    $scope.events = response;
   })
 })
 
@@ -252,17 +252,21 @@ angular.module('EasyRashApp.controllers', [])
     // Get the article when the page loadthrough the Api service, the article type is processed
     Api.getArticle($routeParams.articleId, "processed").then(function(response) {
       $scope.annotatorMode = false;
-      // console.log("> Articolo:\n",response);
-      var doc = parser.parseFromString(response, 'text/html');
+      var doc = parser.parseFromString(response.data, 'text/html');
       var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
       var docBody = doc.getElementsByTagName("body")[0];
+
+      // DEFINING SCOPE -ROLE- VARIABLES SUCH AS "chair, pc_member, reviewer"
+      $scope.isChair = response.chair; // true or false
+      $scope.isReviewer = response.reviewer; // true or false
+      $scope.isPcMember = response.pcMember; // true or false
+
 
       $scope.loading = false;
 
       $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
-      // console.log($scope.articleBody )
 
-      // Prova
+      // trying..
       var annotations = new Array();
 
       for (i=0; i < scriptList.length; i++) {
@@ -435,27 +439,35 @@ angular.module('EasyRashApp.controllers', [])
     if ( !comment ){
       var keepRef = false;
       var isSpan = input.fragmentId.startsWith('fragment');
-
-      for(var i=0; i<commentsList.length; i++){
-        if (commentsList[i]['ref'] === input.fragmentId){
-          keepRef = true;
+      if(commentsList.length > 0)
+      {
+        console.info("Comment List is not empty")
+        for(var i=0; i<commentsList.length; i++){
+          if (commentsList[i]['ref'] === input.fragmentId){
+            keepRef = true;
+            break;
+          }
         }
+      } else {
+        console.info("Comment List is empty")
+        keepRef = false;
       }
+
 
       if( keepRef ){
         $(input.fragmentId).removeClass("highlight");
         $(input.fragmentId).removeAttr('data-toggle');
         $(input.fragmentId).removeAttr('data-target');
         $(input.fragmentId).removeAttr('ng-click');
-      }else if(isSpan) {
+      } else if(isSpan) {
         $(input.fragmentId).replaceWith(function() {
            return $(this).contents();
          });
-      }else {
+      } else {
         $(input.fragmentId).removeClass("highlight");
-        $(input.fragmentId).removeAttr('data-toggle');
-        $(input.fragmentId).removeAttr('data-target');
-        $(input.fragmentId).removeAttr('ng-click');
+        $(input.fragmentId).removeAttr("data-toggle");
+        $(input.fragmentId).removeAttr("data-target");
+        $(input.fragmentId).removeAttr("ng-click");
       }
     }
   }

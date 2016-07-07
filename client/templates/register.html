@@ -11,7 +11,7 @@
             </div>
           </div>
           <div class="panel-body">
-            <form accept-charset="UTF-8" role="form" class="form-signin">
+            <form accept-charset="UTF-8" role="form" class="form-signin" ng-submit="signup()">
               <fieldset>
                 <label class="panel-login">
                   <div class="login_result"></div>
@@ -34,7 +34,7 @@
                 <p class="text-danger">
                   <b>{{error}}</b>
                 </p>
-                <input class="btn btn-lg btn-success btn-block" type="button" id="reg" ng-click="signup()" value="Signup">
+                <input class="btn btn-lg btn-success btn-block" type="submit" id="reg" name="submit" value="Signup">
                 <div id="register">  <a href="/#/login">Login</a>  </div>
               </fieldset>
             </form>

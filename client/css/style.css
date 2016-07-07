@@ -127,11 +127,11 @@ span.fa-cog:hover {
   padding: 2px 0;
 }
 
-.blue {background-color: rgba(139, 200, 248, 0.52);}
-.green {background-color: rgba(124, 238, 61, 0.52);}
-.yellow {background-color: rgba(255, 241, 151, 0.51);}
-.purple { background-color: rgba(248, 139, 247, 0.52);}
-.orange { background-color: rgb(245, 213, 167);}
+.highlight .blue {background-color: rgba(139, 200, 248, 0.52);}
+.highlight .green {background-color: rgba(124, 238, 61, 0.52);}
+.highlight .yellow {background-color: rgba(255, 241, 151, 0.51);}
+.highlight .purple { background-color: rgba(248, 139, 247, 0.52);}
+.highlight .orange { background-color: rgb(245, 213, 167);}
 
 .blue-intense {background-color: rgba(139, 200, 248, 1);}
 .green-intense {background-color: rgba(124, 238, 61, 1);}

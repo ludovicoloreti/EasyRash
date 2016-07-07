@@ -7,8 +7,13 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
         if (current.$$route.controller === "RegisterCtrl" || current.$$route.controller === "LoginCtrl")
         {
           $rootScope.navbar = false;
+          $rootScope.footerbar = false;
+        } else if (current.$$route.controller === "AnnotatorCtrl"){
+          $rootScope.navbar = true;
+          $rootScope.footerbar = false;
         } else {
           $rootScope.navbar = true;
+          $rootScope.footerbar = true;
         }
     });
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {

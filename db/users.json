@@ -5,7 +5,8 @@
     "family_name": "Jones",
     "email": "jessica.jones@alias.com",
     "pass": "jessica.jones",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id":  "Vanessa Ives <vanessa.ives@hell.com>",
@@ -13,7 +14,8 @@
     "family_name": "Ives",
     "email": "vanessa.ives@hell.com",
     "pass": "vanessa.ives",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id":  "Lyra Belacqua <lyra.belacqua@ox.com>",
@@ -21,7 +23,8 @@
     "family_name": "Belacqua",
     "email": "lyra.belacqua@ox.com",
     "pass": "lyra.belacqua",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id": "Alice Liddell <alice.liddell@whiterabbit.com>",
@@ -29,7 +32,8 @@
     "family_name": "Liddell",
     "email": "alice.liddell@whiterabbit.com",
     "pass": "alice.liddell",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id": "Arthur Dent <arthur.dent@fish.com>",
@@ -37,7 +41,8 @@
     "family_name": "Dent",
     "email": "arthur.dent@fish.com",
     "pass": "arthur.dent",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Arabella Strange <arabella.strange@york.com>",
@@ -45,7 +50,8 @@
     "family_name": "Strange",
     "email": "arabella.strange@york.com",
     "pass": "arabella.strange",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id": "John Constantine <john.constantine@hell.com>",
@@ -53,7 +59,8 @@
     "family_name": "Constantine",
     "email": "john.constantine@hell.com",
     "pass": "john.constantine",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Fabio Vitali <fabio.vitali@unibo.it>",
@@ -61,7 +68,8 @@
     "family_name": "Vitali",
     "email": "fabio.vitali@unibo.it",
     "pass": "fabio.vitali",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Angelo Di Iorio <angelo.diiorio@unibo.it>",
@@ -69,7 +77,8 @@
     "family_name": "Di Iorio",
     "email": "angelo.diiorio@unibo.it",
     "pass": "angelo.diiorio",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Silvio Peroni <silvio.peroni@unibo.it>",
@@ -77,7 +86,8 @@
     "family_name": "Peroni",
     "email": "silvio.peroni@unibo.it",
     "pass": "silvio.peroni",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id":  "Alejandra Gonzalez-Beltran <alejandra.gonzalezbeltran@example.com>",
@@ -85,7 +95,8 @@
     "family_name": "Gonzalez-Beltran",
     "email":"alejandra.gonzalezbeltran@example.com",
     "pass": "alejandra.gonzalezbeltran",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id": "Alessia Bardi <alessia.bardi@example.com>",
@@ -93,7 +104,8 @@
     "family_name": "Bardi",
     "email":"alessia.bardi@example.com",
     "pass": "alessia.bardi",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id": "Alex Wade <alex.wade@example.com>",
@@ -101,7 +113,8 @@
     "family_name": "Wade",
     "email":"alex.wade@example.com",
     "pass": "alex.wade",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Anastasia Dimou <anastasia.dimou@example.com>",
@@ -109,7 +122,8 @@
     "family_name": "Dimou",
     "email":"anastasia.dimou@example.com",
     "pass": "anastasia.dimou",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id":  "Andrea Nuzzolese <andrea.nuzzolese@example.com>",
@@ -117,7 +131,8 @@
     "family_name": "Nuzzolese",
     "email":"andrea.nuzzolese@example.com",
     "pass": "andrea.nuzzolese",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Francesco Osborne <francesco.osborne@example.com>",
@@ -125,7 +140,8 @@
     "family_name": "Osborne",
     "email":"francesco.osborne@example.com",
     "pass": "francesco.osborne",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Francesco Poggi <francesco.poggi5@unibo.it>",
@@ -133,7 +149,8 @@
     "family_name": "Poggi",
     "email":"francesco.poggi5@unibo.it",
     "pass": "francesco.poggi5",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Jun Zhao <j.zhao5@example.com>",
@@ -141,7 +158,8 @@
     "family_name": "Zhao",
     "email":"j.zhao5@example.com",
     "pass": "j.zhao5",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   },
   {
     "_id": "Christoph Lange <math.semantic.web@example.com>",
@@ -149,7 +167,8 @@
     "family_name": "Lange",
     "email":"math.semantic.web@example.com",
     "pass": "math.semantic.web",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id":  "Michael Smith <mike@example.com>",
@@ -157,7 +176,8 @@
     "family_name": "Smith",
     "email":"mike@example.com",
     "pass": "mike",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Paul Groth <p.groth@example.com>",
@@ -165,7 +185,8 @@
     "family_name": "Groth",
     "email":"p.groth@example.com",
     "pass": "p.groth",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Paolo Ciancarini <paolo.ciancarini@example.com>",
@@ -173,7 +194,8 @@
     "family_name": "Ciancarini",
     "email":"paolo.ciancarini@example.com",
     "pass": "paolo.ciancarini",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Paolo Manghi <paolo.manghi@example.com>",
@@ -181,7 +203,8 @@
     "family_name": "Manghi",
     "email":"paolo.manghi@example.com",
     "pass": "paolo.manghi",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Raffaele Giannella <raffaele.giannella@example.com>",
@@ -189,7 +212,8 @@
     "family_name": "Giannella",
     "email":"raffaele.giannella@example.com",
     "pass": "raffaele.giannella",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Tobias Kuhn <tokuhn@example.com>",
@@ -197,7 +221,8 @@
     "family_name": "Kuhn",
     "email":"tokuhn@example.com",
     "pass": "tokuhn",
-    "sex": "male"
+    "sex": "male",
+    "confirmed": true
   },
   {
     "_id": "Sahar Vahdati <vahdati@example.com>",
@@ -205,6 +230,7 @@
     "family_name": "Vahdati",
     "email":"vahdati@example.com",
     "pass": "vahdati",
-    "sex": "female"
+    "sex": "female",
+    "confirmed": true
   }
 ]

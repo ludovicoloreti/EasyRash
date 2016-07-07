@@ -3,17 +3,17 @@
     <div class="col-md-4 col-sm-4 col-xs-12 col-lg-6" id="aside-area">
       <h1>EasyRash project TODO</h1>
       <ol class="list-group">
-        <li class="list-group-item">Update utente</li>
+        <li class="list-group-item"><s>Update utente</s></li>
         <li class="list-group-item">Eliminare annotazioni</li>
         <li class="list-group-item">Modifcare annotazioni</li>
         <li class="list-group-item">Filtro annotazioni di altri</li>
-        <li class="list-group-item">Visualizzazzione di tutte le annoatazioni</li>
-        <li class="list-group-item">Salvataggio annotazioni</li>
+        <li class="list-group-item"><s>Visualizzazzione di tutte le annoatazioni</s></li>
+        <li class="list-group-item"><s>Salvataggio annotazioni</s></li>
         <li class="list-group-item">Conversioni annotazioni in RDF</li>
-        <li class="list-group-item">Sistemare footer</li>
+        <li class="list-group-item"><s>Sistemare footer</s></li>
         <li class="list-group-item">Sistamre lista eventi</li>
         <li class="list-group-item">Fare dash</li>
-        <li class="list-group-item">Sistemare pagina evneto</li>
+        <li class="list-group-item"><Sistemare pagina evneto</li>
       </ol>
     </div>
     <div class="col-md-8 col-sm-8 col-xs-12 col-lg-6" id="doc-area">
@@ -35,6 +35,24 @@
             comments: <a href="/#/annotation-page/example-annotations">Esempio annotazione</a><br />
             comments2: <a href="/#/annotation-page/ciancarini-eswc2014">Esempio articolo lungo e complesso</a>
           </div>
+          <br><br>
+          <span ng-if="submissions.length > 0">Sono reviewer di:
+          <ol>
+            <li ng-repeat="sub in submissions">
+              <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">
+                <i>"{{sub.title | cut:true:50:' ...'}}"</i>
+              </a>
+            </li>
+          </ol></span>
+          <span ng-if="events.length > 0">Eventi:
+            <ol>
+              <li ng-repeat="ev in events">
+                <a ng-href="/#/event/{{ev._id}}">
+                  <i>"{{ev.conference}}"</i>
+                </a>
+              </li>
+            </ol>
+          </span>
         </div>
       </div>
     </div>

@@ -24,7 +24,11 @@ var UserSchema = Schema({
     type: String,
     required: true
   },
-  "sex": String
+  "sex": String,
+  "confirmed":{
+    type: Boolean,
+    required: true
+  }
 });
 
 // for protected passwords: https://devdactic.com/restful-api-user-authentication-1/
