@@ -30,6 +30,16 @@
               <input type="text" class="form-control" ng-show="clicked" ng-model="user.family_name">
             </div>
           </div>
+
+          <div class="row">
+            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
+              <h4>Email:</h4>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+              <span ng-hide="clicked">{{user.email}}</span>
+              <input type="text" class="form-control" ng-show="clicked" ng-model="user.email">
+            </div>
+          </div>
           <div class="row">
             <div class="col-md-6 col-xs-6 col-sm-6 text-right">
               <h4>Gender:</h4>
@@ -40,20 +50,6 @@
                 <label class="radio-inline"><input type="radio" class="radio" ng-model="user.sex" value="male">Male</label>
                 <label class="radio-inline"><input type="radio" class="radio" ng-model="user.sex" value="female">Female</label>
               </span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
-              <h4>Email:</h4>
-            </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
-              <span ng-hide="clicked">{{user.email}}</span>
-              <input type="text" class="form-control" ng-show="clicked" ng-model="user.email">
-            </div>
-          </div>
-          <div class="row" ng-show="clicked">
-            <div class="col-md-12 col-xs-12 col-sm-12">
-              &nbsp;
             </div>
           </div>
           <div class="row" ng-show="clicked">

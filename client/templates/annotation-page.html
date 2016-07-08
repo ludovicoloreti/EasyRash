@@ -63,24 +63,28 @@
         <div id="toolkit">
           <div class="btn-group pull-md-right">
 
-            <button ng-show="isReviewer" ng-hide="annotatorMode"  class="btn btn-secondary" title="Annotator mode"  ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
-            <button ng-hide="annotatorMode" class="btn btn-secondary" title="Annotator mode"  ng-click="" uib-tooltip="Show info" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-info"></span></button>
+            <button ng-show="isReviewer && !isChair" ng-hide="annotatorMode"  class="btn btn-secondary" title="Annotator mode"  ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
+            <button ng-show="isChair" ng-hide="annotatorMode"  class="btn btn-secondary" title="Annotator mode"  ng-click="" uib-tooltip="Approve/reject article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-tags"></span></button>
 
-            <button ng-show="annotatorMode" class="btn btn-secondary" title="Save" ng-click="saveAnnotations()" data-toggle="modal" data-target="" uib-tooltip="Save annotations" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-save"></span></button>
-            <button ng-show="annotatorMode" class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
-            <button ng-show="annotatorMode" class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
-            <button ng-show="annotatorMode" class="btn btn-secondary" title="Pick a color" uib-tooltip="Pick a color" tooltip-placement="bottom" tooltip-append-to-body="true" id="dropdown-menu-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-adjust"></span></button>
-            <div class="dropdown-menu" aria-labelledby="dropdown-menu-2" >
-              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('yellow')"><span class="pick-color-circle yellow-intense"></span><span class="color-name">Yellow</span></div>
-              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('orange')"><span class="pick-color-circle orange-intense"></span><span class="color-name">Orange</span></div>
-              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('green')"><span class="pick-color-circle green-intense"></span><span class="color-name">Green</span></div>
-              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('blue')"><span class="pick-color-circle blue-intense"></span><span class="color-name">Blue</span></div>
-              <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('purple')"><span class="pick-color-circle purple-intense"></span><span class="color-name">Purple</span></div>
+            <button class="btn btn-secondary" title="Annotator mode"  ng-click="" uib-tooltip="Show info" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-info"></span></button>
+            <span ng-show="annotatorMode" class="btn-group">
+              <button class="btn btn-secondary" title="Pick a color" uib-tooltip="Pick a color" tooltip-placement="bottom" tooltip-append-to-body="true" id="dropdown-menu-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-adjust"></span></button>
+              <div class="dropdown-menu" aria-labelledby="dropdown-menu-2" >
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('yellow')"><span class="pick-color-circle yellow-intense"></span><span class="color-name">Yellow</span></div>
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('orange')"><span class="pick-color-circle orange-intense"></span><span class="color-name">Orange</span></div>
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('green')"><span class="pick-color-circle green-intense"></span><span class="color-name">Green</span></div>
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('blue')"><span class="pick-color-circle blue-intense"></span><span class="color-name">Blue</span></div>
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('purple')"><span class="pick-color-circle purple-intense"></span><span class="color-name">Purple</span></div>
 
+              </div>
+              <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight and comment selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-commenting-o"></span></button>
+              <button class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
+              <button class="btn btn-secondary" title="Save" ng-click="saveAnnotations()" data-toggle="modal" data-target="" uib-tooltip="Save annotations" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-save"></span></button>
+              <button class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
+              <button class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
+
+            </span>
             </div>
-            <button ng-show="annotatorMode" class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-sticky-note-o"></span></button>
-            <button ng-show="annotatorMode" class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
-          </div>
         </div>
 
         <!-- START Right col -->
