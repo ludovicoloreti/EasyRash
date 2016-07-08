@@ -1,60 +1,43 @@
+<div class="jumbotron">
+    <div class="container animated fadeInLeft">
+        <h1>Welcome {{ memberinfo.given_name }} to <span class="logo-emph">EasyRash</span>!</h1>
+        <p><b>EasyRash is an innovative platform that allows you to review annotate and evaluatearticles written in <a  href="https://github.com/essepuntato/rash/">RASH</a></b></p>
+    </div>
+</div>
 <div class="container animated fadeInDown">
   <div class="row">
-    <div class="col-md-4 col-sm-4 col-xs-12 col-lg-6" id="aside-area">
-      <h1>EasyRash project TODO</h1>
-      <ol class="list-group">
-        <li class="list-group-item"><s>Update utente</s></li>
-        <li class="list-group-item">Eliminare annotazioni</li>
-        <li class="list-group-item">Modifcare annotazioni</li>
-        <li class="list-group-item">Filtro annotazioni di altri</li>
-        <li class="list-group-item"><s>Visualizzazzione di tutte le annoatazioni</s></li>
-        <li class="list-group-item"><s>Salvataggio annotazioni</s></li>
-        <li class="list-group-item">Conversioni annotazioni in RDF</li>
-        <li class="list-group-item"><s>Sistemare footer</s></li>
-        <li class="list-group-item">Sistamre lista eventi</li>
-        <li class="list-group-item">Fare dash</li>
-        <li class="list-group-item"><Sistemare pagina evneto</li>
-      </ol>
+    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+      <h2>What you can do</h2>
+      <hr />
     </div>
-    <div class="col-md-8 col-sm-8 col-xs-12 col-lg-6" id="doc-area">
-      <div class="container" id="doc-container">
-        <div id="doc-content">
-          <button ng-click="getInfo()">GET INFO</button>
-          <p ng-if="memberinfo">
-            {{memberinfo}}
-          </p>
-          <br><br>
-          <button ng-click="destroySession()">DESTROY SESSION</button>
-          <br><br>
-          <button ng-click="logout()">LOGOUT</button>
-          <br /><br />
-          <div>
-            Test
-            <br />
-            events: <a href="/#/events">Lista eventi</a><br />
-            comments: <a href="/#/annotation-page/example-annotations">Esempio annotazione</a><br />
-            comments2: <a href="/#/annotation-page/ciancarini-eswc2014">Esempio articolo lungo e complesso</a>
-          </div>
-          <br><br>
-          <span ng-if="submissions.length > 0">Sono reviewer di:
-          <ol>
-            <li ng-repeat="sub in submissions">
-              <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">
-                <i>"{{sub.title | cut:true:50:' ...'}}"</i>
-              </a>
-            </li>
-          </ol></span>
-          <span ng-if="events.length > 0">Eventi:
-            <ol>
-              <li ng-repeat="ev in events">
-                <a ng-href="/#/event/{{ev._id}}">
-                  <i>"{{ev.conference}}"</i>
-                </a>
-              </li>
-            </ol>
-          </span>
+    <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6" id="events-col">
+      <h3>View your events:</h3>
+      <div ng-if="events.length > 0" class="animated fadeInUp" ng-repeat="ev in events" >
+        <div class="card card-block">
+          <h3 class="card-title">{{ev.acronym}}</h3>
+          <p class="card-text">{{ev.conference}}</p>
+          <a ng-href="/#/event/{{ev._id}}" class="btn btn-primary">View</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6" id="articles-col">
+      <h3>Review this aricles: </h3>
+
+      <div>
+        Test
+        <br />
+        comments: <a href="/#/annotation-page/example-annotations">Esempio annotazione</a><br />
+        comments2: <a href="/#/annotation-page/ciancarini-eswc2014">Esempio articolo lungo e complesso</a>
+      </div>
+
+      <div ng-if="submissions.length > 0" class="animated fadeInUp" ng-repeat="sub in submissions">
+        <div class="card card-block">
+          <h4 class="card-title">{{sub.title.split("--")[0]}}</h4>
+          <p class="text-muted"><i>{{sub.title.split("--")[1]}}</i></p>
+          <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">Read</a>
         </div>
       </div>
     </div>
   </div>
+
 </div>

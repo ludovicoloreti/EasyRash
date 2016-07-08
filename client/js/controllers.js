@@ -42,6 +42,12 @@ angular.module('EasyRashApp.controllers', [])
   Api.getEvents().then(function(response) {
     $scope.events = response;
   })
+
+  // Get the logged user
+  Api.getCurrentUser().then(function(response) {
+    $scope.memberinfo = response.data;
+    console.log("Current User:\n",response);
+  })
 })
 
 .controller('ArticlesCtrl', function($scope) {

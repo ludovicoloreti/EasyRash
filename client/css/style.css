@@ -30,6 +30,43 @@ body {
 #register {
   text-align: right;
 }
+.jumbotron {
+    background: #000 url('../img/annotate.jpg') center center;
+    width: 100%;
+    background-size: cover;
+    text-transform: uppercase;
+    min-height: 300px;
+}
+.jumbotron.event {
+  background: #000 url('../img/event-background.jpg') center center;
+
+}
+.jumbotron h1, .jumbotron p {
+  background-color: #FFC107;
+  line-height: 150%;
+  display: table;
+  padding: 0 20px;
+  margin-bottom: 20px;
+  width: auto;
+}
+
+
+#events-col > h3, #articles-col > h3{
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+#events-col > h3 {
+  background-color: rgba(139, 200, 248, 1);
+}
+#articles-col > h3 {
+  background-color: rgba(245, 213, 167, 1);
+
+}
+/*
+.logo-emph {
+  color: #FFC107;
+}*/
 .event-background {
   content: "";
   position: relative;
