@@ -1,50 +1,52 @@
+
 <div class="container">
   <div class="row">
     <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 col-md-offset-2 col-lg-offset-2">
-      <h1 class="page-header text-center">User Account</h1>
+      <h1 class="page-header">User Account</h1>
+      <hr />
       <div class="row vertical-offset-70">
         <div class="col-xs-12 col-sm-12 col-md-12">
           <div class="row">
-            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
+            <div class="col-md-6 col-xs-12 col-sm-6 text-right">
               <h4>Id:</h4>
             </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="col-md-6 col-xs-12 col-sm-6">
               <span>{{user._id}}</span>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
+            <div class="col-md-6 col-xs-12 col-sm-6 text-right">
               <h4>Name:</h4>
             </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.given_name}}</span>
               <input type="text" class="form-control" ng-show="clicked" ng-model="user.given_name">
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
+            <div class="col-md-6 col-xs-12 col-sm-6 text-right">
               <h4>Lastname:</h4>
             </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.family_name}}</span>
               <input type="text" class="form-control" ng-show="clicked" ng-model="user.family_name">
             </div>
           </div>
 
           <div class="row">
-            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
+            <div class="col-md-6 col-xs-12 col-sm-6 text-right">
               <h4>Email:</h4>
             </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.email}}</span>
               <input type="text" class="form-control" ng-show="clicked" ng-model="user.email">
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
+            <div class="col-md-6 col-xs-12 col-sm-6 text-right">
               <h4>Gender:</h4>
             </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.sex}}</span>
               <span ng-show="clicked">
                 <label class="radio-inline"><input type="radio" class="radio" ng-model="user.sex" value="male">Male</label>
@@ -53,35 +55,36 @@
             </div>
           </div>
           <div class="row" ng-show="clicked">
-            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
+            <div class="col-md-6 col-xs-12 col-sm-6 text-right">
               <h4>Old password:</h4>
             </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.oldPass}}</span>
               <input type="text" class="form-control" ng-show="clicked" ng-model="user.oldPass">
             </div>
           </div>
           <div class="row" ng-show="clicked" >
-            <div class="col-md-6 col-xs-6 col-sm-6 text-right">
+            <div class="col-md-6 col-xs-12 col-sm-6 text-right">
               <h4>New password:</h4>
             </div>
-            <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.newPass}}</span>
               <input type="text" class="form-control" ng-model="user.newPass">
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="pull-xs-right pull-sm-right  pull-md-right  pull-lg-right ">
-                <button class="btn  btn-secondary" ng-hide="clicked"ng-click="edit()"><span class="glyphicon glyphicon-open"></span> Edit </button>
-                <button class="btn  btn-secondary" ng-show="clicked" ng-click="update(user)"><span class="fa fa-cogs"></span> Save </button>
-                <button class="btn  btn-secondary" ng-show="clicked" ng-click="edit()"><span class="fa fa-cogs"></span> Undo </button>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="vertical-offset-50">
+                  <button class="btn  btn-secondary" ng-hide="clicked"ng-click="edit()"><span class="glyphicon glyphicon-open"></span> Edit </button>
+                  <button class="btn  btn-secondary" ng-show="clicked" ng-click="update(user)"><span class="fa fa-cogs"></span> Save </button>
+                  <button class="btn  btn-secondary" ng-show="clicked" ng-click="undo()"><span class="fa fa-cogs"></span> Undo </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

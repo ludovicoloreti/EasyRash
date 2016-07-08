@@ -813,6 +813,9 @@ angular.module('EasyRashApp.controllers', [])
   }
   $scope.clicked = false;
 
+  $scope.undo = function(){
+    window.location.reload();
+  }
   // Get user info
   Api.getCurrentUser().then(function(response) {
     $scope.user = response.data;
