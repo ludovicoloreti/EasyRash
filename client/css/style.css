@@ -110,7 +110,7 @@ body {
   left: -140px;
 }
 #dropdown-menu-2 + .dropdown-menu {
-  left: 32px;
+  left: 0px;
 }
 span.pick-color-circle{
   height: 19px;

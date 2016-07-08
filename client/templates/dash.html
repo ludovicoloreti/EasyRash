@@ -19,6 +19,10 @@
           <a ng-href="/#/event/{{ev._id}}" class="btn btn-primary">View</a>
         </div>
       </div>
+      <div ng-if="events.length == 0" class="animated fadeInLeft vertical-offset-70">
+        <span class="fa fa-calendar-o fa-3x"></span>
+        <h4 class="">No events yet...</h4>
+      </div>
     </div>
     <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6" id="articles-col">
       <h3>Review this aricles: </h3>
@@ -36,6 +40,10 @@
           <p class="text-muted"><i>{{sub.title.split("--")[1]}}</i></p>
           <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">Read</a>
         </div>
+      </div>
+      <div ng-if="submissions.length == 0" class="animated fadeInLeft vertical-offset-70">
+        <span class="fa fa-edit fa-3x"></span>
+        <h4 class="">No articles yet...</h4>
       </div>
     </div>
   </div>
