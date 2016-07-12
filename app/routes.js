@@ -139,8 +139,12 @@ module.exports = function (app) {
         var isChair = false;
         var isPcMember = false;
         var isRev = false;
+        var numOfChairs = 0;
+        var numOfRevs = 0;
         for(var event of events){
+
           var chairs = event.chairs;
+          numOfChairs = chairs.length;
           var pc_members = event.pc_members;
           var submissions = event.submissions;
           for (i=0; i<chairs.length; i++) {
@@ -158,6 +162,7 @@ module.exports = function (app) {
           }
           for(i=0; i<submissions.length; i++) {
             if(submissions[i].url === req.params.id+'.html'){
+              numOfRevs = submissions[i].reviewers.length;
               for(var rev of submissions[i].reviewers){
                 if(rev === userId){
                   isRev = true;
@@ -168,12 +173,13 @@ module.exports = function (app) {
 
           }
         }
+        // Apply rash.js jquery styles
         rash.prepareForReading( file , function( error, preparationResult ){
           if (error) {
             console.log(error.message);
             res.json( {success: false, message: error.message} );
           }else{
-            res.json( {data: preparationResult, chair: isChair, reviewer: isRev, pcMember: isPcMember} );
+            res.json( {data: preparationResult, chair: isChair, reviewer: isRev, pcMember: isPcMember, numChairs: numOfChairs, numRevs: numOfRevs} );
           }
         });
       });

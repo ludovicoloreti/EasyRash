@@ -77,3 +77,53 @@
   //   }
   //
   // };
+
+
+    // function createId(element){
+    //   element.setAttribute('id', 'parent-'+count)
+    //   count++;
+    //   return element.getAttribute('id');
+    // }
+
+    // function insertNote(note,active) {
+    //   // Creo un range
+    //   var r = document.createRange()
+    //   var node = $('#'+note.node)[0];
+    //   // Setto il range
+    //   r.setStart(node,note.start);
+    //   r.setEnd(node,note.end)
+    //   // Creo lo span
+    //   var span = document.createElement('span')
+    //   span.setAttribute('id',note.id);
+    //   span.setAttribute('data-toggle', 'modal');
+    //   span.setAttribute('data-target', '#comment-modal');
+    //   span.setAttribute('class','highlight');
+    //   // Avvolgo il range con lo span
+    //   r.surroundContents(span)
+    //   $compile(span)(scope);
+    // }
+
+
+    // // indexOf method added for range selection pourposes
+    // NodeList.prototype.indexOf = function(n) {
+    //   var i=-1;
+    //   while (this.item(i) !== n) {i++} ;
+    //   return i
+    // }
+    //
+    // function compatibleExtremes(n) {
+    //   var res = (n.anchorNode.parentElement === n.focusNode.parentElement  && n.type=='Range');
+    //   console.log(res);
+    //   return res;
+    // }
+    //
+    // function findExtremes(selection){
+    //   extremes = {};
+    //   var selectionLength = selection.toString().length;
+    //   var parentLength = selection.anchorNode.parentElement.innerText.length;
+    //   extremes.start = selection.anchorOffset;
+    //   extremes.end = extremes.start + selectionLength;
+    //
+    //   return extremes;
+    //
+    // }

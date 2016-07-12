@@ -556,6 +556,7 @@ var prepareForReading = function( htmlFilePath, callback ){
 
 
           // fine parte copiata dal prof
+
           // stampo l'html che ne viene fuori
           //console.log( window.document.documentElement.outerHTML );
           callback(null, window.document.documentElement.outerHTML);

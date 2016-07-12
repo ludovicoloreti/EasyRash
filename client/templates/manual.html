@@ -10,14 +10,25 @@
       <h2>Index</h2>
       <ul>
         <li><a scroll-to-item scroll-to="#help-intro">Introduction</a></li>
-        <li><a scroll-to-item scroll-to="#help-annotator-mode">Annotator mode</a>
+        <li><a scroll-to-item scroll-to="#help-actions">Article actions</a>
           <ul>
+            <li><a scroll-to-item scroll-to="#help-accept-article">Accept or Reject article</a></li>
+            <li><a scroll-to-item scroll-to="#help-annotator-mode">Enter annotator mode</a></li>
             <li><a scroll-to-item scroll-to="#help-vote-article">Vote article</a></li>
             <li><a scroll-to-item scroll-to="#help-show-comments">Show comment list</a></li>
             <li><a scroll-to-item scroll-to="#help-create-note">Create note</a></li>
+            <li><a scroll-to-item scroll-to="#help-save-annotations">Save annotations</a></li>
+            <li><a scroll-to-item scroll-to="#help-pick-color">Pick an highlighting color</a></li>
             <li><a scroll-to-item scroll-to="#help-exit-annotator">Exit annotator mode</a></li>
           </ul>
         </li>
+        <li><a scroll-to-item scroll-to="#help-actions">Comment list actions</a>
+          <ul>
+            <li><a scroll-to-item scroll-to="#help-accept-article">Show all comments</a></li>
+            <li><a scroll-to-item scroll-to="#help-accept-article">Scroll to an article section</a></li>
+          </ul>
+        </li>
+        <li><a scroll-to-item scroll-to="#help-actions">Account page</a></li>
       </ul>
       <hr />
       <h2>Introduction</h2>
@@ -29,8 +40,15 @@
         The article should be written in <a href="https://github.com/essepuntato/rash/">RASH</a>, a framework which includes a markup language defined as a subset of HTML+RDF for writing
         scientific articles, and related tools to convert it into different formats, to extract data from it, etc.
       </p>
-      <h2>Actions</h2>
-      <h3 id="help-annotator-mode" class="small"> <span class="fa fa-pencil"></span> <code>Annotator mode</code></h3>
+      <h2 id="help-actions">Actions</h2>
+
+      <h3 id="help-accept-article" class="small"> <span class="fa fa-tags"></span> <code>Accept or Recect article</code></h3>
+
+      <p>If you are a Chair you can watch what the reviewers have written about the article and decide either if accept or reject the article.</p>
+
+      <p>You can express your judgement only once ALL reviewers have commented the article and expressed a judgement.</p>
+
+      <h3 id="help-annotator-mode" class="small"> <span class="fa fa-pencil"></span> <code>Enter annotator mode</code></h3>
       <p>
         When you click on this button you enter the annotator mode which allows you to create selections, underline text, create comments and
         vote the article.
@@ -49,9 +67,8 @@
       <p>
         The chair decides either to accept the article or reject the article on the average vote express by all reviewers.
       </p>
-      <p>
-        Once you gave a vote to the article you can't express the vote another time.
-      </p>
+      <p>  Once you gave a vote to the article you can't express the vote another time.</p>
+
       <h3 id="help-show-comments" class="small"> <span class="fa fa-th-list"></span> <code>Show comment list</code></h3>
       <p>
         By clicking on this button you will see a modal containing a table that lists all the comment you have written in annotator mode and
@@ -60,7 +77,7 @@
       <p>
         You can update, delete and insert comments as you like.
       </p>
-      <h3 id="help-create-note" class="small"> <span class="fa fa-sticky-note-o"> </span><code>Create note</code></h3>
+      <h3 id="help-create-note" class="small"> <span class="fa fa-commenting-o"> </span><code>Create note</code></h3>
       <p>
         After a selection you can press this button in order to highlight the selected text. By highlighting you will be able to comment the
         fragment.
@@ -68,6 +85,13 @@
       <p>
         Overlapping fragment are not allowd, so you should verify what other users have commented.
       </p>
+      <h3 id="help-save-annotations" class="small"> <span class="fa fa-save"> </span><code>Save your annotations</code></h3>
+      <p>Once you have finished your review, you can save the annotaions after the expression of a complexive judjement (using the <span class="fa fa-check"></span>  <code>Vote article</code> action).
+      </p>
+
+      <h3 id="help-pick-color" class="small"> <span class="fa fa-adjust"> </span><code>Pick an highlight color</code></h3>
+      <p>When you enter the annotator mode, you have the possibility to express a preveference over the highlighting color.</p>
+
       <h3 id="help-exit-annotator" class="small" > <span class="fa fa-remove"></span> <code>Exit annotator mode</code></h3>
       <p>
         When you push this button you exit the annotator mode and al your comments will be saved or deleted.

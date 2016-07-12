@@ -59,7 +59,7 @@ angular.module('EasyRashApp.controllers', [])
 
 .controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $uibModal, $anchorScroll, $timeout,$compile, Api) {
 
-  /**** START SETUP ****/
+  /***************** START SETUP ********************/
 
   // Loading gif activated
   $scope.loading = true;
@@ -67,8 +67,10 @@ angular.module('EasyRashApp.controllers', [])
   var parser = new DOMParser();
   // Review on the article
   var review = null;
-  //List of comments from other reviewers
+  //List of comments, decisions and reviews from other reviewers
   var commentsList = null;
+  var reviewsList = null;
+  var decisionsLIst = null;
 
   // Get the logged user
   getCurrentUser();
@@ -82,18 +84,34 @@ angular.module('EasyRashApp.controllers', [])
   // Annotator mode sat false
   $scope.annotatorMode = false;
 
+  // Already review switch
+  $scope.canReview = true;
+
+  // Can Decide switch
+  $scope.canDecide = false;
+  $scope.alreadyDecided = false;
+
   // Default highlight color
   $scope.selectionColor = "yellow"
 
   // Sidebar set open
   $scope.sidebarClosed = null;
 
+  // Array of colors
+  var colorList = ["yellow", "orange", "purple", "blue", "green"]
+
   // Article rating serttings
+  $scope.eval = {};
   $scope.rating = 0;
-  $scope.vote = {
+  $scope.eval.vote = {
       current: 1,
       max: 5
   }
+
+  var articleStats = {};
+  articleStats.avgVote = 0;
+  articleStats.numAccept = 0;
+  articleStats.numReject = 0;
 
   // Function: set the highlighting color
   $scope.setColor = function(color){
@@ -109,7 +127,7 @@ angular.module('EasyRashApp.controllers', [])
   $scope.getSelectedRating = function (rating) {
     console.log(rating);
   }
-  /**** END SETUP ****/
+  /******************** END SETUP ************************/
 
   // Person object: RDF reviewer rapresentation
   function Person(){
@@ -118,12 +136,12 @@ angular.module('EasyRashApp.controllers', [])
     this["@id"] = "mailto:"+$scope.reviewer.email;
     this["name"] = $scope.reviewer.given_name+" "+$scope.reviewer.family_name;
     this["as"] =  {
-      "@id": "#role2",
+      "@id": "#role1",
       "@type": "role",
       "role_type": "pro:reviewer",
       "in": ""
     }
-  } // TODO implement
+  }
 
 
   // Review object for the specified article
@@ -137,6 +155,8 @@ angular.module('EasyRashApp.controllers', [])
         "@id": this["@id"]+"-eval",
         "@type": "score",
         "status": "",
+        "comment": "",
+        "rank": "",
         "author": "mailto:"+$scope.reviewer.email,
         "date": new Date().toISOString()
       }
@@ -182,13 +202,25 @@ angular.module('EasyRashApp.controllers', [])
         }
       }
     },
+    evaluateArticle: function(status, score, comment){
+
+      if (status) this.article.eval.status = "pso:accepted-for-publication";
+      else this.article.eval.status = "pso:rejected-for-publication";
+
+      score = parseInt(score);
+
+      if(score > 1 && score < 6) this.article.eval.rank = score;
+
+      this.article.eval.comment = comment;
+      console.log(this.article);
+    },
     generateJsonLD: function(){
       var list = new Array();
       var jsonLD = {};
       jsonLD["@context"] = this["@context"];
       jsonLD["@type"] = this["@type"];
       jsonLD["@id"] = this["@id"];
-      jsonLD["@article"]= this["article"];
+      jsonLD["article"]= this["article"];
       jsonLD["comments"] = new Array();
 
       for (var i=0; i<this.comments.length; i++) {
@@ -199,9 +231,6 @@ angular.module('EasyRashApp.controllers', [])
       list.unshift(jsonLD);
       list.push(new Person());
       return list;
-
-
-
     }
 
   }
@@ -236,6 +265,25 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
+  function Decision() {
+    this["@context"] = "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json";
+    this["@type"] = "decision";
+    this["@id"] = "#decision"+$scope.decisionCounter;
+    this["article"] = {
+      "@id": "",
+      "eval": {
+        "@id": this["@id"]+"-eval",
+        "@type": "score",
+        "status": "",
+        "comment": "",
+        "score": "",
+        "author": "mailto:"+$scope.reviewer.email,
+        "date": new Date().toISOString()
+      }
+    };
+    this["comments"] = new Array()
+  }
+
   // Function: get the currently logged user
   function getCurrentUser(){
     Api.getCurrentUser().then(function(response) {
@@ -265,13 +313,14 @@ angular.module('EasyRashApp.controllers', [])
       $scope.isChair = response.chair; // true or false
       $scope.isReviewer = response.reviewer; // true or false
       $scope.isPcMember = response.pcMember; // true or false
-
-
+      $scope.totalAssignedReviewers = response.numRevs;
+      $scope.totalChairs = response.numChairs;
+      // Stop the loading gif
       $scope.loading = false;
 
+      // Show the article in #article-container
       $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
 
-      // trying..
       var annotations = new Array();
 
       for (i=0; i < scriptList.length; i++) {
@@ -280,28 +329,112 @@ angular.module('EasyRashApp.controllers', [])
 
       // console.log(annotations)
       commentsList = new Array();
+      reviewsList = new Array();
+      decisionsList = new Array();
+
+      articleStats.avgVote = 0;
+
       for (i=0; i < annotations.length; i++) {
         var annotation = annotations[i];
         for (j=0; j < annotation.length; j++) {
 
-          if(annotation[j]['@type'] == "comment") {
-            console.log("#article-container "+annotation[j]['ref']);
-            annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0] ? docBody.querySelectorAll(annotation[j]['ref'])[0].innerText : "Error: no Reference detected";
-            commentsList.push( annotation[j] );
+          // If the user has already commented the article it can't review.
+          if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
+            $scope.canReview = false;
+          }
+
+          switch(annotation[j]['@type']){
+            case "comment":
+              console.log("#article-container "+annotation[j]['ref']);
+              annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0] ? docBody.querySelectorAll(annotation[j]['ref'])[0].innerText : "Error: no Reference detected";
+              commentsList.push( annotation[j] );
+              break;
+            case "review":
+              console.log(annotation[j]);
+              reviewsList.push( annotation[j] );
+
+              console.log(annotation[j]);
+
+              articleStats.avgVote += parseInt(annotation[j]["article"]["eval"]["rank"]);
+              console.log(articleStats.avgVote);
+
+              if (annotation[j]["article"]["eval"]["status"] === "pso:accepted-for-publication"){
+                articleStats.numAccept++;
+              }else{
+                articleStats.numReject++;
+              }
+              break;
+            case "decision":
+
+              if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
+                $scope.alreadyDecided = true;
+              }
+              decisionsList.push( annotation[j] );
+              break;
           }
         }
       }
+      // Set the average vote:
+      if(articleStats.avgVote == 0 || reviewsList.length == 0 ){
+        articleStats.avgVote = "No Vote";
+      } else {
+        articleStats.avgVote = articleStats.avgVote/reviewsList.length;
+      }
+      $scope.articleStats = articleStats;
 
-      $scope.reviewCounter = scriptList.length; // TODO check for the type
+      $scope.reviewCounter = reviewsList.length;
+
+      if(reviewsList.length >= response.numRevs){
+        $scope.canDecide == true;
+      }
+
       console.log($scope.reviewCounter);
       $scope.commentCounter = commentsList.length; // TODO find a better solution
       console.log($scope.commentCounter);
+      $scope.decisionCounter = decisionsList.length;
+
       console.log(commentsList);
+      console.log(reviewsList);
+
       $scope.commentsList = commentsList;
+      $scope.reviewsList = reviewsList;
       // Fine Prova
 
     });
   }
+
+  var s = true;
+  $scope.showAllComments = function(){
+
+    var author = "";
+    var color = 0;
+
+    if(s){
+      s = false;
+      for( var i=0; i < commentsList.length; i++) {
+
+        var ref = commentsList[i].ref;
+
+        if(commentsList[i].author !== author ){
+          author = commentsList[i].author;
+          color = colorList[parseInt(Math.random() * 5)];
+        }
+        $("#article-container "+ref).addClass("highlight "+color);
+      }
+    }else {
+      s = true;
+      for( var i=0; i < commentsList.length; i++) {
+        var ref = commentsList[i].ref;
+        $("#article-container "+ref).removeClass("highlight");
+        for(var c = 0; c < colorList.length; c++){
+          $("#article-container "+ref).removeClass(colorList[c]);
+        }
+
+      }
+    }
+  }
+
+
 
   // Function: detects when a user clicks on a link. It prevents the action if the usr has unsaved annotations
   $scope.$on('$locationChangeStart', function( event ) {
@@ -334,11 +467,15 @@ angular.module('EasyRashApp.controllers', [])
 
   }
 
+  // Funciton: prepare the article before it is sent to the server.
   function prepareArticle(){
     var article = $("#article-container");
     article.find('*').each(function( index ) {
-      if( $(this).attr('id') ){
 
+      if( $(this).attr('id') ){
+        /* If the id is an id used by EasyRashApp for the annotation process it means it has
+          a lot of other attributes that needs to be deleted before the article is sent to the server.
+        */
         if( $(this).attr('id').startsWith('para-') || $(this).attr('id').startsWith('fragment')){
           $(this).removeClass("highlight");
           $(this).removeClass("yellow");
@@ -358,18 +495,25 @@ angular.module('EasyRashApp.controllers', [])
     return article.html();
   }
 
+  // Function: Save the list of comments by sending it to the server.
   $scope.saveAnnotations = function(){
     console.log(review);
-    if(review.comments.length > 0){
-      var data = {};
-      data.annotations = review.generateJsonLD();
-      data.article = prepareArticle();
-      data.articleName = $routeParams.articleId;
 
-      Api.saveAnnotations(data).then(function(response) {
-        console.log(response);
-        //callApiService();
-      });
+    if(review.comments.length > 0){
+      if(review.article.eval.status !== "") {
+        var data = {};
+        data.annotations = review.generateJsonLD();
+        data.article = prepareArticle();
+        data.articleName = $routeParams.articleId;
+
+        Api.saveAnnotations(data).then(function(response) {
+          console.log(response);
+          //callApiService();
+        });
+      }else {
+        showErrors("You must accept or reject the article before saving your annotations.")
+      }
+
     }
   }
 
@@ -388,7 +532,8 @@ angular.module('EasyRashApp.controllers', [])
     // }
   }
 
-  // Function:
+  // Function: save the comment related to a fragment
+  // INVOKED BY: Comment modal
   $scope.saveComment = function(input){
     if( input.text ){
       var comment = review.getComment(input.fragmentId);
@@ -409,6 +554,8 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
+  // Funciton: delete the comment relate to a fragment and the fragment too
+  // INVOKED BY - Comment modal
   $scope.deleteComment = function(input){
     console.log("Delete");
     var keepRef = false;
@@ -475,6 +622,7 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
+  // Function: set of the modal used for insert, update, delete a comment on a fragment
   $scope.setupCommentOnModal = function(ref){
     $scope.commentModal = {};
     console.log(ref);
@@ -487,6 +635,15 @@ angular.module('EasyRashApp.controllers', [])
       $scope.commentModal.text = "";
     }
 
+  }
+
+  // Function: evaluate article (reviewer)
+  $scope.saveEval = function(e){
+    console.log(e);
+    if(e.comment && e.status !== undefined && e.vote.current){
+      console.log(e);
+      review.evaluateArticle(e.status, e.vote.current, e.comment);
+    }
   }
 
   // Function:
@@ -517,7 +674,7 @@ angular.module('EasyRashApp.controllers', [])
     $anchorScroll();
   };
 
-
+  // Return the current selection, compatible with all browsers
   function selection(){
     if (window.getSelection) {
       return window.getSelection();
@@ -526,30 +683,6 @@ angular.module('EasyRashApp.controllers', [])
     } else if (document.selection) {
       return document.selection.createRange().text;
     }
-  }
-
-  // indexOf method added for range selection pourposes
-  NodeList.prototype.indexOf = function(n) {
-    var i=-1;
-    while (this.item(i) !== n) {i++} ;
-    return i
-  }
-
-  function compatibleExtremes(n) {
-    var res = (n.anchorNode.parentElement === n.focusNode.parentElement  && n.type=='Range');
-    console.log(res);
-    return res;
-  }
-
-  function findExtremes(selection){
-    extremes = {};
-    var selectionLength = selection.toString().length;
-    var parentLength = selection.anchorNode.parentElement.innerText.length;
-    extremes.start = selection.anchorOffset;
-    extremes.end = extremes.start + selectionLength;
-
-    return extremes;
-
   }
 
   count = 0;
@@ -571,9 +704,19 @@ angular.module('EasyRashApp.controllers', [])
 
       range.startPoint = s.anchorOffset;
       range.endPoint = s.extentOffset;
-      var commonContainer = range.commonAncestorContainer;
 
-      if( (commonContainer.nodeName === "P" ||  commonContainer.parentElement.nodeName === "P") && range.startPoint < 2 && commonContainer.toString().length - range.toString().length < 4 ){
+      var commonContainer = range.commonAncestorContainer;
+      if(range.commonAncestorContainer.parentElement.nodeName === "P"){
+        commonContainer = commonContainer.parentElement
+      }
+      console.log(range);
+      console.log(commonContainer.parentElement.innerText);
+
+      console.log(range.startPoint < 2);
+      console.log(commonContainer.nodeName === "P");
+      console.log(commonContainer.innerText.toString().length );
+      console.log(range.toString().length)
+      if( commonContainer.nodeName === "P"  && range.startPoint < 2 && commonContainer.innerText.toString().length - range.toString().length < 4 ){
         console.log(range.commonAncestorContainer);
         var paraId = null;
         var ancestor = null;
@@ -669,9 +812,11 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
+  // Number of fragment/para in the current docuement, used to craete the incremental and unique id
   var maxCounterPara = 0;
   var maxCounterSpan = 0;
 
+  // Generate id for a selected paragraph
   function generateParaId(){
 
     $('#article-container p[id^="para-"]').each(function( index ) {
@@ -685,6 +830,7 @@ angular.module('EasyRashApp.controllers', [])
     return paraId;
   }
 
+  // Generate the id of a selected fragment
   function generateSpanId(){
 
     $('#article-container span[id^="fragment-"]').each(function( index ) {
@@ -698,30 +844,6 @@ angular.module('EasyRashApp.controllers', [])
     return spanId;
   }
 
-  // function createId(element){
-  //   element.setAttribute('id', 'parent-'+count)
-  //   count++;
-  //   return element.getAttribute('id');
-  // }
-
-  // function insertNote(note,active) {
-  //   // Creo un range
-  //   var r = document.createRange()
-  //   var node = $('#'+note.node)[0];
-  //   // Setto il range
-  //   r.setStart(node,note.start);
-  //   r.setEnd(node,note.end)
-  //   // Creo lo span
-  //   var span = document.createElement('span')
-  //   span.setAttribute('id',note.id);
-  //   span.setAttribute('data-toggle', 'modal');
-  //   span.setAttribute('data-target', '#comment-modal');
-  //   span.setAttribute('class','highlight');
-  //   // Avvolgo il range con lo span
-  //   r.surroundContents(span)
-  //   $compile(span)(scope);
-  // }
-
   // Utility method: show errors
   function showErrors(message){
     $scope.error = true;
@@ -729,8 +851,8 @@ angular.module('EasyRashApp.controllers', [])
   }
 
   // Utility method: hide errors
-  function hideErrors(){
-    $scope.error = true;
+  $scope.hideErrors = function(){
+    $scope.error = false;
     $scope.message = "";
   }
 

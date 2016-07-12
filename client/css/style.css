@@ -93,7 +93,10 @@ body {
   padding: 40px 30px;
   /*box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.5);*/
 }
-
+#comment-stat-list {
+  max-height: 150px;
+  overflow-y: auto;
+}
 .outer {
   position: relative;
 }
@@ -144,15 +147,16 @@ span.fa-cog:hover {
 }
 
 .highlight > .highlight {
-  background-color: rgba(255, 226, 195, 0.91);
-  padding: 2px 0;
+  background-color: rgba(243, 243, 130, 0.90) !important;
+  border-bottom: solid .35px red;
+  padding: 3px 0;
 }
 
-.highlight .blue {background-color: rgba(139, 200, 248, 0.52);}
-.highlight .green {background-color: rgba(124, 238, 61, 0.52);}
-.highlight .yellow {background-color: rgba(255, 241, 151, 0.51);}
-.highlight .purple { background-color: rgba(248, 139, 247, 0.52);}
-.highlight .orange { background-color: rgb(245, 213, 167);}
+.highlight.blue {background-color: rgba(139, 200, 248, 0.62)  ;}
+.highlight.green {background-color: rgba(124, 238, 61, 0.62) ;}
+.highlight.yellow {background-color: rgba(255, 241, 151, 0.62) ;}
+.highlight.purple { background-color: rgba(248, 139, 247, 0.62) ;}
+.highlight.orange { background-color: rgb(245, 213, 167) ;}
 
 .blue-intense {background-color: rgba(139, 200, 248, 1);}
 .green-intense {background-color: rgba(124, 238, 61, 1);}
