@@ -8,6 +8,7 @@ angular.module('EasyRashApp.controllers', [])
 
 .controller('AppCtrl', function($scope, Api, $rootScope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
 
+  // if user isn't authenticated yet, then logout and redirect to login page
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
     AuthService.logout();
     $window.location.href = "/#/login";
@@ -926,24 +927,30 @@ angular.module('EasyRashApp.controllers', [])
     console.log(data)
     if(data.oldPass === undefined) {
       alert("Devi inserire la password attuale per effettuare le modifiche richieste!")
-    } else {
+    } else {s
       Api.updateUser(data).then(function(response) {
         console.log(response)
-        // $scope.user = response.data;
+        $scope.user = response.config.data;
+        $scope.clicked = false;
       });
     }
   }
   $scope.clicked = false;
 
   $scope.undo = function(){
+    // reload the page to avoid to save something we dont wantss
     window.location.reload();
   }
   // Get user info
   Api.getCurrentUser().then(function(response) {
+    // get the current user
     $scope.user = response.data;
   });
 
-  $scope.edit = function(data){
+  $scope.edit = function(){
+    // reset password fields
+    $scope.user.oldPass = "";
+    $scope.user.newPass = "";
     $scope.clicked = true;
   };
 
