@@ -624,7 +624,7 @@ angular.module('EasyRashApp.controllers', [])
   $scope.saveAnnotations = function(){
     console.log(review);
 
-    if(review.comments.length > 0 ){
+    if(review && review.comments.length > 0 ){
       if(review.article.eval.status !== "") {
         var data = {};
         data.annotations = review.generateJsonLD();
@@ -647,12 +647,15 @@ angular.module('EasyRashApp.controllers', [])
   // Function: exit the annotator mode
   $scope.exit = function(){
     // If the user has unsaved annotations
-    if(review.comments.length > 0){
+    if(review && review.comments.length > 0){
       var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
       if (answer) {
         review = null;
         callApiService();
       }
+    }else{
+      callApiService();
+
     }
   }
 
