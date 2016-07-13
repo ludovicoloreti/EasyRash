@@ -7,8 +7,9 @@
 angular.module('EasyRashApp.controllers', [])
 
 .controller('AppCtrl', function($scope, Api, $rootScope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
+  console.log("AppCtrl");
   // GLOBAL function to get the logged user informations
-  $rootScope.getUser = function() {
+  $rootScope.getUser = function( callback ) {
     Api.getCurrentUser().then(function(response) {
       if (response.success === true) {
         $rootScope.userMsg = response.msg;
@@ -16,6 +17,9 @@ angular.module('EasyRashApp.controllers', [])
       } else {
         $rootScope.userMsg = response.msg;
         $rootScope.userInfo = {};
+      }
+      if(callback){
+        callback();
       }
     })
   };
@@ -70,21 +74,29 @@ angular.module('EasyRashApp.controllers', [])
   var reviewsList = null;
   var decisionsLIst = null;
 
-  // Get list of documents the user can review
-  getDocList();
+  // Set the reviewer/chair
+  $rootScope.getUser(function(){
 
-  // Get the RASH article
-  callApiService();
+    $scope.reviewer = $rootScope.userInfo;
+    // Get list of documents the user can review
+    getDocList();
+
+    // Get the RASH article
+    callApiService();
+
+  });
 
   // Annotator mode sat false
   $scope.annotatorMode = false;
 
+  /**** User rights ****/
   // Already review switch
-  $scope.canReview = true;
-
+  $scope.canReview = false;
   // Can Decide switch
   $scope.canDecide = false;
   $scope.alreadyDecided = false;
+  $scope.alreadyReviewed = false;
+  /*********************/
 
   // Default highlight color
   $scope.selectionColor = "yellow"
@@ -103,6 +115,7 @@ angular.module('EasyRashApp.controllers', [])
     max: 5
   }
 
+  // Statistics object
   var articleStats = {};
   articleStats.avgVote = 0;
   articleStats.numAccept = 0;
@@ -138,9 +151,21 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
+  // Person utility methods
+  Person.prototype = {
+    setChairRole: function(){
+      this.as = {
+        "@id": "#role2",
+        "@type": "role",
+        "role_type": "pro:chair",
+        "in": ""
+      }
+    }
+  }
+
 
   // Review object for the specified article
-  function Review(article){
+  function Review(){
     this["@context"] = "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json";
     this["@type"] = "review";
     this["@id"] = "#review"+$scope.reviewCounter;
@@ -161,12 +186,12 @@ angular.module('EasyRashApp.controllers', [])
 
   // Review handling funtions
   Review.prototype = {
-
+    // Generates the id of a comment
     generateId: function(comment){
-      // TODO implement
       $scope.commentCounter++;
       return this["@id"]+"-c"+$scope.commentCounter;
     },
+    // Insert a comment
     pushComment: function(comment){
       // If the comment has an id it means it's already in the comments array
       if( !comment['@id'] ){
@@ -183,6 +208,7 @@ angular.module('EasyRashApp.controllers', [])
 
       return comment;
     },
+    // Get the comment by id (the id is the reference)
     getComment: function(commentKey){
       for (var i=0; i<this.comments.length; i++) {
         if (this.comments[i].key == commentKey) {
@@ -190,6 +216,7 @@ angular.module('EasyRashApp.controllers', [])
         }
       }
     },
+    // Delete a comment
     deleteComment: function(commentId){
       for (var i=0; i<this.comments.length; i++) {
         if (this.comments[i].key == commentId) {
@@ -197,18 +224,20 @@ angular.module('EasyRashApp.controllers', [])
         }
       }
     },
+    // Evaluate the article
     evaluateArticle: function(status, score, comment){
 
       if (status) this.article.eval.status = "pso:accepted-for-publication";
       else this.article.eval.status = "pso:rejected-for-publication";
 
-      score = parseInt(score);
+      var s = parseInt(score);
 
-      if(score > 1 && score < 6) this.article.eval.rank = score;
+      if(s >= 1 && s < 6) this.article.eval.rank = s;
 
       this.article.eval.comment = comment;
       console.log(this.article);
     },
+    // Generate the Json-ld for the RDF. This json is redy to be sent to the server
     generateJsonLD: function(){
       var list = new Array();
       var jsonLD = {};
@@ -260,6 +289,7 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
+  // Chair Decision object
   function Decision() {
     this["@context"] = "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json";
     this["@type"] = "decision";
@@ -271,21 +301,44 @@ angular.module('EasyRashApp.controllers', [])
         "@type": "score",
         "status": "",
         "comment": "",
-        "score": "",
+        "rank": "",
         "author": "mailto:"+$scope.reviewer.email,
         "date": new Date().toISOString()
       }
-    };
-    this["comments"] = new Array()
+    }
   }
 
-  // Function: get the currently logged user
-    $scope.reviewer = $rootScope.userInfo;
+  // Decision handling methods
+  Decision.prototype = {
+    // Express an evaluation for the article
+    evaluateArticle: function(status, score, comment){
+
+      if (status) this.article.eval.status = "pso:accepted-for-publication";
+      else this.article.eval.status = "pso:rejected-for-publication";
+
+      var s = parseInt(score);
+
+      if(s >= 1 && s < 6) this.article.eval.rank = s;
+
+      this.article.eval.comment = comment;
+    },
+    // Generate the json-ld before sending it to the server
+    generateJsonLD: function(){
+
+      var jsonLD = new Array();
+      var person = new Person();
+      person.setChairRole();
+
+      jsonLD.push(this);
+      jsonLD.push(person);
+      return jsonLD;
+    }
+  }
 
   // Funciton: get the list of article to review
   function getDocList(){
     Api.getArticlesToReview().then(function(response) {
-      console.log(response.data);
+      // Set the list of submissions
       $scope.submissions = response.data;
     })
   }
@@ -294,104 +347,147 @@ angular.module('EasyRashApp.controllers', [])
   function callApiService(){
     // Get the article when the page loadthrough the Api service, the article type is processed
     Api.getArticle($routeParams.articleId, "processed").then(function(response) {
+      // If I get the normal article I'm in reading mode
       $scope.annotatorMode = false;
       console.log(response);
-      if(response.success){
 
+      if(response.success){
+        // DOM rapresentation for the article
         var doc = parser.parseFromString(response.data, 'text/html');
+        // Get the list of scripts
         var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
+        // Get the article body
         var docBody = doc.getElementsByTagName("body")[0];
 
-        // DEFINING SCOPE -ROLE- VARIABLES SUCH AS "chair, pc_member, reviewer"
+        // MARK - START Set rights
         $scope.isChair = response.chair; // true or false
         $scope.isReviewer = response.reviewer; // true or false
         $scope.isPcMember = response.pcMember; // true or false
         $scope.totalAssignedReviewers = response.numRevs;
         $scope.totalChairs = response.numChairs;
+
+        // If reviewer - can review
+        if(response.reviewer){
+          $scope.canReview = true;
+        }
+
+        // If chair - can decide but not review
+        if(response.chair){
+          $scope.canDecide = true;
+          $scope.canReview = false;
+        }
+        // MARK - END set rights
+
         // Stop the loading gif
         $scope.loading = false;
 
         // Show the article in #article-container
         $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
 
-
         var annotations = new Array();
 
+        // Trasform the list of scripts in a list of object.
         for (i=0; i < scriptList.length; i++) {
           annotations.push( JSON.parse(scriptList[i].textContent) );
         }
 
-        // console.log(annotations)
         commentsList = new Array();
         reviewsList = new Array();
-        decisionsList = new Array();
+        chairDecision = null;
 
         articleStats.avgVote = 0;
 
+        /*
+          For each script tag check the array of annotations:
+          The array can contain this array: [ Review, Comment, Person ]
+          The array can contain this array: [ Decision, Person ]
+         */
         for (i=0; i < annotations.length; i++) {
           var annotation = annotations[i];
           for (j=0; j < annotation.length; j++) {
 
-            // If the user has already commented the article it can't review.
-            if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
-              $scope.canReview = false;
-            }
-
+            // Check the type of annotation
             switch(annotation[j]['@type']){
               case "comment":
-              console.log("#article-container "+annotation[j]['ref']);
+              // Get the text of the fragment the comment is referring to
               annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0] ? docBody.querySelectorAll(annotation[j]['ref'])[0].innerText : "Error: no Reference detected";
               commentsList.push( annotation[j] );
               break;
+
               case "review":
-              console.log(annotation[j]);
+
+              // If the user has already commented the article he can't review.
+              if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
+                $scope.canReview = false;
+                $scope.alreadyReviewed = true;
+              }
+
               reviewsList.push( annotation[j] );
 
-              console.log(annotation[j]);
-
+              // Set statistics: avg vote
               articleStats.avgVote += parseInt(annotation[j]["article"]["eval"]["rank"]);
-              console.log(articleStats.avgVote);
 
+              // Set statistics: accepted or rejected
               if (annotation[j]["article"]["eval"]["status"] === "pso:accepted-for-publication"){
                 articleStats.numAccept++;
               }else{
                 articleStats.numReject++;
               }
               break;
+
               case "decision":
 
+              // If the user has already decided, he is a chair and can't decide.
               if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
+                $scope.canDecide = false;
                 $scope.alreadyDecided = true;
               }
-              decisionsList.push( annotation[j] );
+              // Set the decision
+              chairDecision = annotation[j];
               break;
             }
           }
         }
+
         // Set the average vote:
         if(articleStats.avgVote == 0 || reviewsList.length == 0 ){
           articleStats.avgVote = "No Vote";
         } else {
           articleStats.avgVote = articleStats.avgVote/reviewsList.length;
         }
+
+        // Set the object containing statistics
         $scope.articleStats = articleStats;
 
         $scope.reviewCounter = reviewsList.length;
 
+        // If all reviewers have commented the article, the chair can decide
         if(reviewsList.length >= response.numRevs){
-          $scope.canDecide == true;
+          $scope.canDecide = true;
+        }else{
+          $scope.canDecide = false;
         }
 
         console.log($scope.reviewCounter);
-        $scope.commentCounter = commentsList.length; // TODO find a better solution
+        $scope.commentCounter = commentsList.length;
         console.log($scope.commentCounter);
-        $scope.decisionCounter = decisionsList.length;
+
+        // Only one chair can decide. It can be changed in an easy way using this counter
+        $scope.decisionCounter = 1;
 
         console.log(commentsList);
         console.log(reviewsList);
 
         $scope.commentsList = commentsList;
         $scope.reviewsList = reviewsList;
+        $scope.chairDecision = chairDecision;
+
+        console.log("chair: "+ response.chair);
+        console.log("reviewer: "+response.reviewer);
+        console.log("canDecide: "+$scope.canDecide);
+        console.log("alreadyDecided: "+$scope.alreadyDecided);
+        console.log("canReview: "+$scope.canReview);
+        console.log("alreadyReviewed: "+$scope.alreadyReviewed);
         // Fine Prova
       }else {
         // Stop the loading gif
@@ -402,6 +498,7 @@ angular.module('EasyRashApp.controllers', [])
     });
   }
 
+  // Show and hide all comments
   var s = true;
   $scope.showAllComments = function(){
 
@@ -453,10 +550,12 @@ angular.module('EasyRashApp.controllers', [])
       console.log(response);
       if(response.success){
         $scope.annotatorMode = true;
-        // TODO
-        review = new Review("TODO-review-id");
+
+        // Create the review
+        review = new Review();
+
+        // Load the unprecessed rash file to #article-container
         $scope.articleBody = $sce.trustAsHtml(response.data.body);
-        // console.log(response.data.info);
         console.log($scope.articleBody);
       }else{
         showErrors(response.message)
@@ -493,12 +592,39 @@ angular.module('EasyRashApp.controllers', [])
     console.log(article.html());
     return article.html();
   }
+  // Function: dave the chair decision
+  $scope.saveDecision = function(d){
+
+    var decision = new Decision();
+    if(d.text && d.status !== undefined && !isNaN($scope.articleStats.avgVote)){
+      decision.evaluateArticle(d.status, $scope.articleStats.avgVote, d.text);
+
+
+      var data = {};
+      data.articleName = $routeParams.articleId;
+      data.decision = decision.generateJsonLD();
+      // TODO uncomment and delete the second
+      // if($scope.canDecide && !$scope.alreadyDecided){
+      //   Api.saveDecision(data).then(function(response) {
+      //     console.log(response);
+      //     //callApiService();
+      //   });
+      // }
+      Api.saveDecision(data).then(function(response) {
+        console.log("prova");
+        console.log(response);
+        //callApiService();
+      });
+    }
+
+
+  }
 
   // Function: Save the list of comments by sending it to the server.
   $scope.saveAnnotations = function(){
     console.log(review);
 
-    if(review.comments.length > 0){
+    if(review.comments.length > 0 ){
       if(review.article.eval.status !== "") {
         var data = {};
         data.annotations = review.generateJsonLD();
@@ -513,22 +639,21 @@ angular.module('EasyRashApp.controllers', [])
         showErrors("You must accept or reject the article before saving your annotations.")
       }
 
+    }else {
+      showErrors("No comments.")
     }
   }
 
   // Function: exit the annotator mode
   $scope.exit = function(){
     // If the user has unsaved annotations
-    // if(review.comments.length > 0){
-    //   var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
-    //   if (answer) {
-    //     review = null;
-    //     Api.saveAnnotations($routeParams.articleId).then(function(response) {
-    //       console.log(response);
-    //       callApiService();
-    //     });
-    //   }
-    // }
+    if(review.comments.length > 0){
+      var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
+      if (answer) {
+        review = null;
+        callApiService();
+      }
+    }
   }
 
   // Function: save the comment related to a fragment
@@ -556,7 +681,7 @@ angular.module('EasyRashApp.controllers', [])
   // Funciton: delete the comment relate to a fragment and the fragment too
   // INVOKED BY - Comment modal
   $scope.deleteComment = function(input){
-    console.log("Delete");
+
     var keepRef = false;
     var isSpan = input.fragmentId.startsWith('fragment');
 
@@ -580,9 +705,9 @@ angular.module('EasyRashApp.controllers', [])
     review.deleteComment(input.fragmentId);
   }
 
+  // When a user is creating a comment and cancel the action
   $scope.cancel = function(input){
-    // TODO resolve p deletion
-    console.log("Cancel");
+
     var comment = review.getComment(input.fragmentId);
     // If no comment is present, clear the selection
     if ( !comment ){
@@ -645,9 +770,9 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
-  // Function:
+  // Function: show the list of comments
+  // INVOKED BY: #comment-list-modal
   $scope.showComments = function(){
-    //console.log(review.comments);
     $scope.cs = review.comments;
     console.log($scope.cs);
   }
@@ -684,13 +809,7 @@ angular.module('EasyRashApp.controllers', [])
     }
   }
 
-  count = 0;
-
-  // $scope.setupCommentOnModal = function($event){
-  //   console.log("click");
-  //   console.log($event);
-  // }
-
+  // Highlight a selection
   $scope.highlight = function(){
     // Get the selection and the correspondent range.
     var s = selection();
@@ -784,7 +903,6 @@ angular.module('EasyRashApp.controllers', [])
           var spanId = generateSpanId();
           console.log(range);
 
-          // TODO come compilare in angular il contenuto aggiunto?
           newNode.setAttribute('id', spanId);
           newNode.setAttribute('data-toggle', 'modal');
           newNode.setAttribute('data-target', '#comment-modal');
@@ -858,6 +976,7 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('LoginCtrl', function($scope, AuthService, $rootScope, $window) {
+
   // don't show the header navbar in the login page
   $rootScope.navbar = false;
   // check if the user is already authenticated
@@ -865,11 +984,13 @@ angular.module('EasyRashApp.controllers', [])
     // if is authenticated redirect him to the homepage
     $window.location.href = "/#/dash";
   }
+
   // setting user fields for login
   $scope.user = {
     email: '',
     pass: ''
   };
+
   // when the user click on the login button
   $scope.login = function() {
     // call the AuthService login funciton and post the user data in the func
@@ -885,7 +1006,8 @@ angular.module('EasyRashApp.controllers', [])
   };
 })
 
-.controller('RegisterCtrl', function($scope, $rootScope, $window, AuthService) {
+.controller('RegisterCtrl', function($scope, $rootScope, $timeout, $location, $window, AuthService) {
+
   // don't show the header navbar in the registration page
   $rootScope.navbar = false;
   // check if the user is already authenticated
@@ -907,13 +1029,15 @@ angular.module('EasyRashApp.controllers', [])
   $scope.signup = function() {
     // call the AuthService service -lol- and it's function register with user data
     AuthService.register($scope.user).then(function(msg) {
-      // change location of the page, redirecting to homepage
-      $window.location.href = "/#/dash";
       // let the user know he is successfully registered
-      var alertPopup = alert("Registered successfully!\nThank you.");
+      $scope.info = "Registered successfully!\nCheck your email to confirm.";
+      // change location of the page, redirecting to homepage
+      $timeout(function() {
+        $location.path('/#/login');
+        }, 3000);
+
     }, function(errMsg) {
       // if there are server errors, let the user know by console and client alert
-      console.log(errMsg)
       $scope.error = errMsg;
     });
   };
@@ -948,10 +1072,11 @@ angular.module('EasyRashApp.controllers', [])
     // if the field for the current password is empty
     if((typeof (data.oldPass) === undefined) || (data.oldPass === "")) {
       // alert the user who has to insert it to save infos
-      alert("You must insert your password to update your informations!")
+      showInfo("You must insert your password to update your informations!")
     } else {
       // if is all correct, then call the api update user with the data edited
       Api.updateUser(data).then(function(response) {
+        console.log(response)
         // if server's answer is success (true)
         if (response.data.success === true) {
           // update the client user scope with server's response
@@ -960,7 +1085,7 @@ angular.module('EasyRashApp.controllers', [])
           $scope.clicked = false;
         } else {
           // if server success is false, then let the user know what's the server's error
-          alert("Server error:\n"+response.data.msg);
+          showInfo(response.data.msg);
         }
       });
     }
@@ -980,5 +1105,17 @@ angular.module('EasyRashApp.controllers', [])
     // show input fileds editable
     $scope.clicked = true;
   };
+
+  // Utility method: show info
+  function showInfo(message){
+    $scope.info = true;
+    $scope.message = message;
+  }
+
+  // Utility method: hide info
+  $scope.hideInfo = function(){
+    $scope.info = false;
+    $scope.message = "";
+  }
 
 });

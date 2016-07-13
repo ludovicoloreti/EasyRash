@@ -1,4 +1,10 @@
-
+<!-- Start info alert -->
+<div ng-show="info" class="alert alert-info alert-fixed-top alert-dismissible fade in" role="alert">
+  <button type="button" class="close" ng-click="hideInfo()" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong>Info: </strong> {{message}}
+</div><!--  End info alert -->
 <div class="container">
   <div class="row">
     <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 col-md-offset-2 col-lg-offset-2">
@@ -60,7 +66,7 @@
             </div>
             <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.oldPass}}</span>
-              <input style="background:#ffffe5;"type="text" class="form-control" ng-show="clicked" ng-model="user.oldPass">
+              <input style="background:#ffffe5;" type="password" class="form-control" ng-show="clicked" ng-model="user.oldPass">
             </div>
           </div>
           <div class="row" ng-show="clicked" >
@@ -69,7 +75,12 @@
             </div>
             <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.newPass}}</span>
-              <input type="text" class="form-control" ng-model="user.newPass">
+              <input type="password" class="form-control" ng-model="user.newPass">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="small text-muted">*You must insert your old password to update your info.</p>
             </div>
           </div>
           <div class="row">

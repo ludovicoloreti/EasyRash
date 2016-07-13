@@ -75,6 +75,14 @@ angular.module('EasyRashApp.api', ['EasyRashApp.config'])
       });
     };
 
+    self.saveDecision = function( data ) {
+      return $http.post(CONFIG.endpoint+CONFIG.save_decision+"/"+data.articleName, data).then(
+        function(response) {
+          return response.data;
+        },function(error) {
+          return error;
+        });
+      };
 
     self.updateUser = function( data ) {
       return $http.post(CONFIG.endpoint+CONFIG.updateUser, data).then(

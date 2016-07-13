@@ -11,7 +11,7 @@
       <!--1st Large Banner Image -->
       <h3 class="display-4">Chairs</h3>
       <ul>
-        <li ng-repeat="chair in eventInfo.chairs">{{chair}}</li>
+        <li ng-repeat="chair in eventInfo.chairs">{{chair}} <span ng-if="chair == userInfo._id"><i> (you)</i></span></li>
       </ul>
 
 

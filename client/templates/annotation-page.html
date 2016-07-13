@@ -35,7 +35,7 @@
               <blockquote class="blockquote">
                 <a class="m-b-0 small">{{comment.refText | cut:true:100:' ...'}}</a>
               </blockquote>
-              <p>{{comment.text | cut:true:100:' ...'}}</p>
+              <p ng-mouseenter="limit=500" ng-mouseleave="limit=100" ng-init="limit= 100">{{comment.text | cut:true:limit:' ...'}}</p>
               <span class="label label-primary">{{comment["@type"]}}</span> <a class="small" ng-href="{{comment.author}}"> {{comment.author.replace("mailto:","")}}</a>
 
             </div>
@@ -53,7 +53,7 @@
     <div class="container-fluid">
       <div class="row">
         <!-- Start error alert -->
-        <div ng-show="error" class="alert alert-danger alert-dismissible fade in" role="alert">
+        <div ng-show="error" class="alert alert-danger alert-fixed alert-dismissible fade in" role="alert">
           <button type="button" class="close" ng-click="hideErrors()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -62,11 +62,10 @@
 
         <div id="toolkit">
           <div class="btn-group pull-md-right">
-            <!-- TODO: risolvere diritti e disabilitare bottoni -->
-            <!-- ng-show="isReviewer && !isChair" -->
-            <button ng-hide="annotatorMode" ng-class="canReview ? '': 'disabled'" ng-disabled = "!canReview" class="btn btn-secondary" title="Annotator mode" ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-briefcase"></span></button>
-            <!-- ng-show="isChair" -->
-            <button ng-hide="annotatorMode"  class="btn btn-secondary" title="Annotator mode" data-toggle="modal" data-target="#chair-modal" ng-click="" uib-tooltip="Approve/reject article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-book"></span></button>
+            <!-- Annotate: if reviewer and not already reviewed and not chair -->
+            <button ng-hide="annotatorMode" ng-class="isReviewer && canReview ? '': 'disabled'" ng-disabled = "!canReview || !isReviewer" class="btn btn-secondary" title="Annotator mode" ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-briefcase"></span></button>
+            <!-- Decide: if Chair -->
+            <button ng-hide="annotatorMode" ng-class="isChair ? '': 'disabled'" ng-disabled = "!isChair" class="btn btn-secondary" title="Accept/reject article" data-toggle="modal" data-target="#chair-modal" ng-click="" uib-tooltip="Approve/reject article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-book"></span></button>
             <span ng-show="annotatorMode" class="btn-group">
               <button class="btn btn-secondary" title="Pick a color" uib-tooltip="Pick a color" tooltip-placement="bottom" tooltip-append-to-body="true" id="dropdown-menu-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-adjust"></span></button>
               <div class="dropdown-menu" aria-labelledby="dropdown-menu-2" >
@@ -75,7 +74,6 @@
                 <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('green')"><span class="pick-color-circle green-intense"></span><span class="color-name">Green</span></div>
                 <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('blue')"><span class="pick-color-circle blue-intense"></span><span class="color-name">Blue</span></div>
                 <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('purple')"><span class="pick-color-circle purple-intense"></span><span class="color-name">Purple</span></div>
-
               </div>
               <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight and comment selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
               <button class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
@@ -103,7 +101,7 @@
           <!-- Modal content-->
           <div class="modal-content">
             <div class="modal-body">
-              <h3>Statistics:</h3>
+              <h4>Statistics:</h4>
               <div clas="row">
                 <div class="col-md-4">
                   <h3 class="big text-center">{{articleStats.avgVote}}/5</h3>
@@ -121,11 +119,10 @@
                   <p class="text-muted text-center">{{totalAssignedReviewers - reviewCounter}} missing. If the number is 0 you can express your decision. </p>
                 </div>
               </div>
+
               <div class="row" >
-
                 <div class="col-md-12" >
-
-                  <p><b>Comment list:</b></p>
+                  <h4>Comment list:</h4>
                   <ul class="list-group" id="comment-stat-list">
                     <li class="list-group-item" ng-repeat="rev in reviewsList">
                       <blockquote class="blockquote">{{rev.article.eval.comment}}</blockquote>
@@ -134,25 +131,44 @@
                   </ul>
                   <p ng-if="reviewsList.length == 0">No evaluations yet...</p>
                 </div>
-
               </div>
               <hr />
-              <div class="row">
+
+              <div class="row" >
+                <div class="col-md-12" ng-if="chairDecision">
+
+                  <h4>Decision</h4>
+                  <div class="list-group-item">
+                    <p>
+                      <b>Status: </b>
+                      <span ng-if="chairDecision.article.eval.status.indexOf('accepted') > -1">Accepted for publication</span>
+                      <span ng-if="chairDecision.article.eval.status.indexOf('rejected') > -1">Rejected for publication</span>
+
+                    </p>
+                    <p><b>Comment:</b></p>
+                    <blockquote class="blockquote">{{chairDecision.article.eval.comment}}</blockquote>
+                    <a class="small" ng-href="{{rev.article.eval.author}}"> {{chairDecision.article.eval.author.replace("mailto:","")}}</a>
+                  </div>
+
+                  <p ng-if="reviewsList.length == 0">No one has decided yet...</p>
+                </div>
+              </div>
+
+              <div class="row" ng-if="!chairDecision">
                 <div class="col-md-12">
                   <p><b>Insert your valuation:</b></p>
                   <fieldset class="form-group">
-                    <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Write here." >{{commentModal.text}}</textarea>
+                    <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Write here." ng-model ="decisionModal.text"></textarea>
                   </fieldset>
-
-                  <label class="radio-inline"><input type="radio" class="radio" ng-model="eval.staus" value="true">Accept for Publication</label>
-                  <label class="radio-inline"><input type="radio" class="radio" ng-model="eval.staus" value="false">Reject for Publication</label>
+                  <label class="radio-inline"><input type="radio" class="radio" ng-model="decisionModal.status" value="true">Accept for Publication</label>
+                  <label class="radio-inline"><input type="radio" class="radio" ng-model="decisionModal.status" value="false">Reject for Publication</label>
 
                 </div>
               </div>
             </div>
             <div class="modal-footer">
               <span class="text-danger" ng-if="alreadyDecided">You have already decided.</span>
-              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-diabled = "!canDecide || alreadyDecided" ng-class="canDecide && !alreadyDecided ? '': 'disabled'" ng-click="">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-diabled = "!canDecide || alreadyDecided" ng-class="canDecide && !alreadyDecided ? '': 'disabled'" ng-click="saveDecision(decisionModal)">Save</button>
               <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="">Close</button>
             </div>
           </div>
@@ -175,7 +191,6 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger btn-sm pull-left" data-dismiss="modal" ng-click="deleteComment(commentModal)">Delete</button>
-
               <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(commentModal)">Save</button>
               <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="cancel(commentModal)">Cancel</button>
             </div>
@@ -214,8 +229,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="">Save</button>
-              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Close</button>
             </div>
           </div>
 

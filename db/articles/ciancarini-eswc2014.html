@@ -1,12 +1,16 @@
-<html xmlns="http://www.w3.org/1999/xhtml" prefix="
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="grammar/rash.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  prefix="
   schema: http://schema.org/
   prism: http://prismstandard.org/namespaces/basic/2.0/
-  dcterms: http://purl.org/dc/terms/"><head>
+  dcterms: http://purl.org/dc/terms/">
+  <head>
     <!-- Visualisation requirements (mandatory for optimal reading) -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/rash.css">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/rash.css"/>
     <script src="js/jquery.min.js"><![CDATA[ ]]></script>
     <script src="js/bootstrap.min.js"><![CDATA[ ]]></script>
     <script src="js/rash.js"><![CDATA[ ]]></script>
@@ -16,127 +20,45 @@
       http://dx.doi.org/10.1007/978-3-319-07443-6_39</title>
 
     <!-- Author's data (one or more) -->
-    <meta about="mailto:paolo.ciancarini@example.com" property="schema:name" name="dc.creator" content="Paolo Ciancarini">
-    <meta about="mailto:paolo.ciancarini@example.com" property="schema:email" content="ciancarini@example.com">
-    <link about="mailto:paolo.ciancarini@example.com" property="schema:affiliation" href="#cs-unibo">
-    <link about="mailto:paolo.ciancarini@example.com" property="schema:affiliation" href="#stlab-cnr">
+    <meta about="mailto:paolo.ciancarini@example.com" property="schema:name" name="dc.creator" content="Paolo Ciancarini"/>
+    <meta about="mailto:paolo.ciancarini@example.com" property="schema:email" content="ciancarini@example.com"/>
+    <link about="mailto:paolo.ciancarini@example.com" property="schema:affiliation" href="#cs-unibo"/>
+    <link about="mailto:paolo.ciancarini@example.com" property="schema:affiliation" href="#stlab-cnr"/>
 
-    <meta about="mailto:angelo.diiorio@unibo.it" property="schema:name" name="dc.creator" content="Angelo Di Iorio">
-    <meta about="mailto:angelo.diiorio@unibo.it" property="schema:email" content="diiorio@cs.unibo.it">
-    <link about="mailto:angelo.diiorio@unibo.it" property="schema:affiliation" href="#cs-unibo">
+    <meta about="mailto:angelo.diiorio@unibo.it" property="schema:name" name="dc.creator" content="Angelo Di Iorio"/>
+    <meta about="mailto:angelo.diiorio@unibo.it" property="schema:email" content="diiorio@cs.unibo.it"/>
+    <link about="mailto:angelo.diiorio@unibo.it" property="schema:affiliation" href="#cs-unibo"/>
 
-    <meta about="mailto:andrea.nuzzolese@example.com" property="schema:name" name="dc.creator" content="Andrea Nuzzolese">
-    <meta about="mailto:andrea.nuzzolese@example.com" property="schema:email" content="nuzzoles@example.com">
-    <link about="mailto:andrea.nuzzolese@example.com" property="schema:affiliation" href="#cs-unibo">
-    <link about="mailto:andrea.nuzzolese@example.com" property="schema:affiliation" href="#stlab-cnr">
+    <meta about="mailto:andrea.nuzzolese@example.com" property="schema:name" name="dc.creator" content="Andrea Nuzzolese"/>
+    <meta about="mailto:andrea.nuzzolese@example.com" property="schema:email" content="nuzzoles@example.com"/>
+    <link about="mailto:andrea.nuzzolese@example.com" property="schema:affiliation" href="#cs-unibo"/>
+    <link about="mailto:andrea.nuzzolese@example.com" property="schema:affiliation" href="#stlab-cnr"/>
 
-    <meta about="mailto:silvio.peroni@unibo.it" property="schema:name" name="dc.creator" content="Silvio Peroni">
-    <meta about="mailto:silvio.peroni@unibo.it" property="schema:email" content="silvio.peroni@unibo.it">
-    <link about="mailto:silvio.peroni@unibo.it" property="schema:affiliation" href="#cs-unibo">
-    <link about="mailto:silvio.peroni@unibo.it" property="schema:affiliation" href="#stlab-cnr">
+    <meta about="mailto:silvio.peroni@unibo.it" property="schema:name" name="dc.creator" content="Silvio Peroni"/>
+    <meta about="mailto:silvio.peroni@unibo.it" property="schema:email" content="silvio.peroni@unibo.it"/>
+    <link about="mailto:silvio.peroni@unibo.it" property="schema:affiliation" href="#cs-unibo"/>
+    <link about="mailto:silvio.peroni@unibo.it" property="schema:affiliation" href="#stlab-cnr"/>
 
-    <meta about="mailto:fabio.vitali@unibo.it" property="schema:name" name="dc.creator" content="Fabio Vitali">
-    <meta about="mailto:fabio.vitali@unibo.it" property="schema:email" content="fabio@cs.unibo.it">
-    <link about="mailto:fabio.vitali@unibo.it" property="schema:affiliation" href="#cs-unibo">
+    <meta about="mailto:fabio.vitali@unibo.it" property="schema:name" name="dc.creator" content="Fabio Vitali"/>
+    <meta about="mailto:fabio.vitali@unibo.it" property="schema:email" content="fabio@cs.unibo.it"/>
+    <link about="mailto:fabio.vitali@unibo.it" property="schema:affiliation" href="#cs-unibo"/>
 
     <!-- Affiliations -->
-    <meta about="#cs-unibo" property="schema:name" content="Department of Computer Science and Engineering, University of Bologna, Bologna, Italy">
-    <meta about="#stlab-cnr" property="schema:name" content="STLab-ISTC, Consiglio Nazionale delle Ricerche, Rome, Italy">
+    <meta about="#cs-unibo" property="schema:name" content="Department of Computer Science and Engineering, University of Bologna, Bologna, Italy"/>
+    <meta about="#stlab-cnr" property="schema:name" content="STLab-ISTC, Consiglio Nazionale delle Ricerche, Rome, Italy"/>
 
     <!-- Paper keywords (one or more) -->
-    <meta property="prism:keyword" content="CiTO">
-    <meta property="prism:keyword" content="citation functions">
-    <meta property="prism:keyword" content="user testing session">
-    <meta property="prism:keyword" content="mental models">
-    <meta property="prism:keyword" content="human inter-rater agreement">
-    <meta property="prism:keyword" content="usability">
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><![CDATA[ ]]></script><script type="application/ld+json">[
-    {
-        "@context": "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json",
-        "@type": "review",
-        "@id": "#review0",
-        "article": {
-            "@id": "",
-            "eval": {
-                "@id": "#review0-eval",
-                "@type": "score",
-                "status": "pso:accepted-for-publication",
-                "comment": "I appreciate this article event though I'm outside this subject. I would accept this.",
-                "rank": 3,
-                "author": "mailto:jessica.jones@alias.com",
-                "date": "2016-07-08T23:09:28.465Z"
-            }
-        },
-        "comments": [
-            "#review0-c1",
-            "#review0-c2",
-            "#review0-c3",
-            "#review0-c4",
-            "#review0-c5"
-        ]
-    },
-    {
-        "@context": "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json",
-        "@type": "comment",
-        "@id": "#review0-c1",
-        "text": "I loved this sentence.",
-        "ref": "#fragment-1",
-        "author": "mailto:jessica.jones@alias.com",
-        "date": "2016-07-08T23:09:44.987Z"
-    },
-    {
-        "@context": "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json",
-        "@type": "comment",
-        "@id": "#review0-c2",
-        "text": "I don't think this part is necessary.",
-        "ref": "#para-1",
-        "author": "mailto:jessica.jones@alias.com",
-        "date": "2016-07-08T23:10:02.271Z"
-    },
-    {
-        "@context": "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json",
-        "@type": "comment",
-        "@id": "#review0-c3",
-        "text": "I can't catch the meaning of this question.",
-        "ref": "#para-2",
-        "author": "mailto:jessica.jones@alias.com",
-        "date": "2016-07-08T23:10:33.223Z"
-    },
-    {
-        "@context": "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json",
-        "@type": "comment",
-        "@id": "#review0-c4",
-        "text": "This url is not working.",
-        "ref": "#fragment-2",
-        "author": "mailto:jessica.jones@alias.com",
-        "date": "2016-07-08T23:10:47.341Z"
-    },
-    {
-        "@context": "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json",
-        "@type": "comment",
-        "@id": "#review0-c5",
-        "text": "This part is not readable. I would have used another format.",
-        "ref": "#para-3",
-        "author": "mailto:jessica.jones@alias.com",
-        "date": "2016-07-08T23:11:21.444Z"
-    },
-    {
-        "@context": "http://vitali.web.cs.unibo.it/twiki/pub/TechWeb16/context.json",
-        "@type": "person",
-        "@id": "mailto:jessica.jones@alias.com",
-        "name": "Jessica Jones",
-        "as": {
-            "@id": "#role1",
-            "@type": "role",
-            "role_type": "pro:reviewer",
-            "in": ""
-        }
-    }
-]</script></head>
+    <meta property="prism:keyword" content="CiTO"/>
+    <meta property="prism:keyword" content="citation functions"/>
+    <meta property="prism:keyword" content="user testing session"/>
+    <meta property="prism:keyword" content="mental models"/>
+    <meta property="prism:keyword" content="human inter-rater agreement"/>
+    <meta property="prism:keyword" content="usability"/>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><![CDATA[ ]]></script></head>
   <body>
     <section id="SectionAbstract" role="doc-abstract">
       <h1>Abstract</h1>
-      <p><span id="fragment-1" class="">Networks of citations are a key tool for referencing</span>, disseminating and evaluating research
+      <p>Networks of citations are a key tool for referencing, disseminating and evaluating research
         results. The task of characterising the functional role of citations in scientific
         literature is very difficult, not only for software agents but for humans, too. The main
         problem is that the mental models of different annotators hardly ever converge to a single
@@ -185,7 +107,7 @@
         different <em>mental model</em>, and the reader's model can be and often is different from the
         one of the authors of the CiTO annotation, which in turn can be and often is different from
         the one of the authors of the citation in the paper.</p>
-      <p id="para-1" class="">This paper is structured as follows: in <a href="#SectionRelatedWorks"> </a> we
+      <p>This paper is structured as follows: in <a href="#SectionRelatedWorks"> </a> we
         review previous works on classification of citations. In <a href="#SectionCiTO"> </a> we present CiTO and relate it with users' mental models. In <a href="#SectionTest"> </a> we introduce our experimental setting and findings. In <a href="#SectionDiscussion"> </a> and <a href="#SectionConclusions"> </a> we discuss the lesson learnt and sketch out some possible developments of CiTO and
         CiTalO.</p>
     </section>
@@ -321,7 +243,7 @@
           <p>Which properties showed an acceptable positive agreement in users?</p>
         </li>
         <li>
-          <p id="para-2" class="">Could properties be clustered according to their similarity in users' annotations?</p>
+          <p>Could properties be clustered according to their similarity in users' annotations?</p>
         </li>
         <li>
           <p>What was the perceived usability of the ontology?</p>
@@ -353,7 +275,7 @@
         <h1>Experimental setting</h1>
         <p>The test bed includes some scientific papers encoded in XML DocBook chosen among the
           seventh volume of the proceedings Balisage Conference Series<a href="#ftn16"> </a>. We automatically extracted citation sentences, through an XSLT
-          transform (ava<span id="fragment-2" class="">ilable at <code>http://www.essepuntato.it/2013/citalo/xslt</code>). We t</span>ook into account only those
+          transform (available at <code>http://www.essepuntato.it/2013/citalo/xslt</code>). We took into account only those
           papers for which the XSLT transform retrieved at least one citation (i.e. 18 papers
           written by different authors). The total number of citations retrieved was 377, for a mean
           of 20.94 citations per paper.</p>
@@ -391,7 +313,7 @@
           in a small number of cases, as shown in <a href="#TableCitationFuctionsHumans"> </a> – this table answers to RQ2.</p>
         <figure id="TableCitationFuctionsHumans">
           <table>
-            <tbody><tr>
+            <tr>
               <th rowspan="1" colspan="1">
                 CiTO property in T41
               </th>
@@ -521,7 +443,7 @@
                 <p>&lt; 80</p>
               </td>
             </tr>
-          </tbody></table>
+          </table>
           <figcaption>The distribution of CiTO properties selected by the users on the
             experimental dataset in T41 and T10.</figcaption>
         </figure>
@@ -535,7 +457,7 @@
           properties selected by the users.</p>
         <figure id="TableAgreements">
           <table>
-            <tbody><tr>
+            <tr>
               <th rowspan="1" colspan="1">
                 Test
               </th>
@@ -574,7 +496,7 @@
                   critiques (15), citesAsPotentialSolution (11), credits (5), usesMethodIn (3)</p>
               </td>
             </tr>
-          </tbody></table>
+          </table>
           <figcaption>The distribution of citations and CiTO properties on which users
             agreed.</figcaption>
         </figure>
@@ -593,7 +515,7 @@
           moderate positive local agreement (i.e. 0.33 &lt; <em>k</em> &lt; 0.66) on
             <em>citesAsPotentialSolution</em> in T41 and on <em>includesQuotationFrom</em> in T10 – this
           answers to RQ5.</p>
-        <p id="para-3" class="">In order to identify other properties that showed a partial positive local agreement
+        <p>In order to identify other properties that showed a partial positive local agreement
           among users, we filtered only the 18 (in T41) and 24 (in T10) citations on which at least
           6 users used the same property, as mentioned earlier in <a href="#TableAgreements"> </a>. The <em>k</em> value on that subset showed a moderate
           positive agreement: <em>k </em>= 0.39 in T41 and <em>k</em> = 0.43 in T10. In addition, we had
@@ -656,7 +578,7 @@
         RQ7.</p>
       <figure id="TableEvaluation">
         <table>
-          <tbody><tr>
+          <tr>
             <th rowspan="1" colspan="1">
               CiTO-Ps
             </th>
@@ -698,7 +620,7 @@
               <p>68.7 (s.d. 25.85)</p>
             </td>
           </tr>
-        </tbody></table>
+        </table>
         <figcaption>System Usability Scale values and related sub-measures (<em>s.d.</em>
           stands for <em>standard deviation</em>).</figcaption>
       </figure>
@@ -753,7 +675,7 @@
         were mentioned at least twice.</p>
       <figure id="FigureGrounded">
         <p>
-          <img class="17cm-10.081cm" src="img/10000201000005400000031DAB58F407.png" alt="A graph describing the issues highlighted by users">
+          <img class="17cm-10.081cm" src="img/10000201000005400000031DAB58F407.png" alt="A graph describing the issues highlighted by users"/>
         </p>
         <figcaption>A chart of the most mentioned issues in the questionnaires, according to
           grounded analysis</figcaption>
@@ -1085,6 +1007,5 @@
           thought it could be difficult to reach a global agreement.</p>
       </section>
     </section>
-
-
-</body></html>
+  </body>
+</html>

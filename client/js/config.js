@@ -22,5 +22,6 @@ angular.module("EasyRashApp.config", [])
   "userinfo": "/memberinfo",
   "doclist": "/doclist",
   "save_annotations": "/save-annotations",
+  "save_decision": "/save-decision",
   "updateUser": "/userUpdate"
 });

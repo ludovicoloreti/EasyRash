@@ -168,7 +168,7 @@ span.fa-cog:hover {
   margin-top: 40px;
 }
 /*#article-container {  text-align: justify;}*/
-.alert {
+.alert.alert-fixed {
   position: fixed;
   width: 80%;
   z-index: 9999;
@@ -176,10 +176,22 @@ span.fa-cog:hover {
   left: 0;
   margin: 10px 10%;
 }
+.alert.alert-fixed-top {
+  position: fixed;
+  width: 80%;
+  z-index: 9999;
+  top: 70px;
+  left: 0;
+  margin: 10px 10%;
+}
+
 #doc-list ol {
   height: 100px;
   margin-bottom: 25px;
   overflow-y: auto;
+}
+#meta-list {
+  padding-bottom: 40px;
 }
 #meta-list .list-group-item {
   padding: .55rem .95rem;
