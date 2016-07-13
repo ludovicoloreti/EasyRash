@@ -534,7 +534,7 @@ angular.module('EasyRashApp.controllers', [])
 
   // Function: detects when a user clicks on a link. It prevents the action if the usr has unsaved annotations
   $scope.$on('$locationChangeStart', function( event ) {
-    if(review.comments.length > 0){
+    if(review && review.comments.length > 0){
       var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
       if (!answer) {
         event.preventDefault();
