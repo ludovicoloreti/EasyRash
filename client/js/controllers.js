@@ -315,7 +315,6 @@ angular.module('EasyRashApp.controllers', [])
         $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
 
 
-<<<<<<< HEAD
         var annotations = new Array();
 
         for (i=0; i < scriptList.length; i++) {
@@ -347,24 +346,12 @@ angular.module('EasyRashApp.controllers', [])
               case "review":
               console.log(annotation[j]);
               reviewsList.push( annotation[j] );
-=======
-          switch(annotation[j]['@type']){
-            case "comment":
-            console.log("#article-container "+annotation[j]['ref']);
-            annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0] ? docBody.querySelectorAll(annotation[j]['ref'])[0].innerText : "Error: no Reference detected";
-            commentsList.push( annotation[j] );
-            break;
-            case "review":
-            console.log(annotation[j]);
-            reviewsList.push( annotation[j] );
->>>>>>> 28cce48bb5f9da6eb144213ee92f61d21bc5b47b
 
-            console.log(annotation[j]);
+              console.log(annotation[j]);
 
-            articleStats.avgVote += parseInt(annotation[j]["article"]["eval"]["rank"]);
-            console.log(articleStats.avgVote);
+              articleStats.avgVote += parseInt(annotation[j]["article"]["eval"]["rank"]);
+              console.log(articleStats.avgVote);
 
-<<<<<<< HEAD
               if (annotation[j]["article"]["eval"]["status"] === "pso:accepted-for-publication"){
                 articleStats.numAccept++;
               }else{
@@ -379,21 +366,6 @@ angular.module('EasyRashApp.controllers', [])
               decisionsList.push( annotation[j] );
               break;
             }
-=======
-            if (annotation[j]["article"]["eval"]["status"] === "pso:accepted-for-publication"){
-              articleStats.numAccept++;
-            }else{
-              articleStats.numReject++;
-            }
-            break;
-            case "decision":
-
-            if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
-              $scope.alreadyDecided = true;
-            }
-            decisionsList.push( annotation[j] );
-            break;
->>>>>>> 28cce48bb5f9da6eb144213ee92f61d21bc5b47b
           }
         }
         // Set the average vote:
@@ -425,7 +397,7 @@ angular.module('EasyRashApp.controllers', [])
         // Stop the loading gif
         $scope.loading = false;
         // Show the article in #article-container
-        $scope.articleBody = $sce.trustAsHtml('<h1>Something went wrong.</h1><p>This file seems not present...</p><p>Return to <a href="/#/dash">dashboard</a>.</p>');
+        $scope.articleBody = $sce.trustAsHtml('<h1>Ops... something went wrong.</h1><p>This file seems not present...</p><p>Return to <a href="/#/dash">dashboard</a>.</p>');
       }
     });
   }

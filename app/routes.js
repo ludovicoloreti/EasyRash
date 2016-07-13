@@ -179,7 +179,7 @@ module.exports = function (app) {
             console.log(error.message);
             res.json( {success: false, message: error.message} );
           }else{
-            res.json( {data: preparationResult, chair: isChair, reviewer: isRev, pcMember: isPcMember, numChairs: numOfChairs, numRevs: numOfRevs} );
+            res.json( {success: true, data: preparationResult, chair: isChair, reviewer: isRev, pcMember: isPcMember, numChairs: numOfChairs, numRevs: numOfRevs} );
           }
         });
       });
