@@ -306,51 +306,55 @@ angular.module('EasyRashApp.controllers', [])
     // Get the article when the page loadthrough the Api service, the article type is processed
     Api.getArticle($routeParams.articleId, "processed").then(function(response) {
       $scope.annotatorMode = false;
-      var doc = parser.parseFromString(response.data, 'text/html');
-      var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
-      var docBody = doc.getElementsByTagName("body")[0];
+      console.log(response);
+      if(response.success){
 
-      // DEFINING SCOPE -ROLE- VARIABLES SUCH AS "chair, pc_member, reviewer"
-      $scope.isChair = response.chair; // true or false
-      $scope.isReviewer = response.reviewer; // true or false
-      $scope.isPcMember = response.pcMember; // true or false
-      $scope.totalAssignedReviewers = response.numRevs;
-      $scope.totalChairs = response.numChairs;
-      // Stop the loading gif
-      $scope.loading = false;
+        var doc = parser.parseFromString(response.data, 'text/html');
+        var scriptList = doc.querySelectorAll('[type="application/ld+json"]');
+        var docBody = doc.getElementsByTagName("body")[0];
 
-      // Show the article in #article-container
-      $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
+        // DEFINING SCOPE -ROLE- VARIABLES SUCH AS "chair, pc_member, reviewer"
+        $scope.isChair = response.chair; // true or false
+        $scope.isReviewer = response.reviewer; // true or false
+        $scope.isPcMember = response.pcMember; // true or false
+        $scope.totalAssignedReviewers = response.numRevs;
+        $scope.totalChairs = response.numChairs;
+        // Stop the loading gif
+        $scope.loading = false;
 
-      var annotations = new Array();
+        // Show the article in #article-container
+        $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
 
-      for (i=0; i < scriptList.length; i++) {
-        annotations.push( JSON.parse(scriptList[i].textContent) );
-      }
 
-      // console.log(annotations)
-      commentsList = new Array();
-      reviewsList = new Array();
-      decisionsList = new Array();
+        var annotations = new Array();
 
-      articleStats.avgVote = 0;
+        for (i=0; i < scriptList.length; i++) {
+          annotations.push( JSON.parse(scriptList[i].textContent) );
+        }
 
-      for (i=0; i < annotations.length; i++) {
-        var annotation = annotations[i];
-        for (j=0; j < annotation.length; j++) {
+        // console.log(annotations)
+        commentsList = new Array();
+        reviewsList = new Array();
+        decisionsList = new Array();
 
-          // If the user has already commented the article it can't review.
-          if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
-            $scope.canReview = false;
-          }
+        articleStats.avgVote = 0;
 
-          switch(annotation[j]['@type']){
-            case "comment":
+        for (i=0; i < annotations.length; i++) {
+          var annotation = annotations[i];
+          for (j=0; j < annotation.length; j++) {
+
+            // If the user has already commented the article it can't review.
+            if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
+              $scope.canReview = false;
+            }
+
+            switch(annotation[j]['@type']){
+              case "comment":
               console.log("#article-container "+annotation[j]['ref']);
               annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0] ? docBody.querySelectorAll(annotation[j]['ref'])[0].innerText : "Error: no Reference detected";
               commentsList.push( annotation[j] );
               break;
-            case "review":
+              case "review":
               console.log(annotation[j]);
               reviewsList.push( annotation[j] );
 
@@ -365,42 +369,47 @@ angular.module('EasyRashApp.controllers', [])
                 articleStats.numReject++;
               }
               break;
-            case "decision":
+              case "decision":
 
               if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
                 $scope.alreadyDecided = true;
               }
               decisionsList.push( annotation[j] );
               break;
+            }
           }
         }
+        // Set the average vote:
+        if(articleStats.avgVote == 0 || reviewsList.length == 0 ){
+          articleStats.avgVote = "No Vote";
+        } else {
+          articleStats.avgVote = articleStats.avgVote/reviewsList.length;
+        }
+        $scope.articleStats = articleStats;
+
+        $scope.reviewCounter = reviewsList.length;
+
+        if(reviewsList.length >= response.numRevs){
+          $scope.canDecide == true;
+        }
+
+        console.log($scope.reviewCounter);
+        $scope.commentCounter = commentsList.length; // TODO find a better solution
+        console.log($scope.commentCounter);
+        $scope.decisionCounter = decisionsList.length;
+
+        console.log(commentsList);
+        console.log(reviewsList);
+
+        $scope.commentsList = commentsList;
+        $scope.reviewsList = reviewsList;
+        // Fine Prova
+      }else {
+        // Stop the loading gif
+        $scope.loading = false;
+        // Show the article in #article-container
+        $scope.articleBody = $sce.trustAsHtml('<h1>Something went wrong.</h1><p>This file seems not present...</p><p>Return to <a href="/#/dash">dashboard</a>.</p>');
       }
-      // Set the average vote:
-      if(articleStats.avgVote == 0 || reviewsList.length == 0 ){
-        articleStats.avgVote = "No Vote";
-      } else {
-        articleStats.avgVote = articleStats.avgVote/reviewsList.length;
-      }
-      $scope.articleStats = articleStats;
-
-      $scope.reviewCounter = reviewsList.length;
-
-      if(reviewsList.length >= response.numRevs){
-        $scope.canDecide == true;
-      }
-
-      console.log($scope.reviewCounter);
-      $scope.commentCounter = commentsList.length; // TODO find a better solution
-      console.log($scope.commentCounter);
-      $scope.decisionCounter = decisionsList.length;
-
-      console.log(commentsList);
-      console.log(reviewsList);
-
-      $scope.commentsList = commentsList;
-      $scope.reviewsList = reviewsList;
-      // Fine Prova
-
     });
   }
 
