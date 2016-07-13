@@ -7,6 +7,20 @@
 angular.module('EasyRashApp.controllers', [])
 
 .controller('AppCtrl', function($scope, Api, $rootScope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
+  // GLOBAL function to get the logged user informations
+  $rootScope.getUser = function() {
+    Api.getCurrentUser().then(function(response) {
+      if (response.success === true) {
+        $rootScope.userMsg = response.msg;
+        $rootScope.userInfo = response.data;
+      } else {
+        $rootScope.userMsg = response.msg;
+        $rootScope.userInfo = {};
+      }
+    })
+  };
+  // calling get current user function
+  $rootScope.getUser();
 
   // if user isn't authenticated yet, then logout and redirect to login page
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
@@ -15,16 +29,10 @@ angular.module('EasyRashApp.controllers', [])
     var alertPopup = console.error("Session Lost.\nSorry you have to login again.");
   });
 
-  // Destroy Session
+  // Destroy User Session
   $scope.destroySession = function() {
     AuthService.logout();
   };
-
-  // Get the logged user
-  Api.getCurrentUser().then(function(response) {
-    $scope.memberinfo = response.msg;
-    console.log("Current User:\n",response);
-  })
 
   // Logout service
   $scope.logout = function() {
@@ -36,29 +44,18 @@ angular.module('EasyRashApp.controllers', [])
 
 .controller('DashCtrl', function($scope, Api) {
 
+  // call Api service function "Get list of articles which user can comment"
   Api.getArticlesToReview().then(function(response) {
     $scope.submissions = response.data;
-  })
-
+  });
+  // call Api service function "Get all events"
   Api.getEvents().then(function(response) {
     $scope.events = response;
-  })
+  });
 
-  // Get the logged user
-  Api.getCurrentUser().then(function(response) {
-    $scope.memberinfo = response.data;
-    console.log("Current User:\n",response);
-  })
 })
 
-.controller('ArticlesCtrl', function($scope) {
-})
-
-.controller('ArticleCtrl', function($scope, $routeParams) {
-  // console.log("Article - ", $routeParams.articleId)
-})
-
-.controller('AnnotatorCtrl', function($scope, $routeParams, $document, $sce, $location, $uibModal, $anchorScroll, $timeout,$compile, Api) {
+.controller('AnnotatorCtrl', function($scope, $rootScope, $routeParams, $document, $sce, $location, $uibModal, $anchorScroll, $timeout,$compile, Api) {
 
   /***************** START SETUP ********************/
 
@@ -72,9 +69,6 @@ angular.module('EasyRashApp.controllers', [])
   var commentsList = null;
   var reviewsList = null;
   var decisionsLIst = null;
-
-  // Get the logged user
-  getCurrentUser();
 
   // Get list of documents the user can review
   getDocList();
@@ -105,8 +99,8 @@ angular.module('EasyRashApp.controllers', [])
   $scope.eval = {};
   $scope.rating = 0;
   $scope.eval.vote = {
-      current: 1,
-      max: 5
+    current: 1,
+    max: 5
   }
 
   var articleStats = {};
@@ -121,7 +115,7 @@ angular.module('EasyRashApp.controllers', [])
 
   // Function: toggle the sidebar
   $scope.toggleSidebar = function() {
-      $scope.sidebarClosed = $scope.sidebarClosed ? null: "sidebar-closed";
+    $scope.sidebarClosed = $scope.sidebarClosed ? null: "sidebar-closed";
   };
 
   // Function: set the article rating
@@ -286,12 +280,7 @@ angular.module('EasyRashApp.controllers', [])
   }
 
   // Function: get the currently logged user
-  function getCurrentUser(){
-    Api.getCurrentUser().then(function(response) {
-      console.log(response.data);
-      $scope.reviewer = response.data;
-    })
-  }
+    $scope.reviewer = $rootScope.userInfo;
 
   // Funciton: get the list of article to review
   function getDocList(){
@@ -326,6 +315,7 @@ angular.module('EasyRashApp.controllers', [])
         $scope.articleBody = $sce.trustAsHtml(docBody.innerHTML);
 
 
+<<<<<<< HEAD
         var annotations = new Array();
 
         for (i=0; i < scriptList.length; i++) {
@@ -357,12 +347,24 @@ angular.module('EasyRashApp.controllers', [])
               case "review":
               console.log(annotation[j]);
               reviewsList.push( annotation[j] );
+=======
+          switch(annotation[j]['@type']){
+            case "comment":
+            console.log("#article-container "+annotation[j]['ref']);
+            annotation[j]['refText'] = docBody.querySelectorAll(annotation[j]['ref'])[0] ? docBody.querySelectorAll(annotation[j]['ref'])[0].innerText : "Error: no Reference detected";
+            commentsList.push( annotation[j] );
+            break;
+            case "review":
+            console.log(annotation[j]);
+            reviewsList.push( annotation[j] );
+>>>>>>> 28cce48bb5f9da6eb144213ee92f61d21bc5b47b
 
-              console.log(annotation[j]);
+            console.log(annotation[j]);
 
-              articleStats.avgVote += parseInt(annotation[j]["article"]["eval"]["rank"]);
-              console.log(articleStats.avgVote);
+            articleStats.avgVote += parseInt(annotation[j]["article"]["eval"]["rank"]);
+            console.log(articleStats.avgVote);
 
+<<<<<<< HEAD
               if (annotation[j]["article"]["eval"]["status"] === "pso:accepted-for-publication"){
                 articleStats.numAccept++;
               }else{
@@ -377,6 +379,21 @@ angular.module('EasyRashApp.controllers', [])
               decisionsList.push( annotation[j] );
               break;
             }
+=======
+            if (annotation[j]["article"]["eval"]["status"] === "pso:accepted-for-publication"){
+              articleStats.numAccept++;
+            }else{
+              articleStats.numReject++;
+            }
+            break;
+            case "decision":
+
+            if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
+              $scope.alreadyDecided = true;
+            }
+            decisionsList.push( annotation[j] );
+            break;
+>>>>>>> 28cce48bb5f9da6eb144213ee92f61d21bc5b47b
           }
         }
         // Set the average vote:
@@ -451,7 +468,7 @@ angular.module('EasyRashApp.controllers', [])
     if(review.comments.length > 0){
       var answer = confirm("You have unsaved content. If you leave the page all your work will be lost.\nAre you sure to exit?")
       if (!answer) {
-          event.preventDefault();
+        event.preventDefault();
       }
     }
   });
@@ -484,7 +501,7 @@ angular.module('EasyRashApp.controllers', [])
 
       if( $(this).attr('id') ){
         /* If the id is an id used by EasyRashApp for the annotation process it means it has
-          a lot of other attributes that needs to be deleted before the article is sent to the server.
+        a lot of other attributes that needs to be deleted before the article is sent to the server.
         */
         if( $(this).attr('id').startsWith('para-') || $(this).attr('id').startsWith('fragment')){
           $(this).removeClass("highlight");
@@ -582,8 +599,8 @@ angular.module('EasyRashApp.controllers', [])
       $(input.fragmentId).removeClass();
     }else if(isSpan) {
       $(input.fragmentId).replaceWith(function() {
-         return $(this).contents();
-       });
+        return $(this).contents();
+      });
     }else {
       $(input.fragmentId).removeClass();
     }
@@ -621,8 +638,8 @@ angular.module('EasyRashApp.controllers', [])
         $(input.fragmentId).removeAttr('ng-click');
       } else if(isSpan) {
         $(input.fragmentId).replaceWith(function() {
-           return $(this).contents();
-         });
+          return $(this).contents();
+        });
       } else {
         $(input.fragmentId).removeClass("highlight");
         $(input.fragmentId).removeAttr("data-toggle");
@@ -869,32 +886,43 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('LoginCtrl', function($scope, AuthService, $rootScope, $window) {
+  // don't show the header navbar in the login page
   $rootScope.navbar = false;
+  // check if the user is already authenticated
   if (AuthService.isAuthenticated() === true) {
+    // if is authenticated redirect him to the homepage
     $window.location.href = "/#/dash";
   }
+  // setting user fields for login
   $scope.user = {
     email: '',
     pass: ''
   };
+  // when the user click on the login button
   $scope.login = function() {
-    console.log($scope.user);
+    // call the AuthService login funciton and post the user data in the func
     AuthService.login($scope.user).then(function(msg) {
-      //$state.go('inside');
-      console.log(msg)
+      console.log(msg);
+      // reload the page
+      // it will automatically check if the user is logged, then redirect to home
       $window.location.reload();
     }, function(errMsg) {
+      // if there are server errors, let the user know by console and client alert
       $scope.error = errMsg;
     });
   };
 })
 
 .controller('RegisterCtrl', function($scope, $rootScope, $window, AuthService) {
+  // don't show the header navbar in the registration page
   $rootScope.navbar = false;
+  // check if the user is already authenticated
   if (AuthService.isAuthenticated() === true) {
+    // if is authenticated redirect him to the homepage
     $window.location.href = "/#/dash";
   }
 
+  // setting user fields for registration
   $scope.user = {
     email: '',
     pass: '',
@@ -903,11 +931,16 @@ angular.module('EasyRashApp.controllers', [])
     sex: ''
   };
 
+  // when the user click on the register button
   $scope.signup = function() {
+    // call the AuthService service -lol- and it's function register with user data
     AuthService.register($scope.user).then(function(msg) {
+      // change location of the page, redirecting to homepage
       $window.location.href = "/#/dash";
+      // let the user know he is successfully registered
       var alertPopup = alert("Registered successfully!\nThank you.");
     }, function(errMsg) {
+      // if there are server errors, let the user know by console and client alert
       console.log(errMsg)
       $scope.error = errMsg;
     });
@@ -915,51 +948,64 @@ angular.module('EasyRashApp.controllers', [])
 })
 
 .controller('EventsCtrl', function($scope, Api) {
+  // call the Api service "get all events"
   Api.getEvents().then(function(response) {
+    // set the scope eventInfo with the server response (all events in the scope)
     $scope.eventsList = response;
   })
 })
 
 .controller('EventCtrl', function($scope, $routeParams, Api) {
+  // call the Api service "get single event" by id passed by route params
   Api.getEvent($routeParams.eventId).then(function(response) {
-    console.log("> Evento:\n",response);
+    // set the scope eventInfo with the server response (single event in the scope)
     $scope.eventInfo = response;
   })
 })
 
-.controller('HelpCtrl', function($scope, $routeParams, Api) {
-})
+.controller('AccountCtrl', function($scope, $rootScope, Api) {
+  // call the get current user function
+  $rootScope.getUser();
+  // by default user-info's page is non-editable
+  $scope.clicked = false;
+  // setting rootScope userinfo as scope user
+  $scope.user = $rootScope.userInfo;
 
-.controller('AccountCtrl', function($scope, Api) {
-
+  // when the user click on the save button (update user infos)
   $scope.update = function(data) {
-    console.log(data)
-    if(data.oldPass === undefined) {
-      alert("Devi inserire la password attuale per effettuare le modifiche richieste!")
-    } else {s
+    // if the field for the current password is empty
+    if((typeof (data.oldPass) === undefined) || (data.oldPass === "")) {
+      // alert the user who has to insert it to save infos
+      alert("You must insert your password to update your informations!")
+    } else {
+      // if is all correct, then call the api update user with the data edited
       Api.updateUser(data).then(function(response) {
-        console.log(response)
-        $scope.user = response.config.data;
-        $scope.clicked = false;
+        // if server's answer is success (true)
+        if (response.data.success === true) {
+          // update the client user scope with server's response
+          $scope.user = response.config.data;
+          // and change the editable state in non-editable
+          $scope.clicked = false;
+        } else {
+          // if server success is false, then let the user know what's the server's error
+          alert("Server error:\n"+response.data.msg);
+        }
       });
     }
   }
-  $scope.clicked = false;
 
+  // when the user wnat to cancel what's doing
   $scope.undo = function(){
-    // reload the page to avoid to save something we dont wantss
+    // reload the page to avoid saving somethin' the user doesn't want.
     window.location.reload();
   }
-  // Get user info
-  Api.getCurrentUser().then(function(response) {
-    // get the current user
-    $scope.user = response.data;
-  });
 
+  // when the user want to edit his informations
   $scope.edit = function(){
-    // reset password fields
+    // reset password fields to avoid security problems
     $scope.user.oldPass = "";
     $scope.user.newPass = "";
+    // show input fileds editable
     $scope.clicked = true;
   };
 

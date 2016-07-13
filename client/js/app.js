@@ -2,20 +2,23 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
 
 .run(function($rootScope, AuthService, AUTH_EVENTS, $window) {
   console.info("EasyRashApp is running bitchh!");
+
+  // handling navbar in different controllers (to hide or show the header navbar)
   $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-        console.log(current.$$route.controller)
-        if (current.$$route.controller === "RegisterCtrl" || current.$$route.controller === "LoginCtrl")
-        {
-          $rootScope.navbar = false;
-          $rootScope.footerbar = false;
-        } else if (current.$$route.controller === "AnnotatorCtrl"){
-          $rootScope.navbar = true;
-          $rootScope.footerbar = false;
-        } else {
-          $rootScope.navbar = true;
-          $rootScope.footerbar = true;
-        }
-    });
+    console.info(current.$$route.controller)
+    if (current.$$route.controller === "RegisterCtrl" || current.$$route.controller === "LoginCtrl")
+    {
+      $rootScope.navbar = false;
+      $rootScope.footerbar = false;
+    } else if (current.$$route.controller === "AnnotatorCtrl"){
+      $rootScope.navbar = true;
+      $rootScope.footerbar = false;
+    } else {
+      $rootScope.navbar = true;
+      $rootScope.footerbar = true;
+    }
+  });
+
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
 
     if (!AuthService.isAuthenticated()) {
@@ -23,10 +26,10 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
       if (next.name !== 'outside.login' && next.name !== 'outside.register') {
         event.preventDefault();
         window.location.href = "/login";
-
-        //$state.go('outside.login');
       }
     }
+
+
   });
 })
 
@@ -36,15 +39,6 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
     templateUrl: 'templates/dash.html',
     controller: 'DashCtrl'
   }).
-  when('/articles', {
-    templateUrl: 'templates/articles.html',
-    controller: 'ArticlesCtrl'
-  }).
-  when('/article/:articleId', {
-    templateUrl: 'templates/article.html',
-    controller: 'ArticleCtrl'
-  }).
-  // TODO da rivedere
   when('/annotation-page/:articleId', {
     templateUrl: 'templates/annotation-page.html',
     controller: 'AnnotatorCtrl'
@@ -70,8 +64,7 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
     controller: 'EventCtrl'
   }).
   when('/help', {
-    templateUrl: 'templates/manual.html',
-    controller: 'HelpCtrl'
+    templateUrl: 'templates/manual.html'
   }).
   otherwise({
     redirectTo: '/login'
