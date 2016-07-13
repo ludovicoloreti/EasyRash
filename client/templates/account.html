@@ -39,7 +39,7 @@
             </div>
             <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.email}}</span>
-              <input type="text" class="form-control" ng-show="clicked" ng-model="user.email">
+              <input type="text" class="form-control" ng-show="clicked" ng-model="user.email" disabled>
             </div>
           </div>
           <div class="row">
@@ -56,11 +56,11 @@
           </div>
           <div class="row" ng-show="clicked">
             <div class="col-md-6 col-xs-12 col-sm-6 text-right">
-              <h4>Old password:</h4>
+              <h4><b>Current Password</b>*:</h4>
             </div>
             <div class="col-md-6 col-xs-12 col-sm-6">
               <span ng-hide="clicked">{{user.oldPass}}</span>
-              <input type="text" class="form-control" ng-show="clicked" ng-model="user.oldPass">
+              <input style="background:#ffffe5;"type="text" class="form-control" ng-show="clicked" ng-model="user.oldPass">
             </div>
           </div>
           <div class="row" ng-show="clicked" >
