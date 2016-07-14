@@ -146,30 +146,30 @@ module.exports = function (app) {
         var isRev = false;
         var numOfChairs = 0;
         var numOfRevs = 0;
-        for(var event of events){
+        for(var a=0; a<events.length; a++){
 
-          var chairs = event.chairs;
+          var chairs = events[a].chairs;
           numOfChairs = chairs.length;
-          var pc_members = event.pc_members;
-          var submissions = event.submissions;
-          for (i=0; i<chairs.length; i++) {
+          var pc_members = events[a].pc_members;
+          var submissions = events[a].submissions;
+          for (var i=0; i<chairs.length; i++) {
             if (userId === chairs[i])
             {
               isChair = true;
               break;
             }
           }
-          for(i=0; i<pc_members.length; i++) {
+          for(var i=0; i<pc_members.length; i++) {
             if(userId === pc_members[i]){
               isPcMember = true;
               break;
             }
           }
-          for(i=0; i<submissions.length; i++) {
+          for(var i=0; i<submissions.length; i++) {
             if(submissions[i].url === req.params.id+'.html'){
               numOfRevs = submissions[i].reviewers.length;
-              for(var rev of submissions[i].reviewers){
-                if(rev === userId){
+              for(var j=0; j<submissions[i].reviewers.length; j++){
+                if(submissions[i].reviewers[j] === userId){
                   isRev = true;
                   break;
                 }
@@ -206,11 +206,11 @@ module.exports = function (app) {
       function (err, events) {
         if (err) return next(err);
         var docList = new Array();
-        for(var event of events){
-          for(var sub of event.submissions){
-            for(var rev of sub.reviewers){
-              if(rev === userId){
-                docList.push(sub);
+        for(var i=0; i< events.length; i++){
+          for(var j=0; j<events[i].submissions.length; j++){
+            for(var k=0; k<events[i].submissions[j].reviewers.length; k++){
+              if(events[i].submissions[j].reviewers[k] === userId){
+                docList.push(events[i].submissions[j]);
               }
             }
           }
@@ -237,21 +237,21 @@ module.exports = function (app) {
         // set all useful variable for the client
         var isChair = false;
         var isRev = false;
-        for(var event of events){
-          var chairs = event.chairs;
-          var pc_members = event.pc_members;
-          var submissions = event.submissions;
-          for (i=0; i<chairs.length; i++) {
+        for(var a=0; a<events.length; a++){
+          var chairs = events[a].chairs;
+          var pc_members = events[a].pc_members;
+          var submissions = events[a].submissions;
+          for (var i=0; i<chairs.length; i++) {
             if (userId === chairs[i])
             {
               isChair = true;
               break;
             }
           }
-          for(i=0; i<submissions.length; i++) {
+          for(var i=0; i<submissions.length; i++) {
             if(submissions[i].url === fileName+'.html'){
-              for(var rev of submissions[i].reviewers){
-                if(rev === userId){
+              for(var j=0; j<submissions[i].reviewers.length; j++){
+                if(submissions[i].reviewers[j] === userId){
                   isRev = true;
                   break;
                 }
