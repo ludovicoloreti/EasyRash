@@ -7,13 +7,19 @@
       <div class="content">
         <div id="doc-list" >
           <h4><span class="fa fa-edit"></span> Assigned Reviews: </h4>
-          <ol>
+          <div ng-if="submissions.length == 0" class="animated fadeInLeft text-center">
+            <span class="fa fa-book fa-3x"></span>
+            <h4 class="">No reviews...</h4>
+          </div>
+          <ol ng-if="submissions.length > 0">
             <li ng-repeat="sub in submissions">
               <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">
                 <i>"{{sub.title | cut:true:50:' ...'}}"</i>
               </a>
             </li>
+
           </ol>
+
         </div>
         <hr />
         <div id="meta-list">
@@ -104,7 +110,7 @@
               <h4>Statistics:</h4>
               <div clas="row">
                 <div class="col-md-4">
-                  <h3 class="big text-center">{{articleStats.avgVote}}/5</h3>
+                  <h3 class="big text-center">{{articleStats.avgVote}}</h3>
                   <p class="text-muted text-center" >Avg. vote</p>
                 </div>
                 <div class="col-md-4">
@@ -154,22 +160,22 @@
                 </div>
               </div>
 
-              <div class="row" ng-if="!chairDecision">
+              <div class="row" ng-show="!chairDecision">
                 <div class="col-md-12">
                   <p><b>Insert your valuation:</b></p>
                   <fieldset class="form-group">
-                    <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Write here." ng-model ="decisionModal.text"></textarea>
+                    <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Write here." ng-model ="d.text"></textarea>
                   </fieldset>
-                  <label class="radio-inline"><input type="radio" class="radio" ng-model="decisionModal.status" value="true">Accept for Publication</label>
-                  <label class="radio-inline"><input type="radio" class="radio" ng-model="decisionModal.status" value="false">Reject for Publication</label>
+                  <label class="radio-inline"><input type="radio" class="radio" ng-model="d.status" value="true">Accept for Publication</label>
+                  <label class="radio-inline"><input type="radio" class="radio" ng-model="d.status" value="false">Reject for Publication</label>
 
                 </div>
               </div>
             </div>
             <div class="modal-footer">
               <span class="text-danger" ng-if="alreadyDecided">You have already decided.</span>
-              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-diabled = "!canDecide || alreadyDecided" ng-class="canDecide && !alreadyDecided ? '': 'disabled'" ng-click="saveDecision(decisionModal)">Save</button>
-              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="">Close</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-diabled = "!canDecide || alreadyDecided" ng-class="canDecide && !alreadyDecided ? '': 'disabled'" ng-click="saveDecision(d)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Close</button>
             </div>
           </div>
 

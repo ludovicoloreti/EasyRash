@@ -1,21 +1,30 @@
+/*
+  This module has the aim to apply the original actions, behaviours and styles contained in the
+  rash.js script.
+*/
 var jsdom = require('jsdom');
 const fs = require('fs');
 
-// Mi viene passato il path del file html
+/*
+  This function prepares the acticle for reading. It is elaborated using rash.js
+  Starting from the html file this function creates a dom rapresentation and inserts elements (such as metadata)
+  in a header (and footnotes).
+*/
 var prepareForReading = function( htmlFilePath, callback ){
-  //Leggo il file
+  // Read the file
   fs.readFile(htmlFilePath, 'utf8', function(error, html) {
     if( error ){
       // The file is not in the provided dataset
       error.message = "No such file found";
       callback( error, null );
     } else {
-      // uso jsdom per creare il dom e appliacrci jquery
+      // Use of jsdom library to create the dom form the html.
        jsdom.env(html, [], function (errors, window) {
+          // Jquery
           var $ = require('jquery')(window);
 
-          // Parte copiata dal file rash
-          // funzione che estende jquery con delle funzioni del prof
+          // Copied and Pasted from rash.js - ref. Silvio Peroni
+          // Extend jquery.
           $.fn.extend({
               countWords: function () {
                   var text = $(this).text();
@@ -555,20 +564,21 @@ var prepareForReading = function( htmlFilePath, callback ){
           /* /END Bibliography */
 
 
-          // fine parte copiata dal prof
+          // END of copied part.
 
-          // stampo l'html che ne viene fuori
-          //console.log( window.document.documentElement.outerHTML );
+          // Return the HTML modified.
           callback(null, window.document.documentElement.outerHTML);
-          // TODO
-          // 1- ritornare non so cosa e non so come
+
       });
     }
 });
 
 };
 
-
+/*
+  This function prepares the RASH article for annotation.
+  It isolates Script and Body tags. The body part is not elaborated by rash.js
+*/
 var prepareForAnnotation = function(htmlFilePath, callback) {
   fs.readFile(htmlFilePath, 'utf8', function(error, html) {
     if( error ){
@@ -584,7 +594,7 @@ var prepareForAnnotation = function(htmlFilePath, callback) {
         // List of tags "script"
         var scripts = $('[type="application/ld+json"]');
         var annotations = new Array();
-        // LIst of annotations
+        // List of annotations
         for (i=0; i < scripts.length; i++) {
           annotations.push( JSON.parse(scripts[i].text) );
         }
@@ -596,23 +606,13 @@ var prepareForAnnotation = function(htmlFilePath, callback) {
         returnObject.annotations = annotations;
         returnObject.body = body;
 
-        //returnObject.file = window.document.documentElement.outerHTML;
-
+        // Call the return funtion.
         callback(null, returnObject);
        });
     }
   });
 };
 
-
+// Export actions
 module.exports.prepareForReading = prepareForReading;
 module.exports.prepareForAnnotation = prepareForAnnotation;
-
-/*
-Utils: writing on html document
-
-fs.writeFile('out.html', window.document.documentElement.outerHTML,
-             function (error){
-    if (error) throw error;
-});
-*/

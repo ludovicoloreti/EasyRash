@@ -1,3 +1,8 @@
+/*
+  This module manages all the http requests coming from the application.
+  It is involved in authenitcation, lock managing, email sending.
+  It can be considered a GRASP Controller (or a handler).
+*/
 // Imports
 var Todo = require('./models/todo');
 var mongoose = require('mongoose'); // Mongodb connection
@@ -316,6 +321,7 @@ module.exports = function (app) {
       });
     });
 
+    // Save the chair decision route.
     app.post('/api/save-decision/:id', passport.authenticate('jwt', {session: false}), checkAuth, function(req, res) {
       /* Prepare the rash file */
       var fileName = req.params.id;
@@ -464,82 +470,47 @@ module.exports = function (app) {
                   sex: req.body.sex,
                   pass: passwd
                 }, function(err, numberAffected, rawResponse) {
-                    console.log(err,numberAffected,rawResponse)
-                    if (err) {
-                      return next(err);
-                    }
-                   res.json({success: true, rsp: rawResponse});
-                 });
-                } else {
-                  res.status(403).send({success: false, msg: 'Forbidden. Password incorrect.'});
-                }
+                  console.log(err,numberAffected,rawResponse)
+                  if (err) {
+                    return next(err);
+                  }
+                  res.json({success: true, rsp: rawResponse});
+                });
+              } else {
+                res.status(403).send({success: false, msg: 'Forbidden. Password incorrect.'});
               }
-            });
-          });
-
-          // Route to get user's info
-          app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), checkAuth, checkLock, function(req, res) {
-            var token = getToken(req.headers);
-            if (token) {
-              var decoded = jwt.decode(token, config.secret);
-              User.findOne({
-                email: decoded.email,
-              }, function(err, user) {
-                if (err) throw err;
-                if (!user) {
-                  return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
-                } else {
-                  strToSplit = user.email;
-                  var usrname = strToSplit.split("@");
-                  user.pass = undefined;
-                  user.confirmed = undefined;
-                  res.json({success: true, msg: 'Welcome in the member area ' + usrname[0] + '!', data: user});
-                }
-              });
-            } else {
-              return res.status(403).send({success: false, msg: 'No token provided.'});
             }
           });
-          /*
-          // ESEMPI da usare ---------------------------------------------------------------------
-          // get all todos
-          app.get('/api/todos', function (req, res) {
-          // use mongoose to get all todos in the database
-          getTodos(res);
         });
 
-        // create todo and send back all todos after creation
-        app.post('/api/todos', function (req, res) {
+        // Route to get user's info
+        app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), checkAuth, checkLock, function(req, res) {
+          var token = getToken(req.headers);
+          if (token) {
+            var decoded = jwt.decode(token, config.secret);
+            User.findOne({
+              email: decoded.email,
+            }, function(err, user) {
+              if (err) throw err;
+              if (!user) {
+                return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+              } else {
+                strToSplit = user.email;
+                var usrname = strToSplit.split("@");
+                user.pass = undefined;
+                user.confirmed = undefined;
+                res.json({success: true, msg: 'Welcome in the member area ' + usrname[0] + '!', data: user});
+              }
+            });
+          } else {
+            return res.status(403).send({success: false, msg: 'No token provided.'});
+          }
+        });
 
-        // create a todo, information comes from AJAX request from Angular
-        Todo.create({
-        text: req.body.text,
-        done: false
-      }, function (err, todo) {
-      if (err)
-      res.send(err);
 
-      // get and return all the todos after you create another
-      getTodos(res);
-    });
-
-  });
-
-  // delete a todo
-  app.delete('/api/todos/:todo_id', function (req, res) {
-  Todo.remove({
-  _id: req.params.todo_id
-}, function (err, todo) {
-if (err)
-res.send(err);
-
-getTodos(res);
-});
-});*/
-
-// Otherwise return the index.html
-app.get('*', function (req, res) {
-  // console.log(res)
-  res.sendFile(__dirname + '/client/index.html'); // load the single view file (angular will handle the page changes on the front-end)
-});
+        // Otherwise return the index.html
+        app.get('*', function (req, res) {
+          // console.log(res)
+          res.sendFile(__dirname + '/client/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+        });
 };

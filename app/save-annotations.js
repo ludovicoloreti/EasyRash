@@ -1,7 +1,16 @@
+/*
+ Save Annotations
+ This module is responsible for handling comments and decision write on disk.
+ It reades the file, create an HTML representation, add scripts inside the head and
+ HTML inside the body.
+*/
+
 var jsdom = require('jsdom');
 const fs = require('fs');
 
-
+/*
+  This function is used when it comes to save a list of annotations posted by a reviewer.
+*/
 var saveRASH = function(htmlFilePath, annotationsData, callback) {
   fs.readFile(htmlFilePath, 'utf8', function(error, html) {
     if( error ){
@@ -21,10 +30,7 @@ var saveRASH = function(htmlFilePath, annotationsData, callback) {
         var body = $('body');
         body.html(annotationsData.article);
 
-        // Text inside the body
-        // var body =  window.document.getElementsByTagName("body")[0].outerHTML;
-        // console.log(window.document.documentElement.outerHTML);
-
+        // Write on disk
         fs.writeFile(htmlFilePath, window.document.documentElement.outerHTML, function (error){
             if (error){
               throw error
@@ -34,12 +40,14 @@ var saveRASH = function(htmlFilePath, annotationsData, callback) {
 
         });
 
-        //returnObject.file = window.document.documentElement.outerHTML;
       });
     }
   });
 };
 
+/*
+  This function is used when it comes to save the decision posted by a chair.
+*/
 var saveDecision = function(htmlFilePath, annotationsData, callback) {
   fs.readFile(htmlFilePath, 'utf8', function(error, html) {
     if( error ){
@@ -56,10 +64,7 @@ var saveDecision = function(htmlFilePath, annotationsData, callback) {
         var head = $('head');
         head.append("<script type='application/ld+json'>"+ JSON.stringify(annotationsData.decision, null, 4)+"</script>");
 
-        // Text inside the body
-        // var body =  window.document.getElementsByTagName("body")[0].outerHTML;
-        // console.log(window.document.documentElement.outerHTML);
-
+        // Write on disk
         fs.writeFile(htmlFilePath, window.document.documentElement.outerHTML, function (error){
             if (error){
               throw error
@@ -69,11 +74,11 @@ var saveDecision = function(htmlFilePath, annotationsData, callback) {
 
         });
 
-        //returnObject.file = window.document.documentElement.outerHTML;
       });
     }
   });
 };
 
+// Export functions
 module.exports.saveRASH = saveRASH;
 module.exports.saveDecision = saveDecision;

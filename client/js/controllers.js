@@ -417,7 +417,9 @@ angular.module('EasyRashApp.controllers', [])
               case "review":
 
               // If the user has already commented the article he can't review.
-              if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
+              console.log(annotation[j]['author'])
+              console.log("mailto:"+$scope.reviewer.email);
+              if(annotation[j]['article']['eval']['author'] === "mailto:"+$scope.reviewer.email){
                 $scope.canReview = false;
                 $scope.alreadyReviewed = true;
               }
@@ -438,7 +440,7 @@ angular.module('EasyRashApp.controllers', [])
               case "decision":
 
               // If the user has already decided, he is a chair and can't decide.
-              if(annotation[j]['author'] === "mailto:"+$scope.reviewer.email){
+              if(annotation[j]['article']['eval']['author'] === "mailto:"+$scope.reviewer.email){
                 $scope.canDecide = false;
                 $scope.alreadyDecided = true;
               }
@@ -498,7 +500,7 @@ angular.module('EasyRashApp.controllers', [])
     });
   }
 
-  // Show and hide all comments
+  // Show and hide all comments using random colors
   var s = true;
   $scope.showAllComments = function(){
 
@@ -596,25 +598,21 @@ angular.module('EasyRashApp.controllers', [])
   $scope.saveDecision = function(d){
 
     var decision = new Decision();
-    if(d.text && d.status !== undefined && !isNaN($scope.articleStats.avgVote)){
+    if( d.text && d.status !== undefined && !isNaN($scope.articleStats.avgVote) ){
       decision.evaluateArticle(d.status, $scope.articleStats.avgVote, d.text);
 
 
       var data = {};
       data.articleName = $routeParams.articleId;
       data.decision = decision.generateJsonLD();
-      // TODO uncomment and delete the second
-      // if($scope.canDecide && !$scope.alreadyDecided){
-      //   Api.saveDecision(data).then(function(response) {
-      //     console.log(response);
-      //     //callApiService();
-      //   });
-      // }
-      Api.saveDecision(data).then(function(response) {
-        console.log("prova");
-        console.log(response);
-        //callApiService();
-      });
+
+      // If the chair can decide save the decision.
+      if($scope.canDecide && !$scope.alreadyDecided){
+        Api.saveDecision(data).then(function(response) {
+          console.log(response);
+          callApiService();
+        });
+      }
     }
 
 
@@ -633,7 +631,8 @@ angular.module('EasyRashApp.controllers', [])
 
         Api.saveAnnotations(data).then(function(response) {
           console.log(response);
-          //callApiService();
+          review = null;
+          callApiService();
         });
       }else {
         showErrors("You must accept or reject the article before saving your annotations.")
@@ -684,9 +683,9 @@ angular.module('EasyRashApp.controllers', [])
   // Funciton: delete the comment relate to a fragment and the fragment too
   // INVOKED BY - Comment modal
   $scope.deleteComment = function(input){
-
+    console.log(input)
     var keepRef = false;
-    var isSpan = input.fragmentId.startsWith('fragment');
+    var isSpan = input.fragmentId.indexOf('fragment') > -1;
 
     for(var i=0; i<commentsList.length; i++){
       if (commentsList[i]['ref'] === input.fragmentId){
@@ -695,14 +694,25 @@ angular.module('EasyRashApp.controllers', [])
     }
 
     if( keepRef ){
+      console.log(1);
       // TODO REMOVE ALL ATTRIBUTES
       $(input.fragmentId).removeClass();
+      $(input.fragmentId).removeClass("highlight");
+      $(input.fragmentId).removeAttr("data-toggle");
+      $(input.fragmentId).removeAttr("data-target");
+      $(input.fragmentId).removeAttr("ng-click");
     }else if(isSpan) {
+      console.log(2);
       $(input.fragmentId).replaceWith(function() {
         return $(this).contents();
       });
     }else {
+      console.log(3);
       $(input.fragmentId).removeClass();
+      $(input.fragmentId).removeClass("highlight");
+      $(input.fragmentId).removeAttr("data-toggle");
+      $(input.fragmentId).removeAttr("data-target");
+      $(input.fragmentId).removeAttr("ng-click");
     }
 
     review.deleteComment(input.fragmentId);
@@ -715,7 +725,7 @@ angular.module('EasyRashApp.controllers', [])
     // If no comment is present, clear the selection
     if ( !comment ){
       var keepRef = false;
-      var isSpan = input.fragmentId.startsWith('fragment');
+      var isSpan = input.fragmentId.indexOf('fragment') > -1;
       if(commentsList.length > 0)
       {
         console.info("Comment List is not empty")
@@ -830,13 +840,13 @@ angular.module('EasyRashApp.controllers', [])
       if(range.commonAncestorContainer.parentElement.nodeName === "P"){
         commonContainer = commonContainer.parentElement
       }
-      console.log(range);
-      console.log(commonContainer.parentElement.innerText);
-
-      console.log(range.startPoint < 2);
-      console.log(commonContainer.nodeName === "P");
-      console.log(commonContainer.innerText.toString().length );
-      console.log(range.toString().length)
+      // console.log(range);
+      // console.log(commonContainer.parentElement.innerText);
+      //
+      // console.log(range.startPoint < 2);
+      // console.log(commonContainer.nodeName === "P");
+      // console.log(commonContainer.innerText.toString().length );
+      // console.log(range.toString().length)
       if( commonContainer.nodeName === "P"  && range.startPoint < 2 && commonContainer.innerText.toString().length - range.toString().length < 4 ){
         console.log(range.commonAncestorContainer);
         var paraId = null;
