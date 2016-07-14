@@ -227,7 +227,7 @@ angular.module('EasyRashApp.controllers', [])
     // Evaluate the article
     evaluateArticle: function(status, score, comment){
 
-      if (status) this.article.eval.status = "pso:accepted-for-publication";
+      if (status === true) this.article.eval.status = "pso:accepted-for-publication";
       else this.article.eval.status = "pso:rejected-for-publication";
 
       var s = parseInt(score);
