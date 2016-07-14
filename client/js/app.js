@@ -5,7 +5,6 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
 
   // handling navbar in different controllers (to hide or show the header navbar)
   $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-    console.info(current.$$route.controller)
     if (current.$$route.controller === "RegisterCtrl" || current.$$route.controller === "LoginCtrl")
     {
       $rootScope.navbar = false;
@@ -19,8 +18,8 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
     }
   });
 
+  // event handler fired when the transition begins
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
-
     if (!AuthService.isAuthenticated()) {
       console.log(next.name);
       if (next.name !== 'outside.login' && next.name !== 'outside.register') {
@@ -28,8 +27,6 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
         window.location.href = "/login";
       }
     }
-
-
   });
 })
 
