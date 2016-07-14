@@ -13,7 +13,6 @@ angular.module('EasyRashApp.appUtils', [])
     this.comments = new Map();
 
     var generateId = function(comment){
-      // TODO implement
       return "review1";
     }
 

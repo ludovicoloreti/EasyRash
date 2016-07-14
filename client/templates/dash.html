@@ -26,16 +26,6 @@
     </div>
     <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6" id="articles-col">
       <h3>Review this aricles: </h3>
-      <!-- <p name="DA-CAVAREEEEEEEEEE">
-        <fieldset style="border: 2px dashed orange">
-          <legend>&nbsp; &times; TEST &times;</legend>
-          <ul type="square">
-            <li>Comments: <a href="/#/annotation-page/example-annotations" target="_self">Esempio annotazione</a></li>
-            <li>Comments<sub>2</sub>: <a href="/#/annotation-page/ciancarini-eswc2014" target="_self">Esempio articolo lungo e complesso</a></li>
-          </ul>
-        </fieldset>
-      </p> -->
-
       <div ng-if="submissions.length > 0" class="animated fadeInUp" ng-repeat="sub in submissions">
         <div class="card card-block">
           <h4 class="card-title">{{sub.title.split("--")[0]}}</h4>

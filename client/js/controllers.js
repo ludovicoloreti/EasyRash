@@ -32,11 +32,6 @@ angular.module('EasyRashApp.controllers', [])
     var alertPopup = "Session Lost.\nSorry you have to login again.";
   });
 
-  // Destroy User Session
-  $scope.destroySession = function() {
-    AuthService.logout();
-  };
-
   // Logout service
   $scope.logout = function() {
     AuthService.logout();
@@ -469,12 +464,11 @@ angular.module('EasyRashApp.controllers', [])
         $scope.reviewsList = reviewsList;
         $scope.chairDecision = chairDecision;
 
-        // Fine Prova
       }else {
         // Stop the loading gif
         $scope.loading = false;
         // Show the article in #article-container
-        $scope.articleBody = $sce.trustAsHtml('<h1>Ops... something went wrong.</h1><p>This file seems not present...</p><p>Return to <a href="/#/dash">dashboard</a>.</p>');
+        $scope.articleBody = $sce.trustAsHtml('<h1>Ops... something went wrong.</h1><p>This file seems to be not present...<br>A large team of Pokemon Trainers is working hard on it. In the meantime, gotta catch\'em all!</p><p>Return to <a href="/#/dash">dashboard</a>.</p>');
       }
     });
   }

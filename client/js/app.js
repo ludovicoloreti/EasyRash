@@ -1,7 +1,7 @@
 angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.bootstrap', 'EasyRashApp.config', 'EasyRashApp.controllers', 'EasyRashApp.authServices', 'EasyRashApp.api', 'EasyRashApp.interfaceUtils'])
 
 .run(function($rootScope, AuthService, AUTH_EVENTS, $window) {
-  console.info("EasyRashApp is running bitchh!");
+  console.info("EasyRashApp is running! Gotta catch'em all!");
 
   // handling navbar in different controllers (to hide or show the header navbar)
   $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {

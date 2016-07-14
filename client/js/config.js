@@ -4,7 +4,8 @@
 */
 angular.module("EasyRashApp.config", [])
 .constant('AUTH_EVENTS', {
-  notAuthenticated: 'auth-not-authenticated'
+  notAuthenticated: 'auth-not-authenticated',
+  notAuthorized: 'auth-not-authorized'
 })
 .constant("CONFIG", {
   "appVersion": "1.5.0",
