@@ -21,7 +21,6 @@ angular.module('EasyRashApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap','ui.boo
   // event handler fired when the transition begins
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
     if (!AuthService.isAuthenticated()) {
-      console.log(next.name);
       if (next.name !== 'outside.login' && next.name !== 'outside.register') {
         event.preventDefault();
         window.location.href = "/login";

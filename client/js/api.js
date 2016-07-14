@@ -86,10 +86,8 @@ angular.module('EasyRashApp.api', ['EasyRashApp.config'])
     self.updateUser = function( data ) {
       return $http.post(CONFIG.endpoint+CONFIG.updateUser, data).then(
         function(response) {
-          console.log(response)
           return response;
         },function(error) {
-          console.log(error)
           return error;
         });
       };

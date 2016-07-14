@@ -65,10 +65,8 @@ angular.module('EasyRashApp.authServices', ['EasyRashApp.config'])
     return $q(function(resolve, reject) {
       $http.post(CONFIG.endpoint + CONFIG.register, user).then(function(result) {
         if (result.data.success) {
-          console.info(result.data)
           resolve(result.data.msg);
         } else {
-          console.info(result.data)
           reject(result.data.msg);
         }
       });
@@ -78,7 +76,6 @@ angular.module('EasyRashApp.authServices', ['EasyRashApp.config'])
   var login = function(user) {
     return $q(function(resolve, reject) {
       $http.post(CONFIG.endpoint + CONFIG.login, user).then(function(result) {
-        console.log(result);
         if (result.data.success) {
           storeUserCredentials(result.data.token);
           resolve(result.data.msg);
