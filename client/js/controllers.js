@@ -7,7 +7,6 @@
 angular.module('EasyRashApp.controllers', [])
 
 .controller('AppCtrl', function($scope, Api, $rootScope, $http, CONFIG, $window, AuthService, AUTH_EVENTS) {
-  console.log("AppCtrl");
   // GLOBAL function to get the logged user informations
   $rootScope.getUser = function( callback ) {
     Api.getCurrentUser().then(function(response) {
@@ -30,7 +29,7 @@ angular.module('EasyRashApp.controllers', [])
   $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
     AuthService.logout();
     $window.location.href = "/#/login";
-    var alertPopup = console.error("Session Lost.\nSorry you have to login again.");
+    var alertPopup = "Session Lost.\nSorry you have to login again.";
   });
 
   // Destroy User Session
@@ -130,11 +129,6 @@ angular.module('EasyRashApp.controllers', [])
   $scope.toggleSidebar = function() {
     $scope.sidebarClosed = $scope.sidebarClosed ? null: "sidebar-closed";
   };
-
-  // Function: set the article rating
-  $scope.getSelectedRating = function (rating) {
-    console.log(rating);
-  }
   /******************** END SETUP ************************/
 
   // Person object: RDF reviewer rapresentation
@@ -235,7 +229,6 @@ angular.module('EasyRashApp.controllers', [])
       if(s >= 1 && s < 6) this.article.eval.rank = s;
 
       this.article.eval.comment = comment;
-      console.log(this.article);
     },
     // Generate the Json-ld for the RDF. This json is redy to be sent to the server
     generateJsonLD: function(){
@@ -349,7 +342,6 @@ angular.module('EasyRashApp.controllers', [])
     Api.getArticle($routeParams.articleId, "processed").then(function(response) {
       // If I get the normal article I'm in reading mode
       $scope.annotatorMode = false;
-      console.log(response);
 
       if(response.success){
         // DOM rapresentation for the article
@@ -417,8 +409,6 @@ angular.module('EasyRashApp.controllers', [])
               case "review":
 
               // If the user has already commented the article he can't review.
-              console.log(annotation[j]['author'])
-              console.log("mailto:"+$scope.reviewer.email);
               if(annotation[j]['article']['eval']['author'] === "mailto:"+$scope.reviewer.email){
                 $scope.canReview = false;
                 $scope.alreadyReviewed = true;
@@ -470,26 +460,15 @@ angular.module('EasyRashApp.controllers', [])
           $scope.canDecide = false;
         }
 
-        console.log($scope.reviewCounter);
         $scope.commentCounter = commentsList.length;
-        console.log($scope.commentCounter);
 
         // Only one chair can decide. It can be changed in an easy way using this counter
         $scope.decisionCounter = 1;
-
-        console.log(commentsList);
-        console.log(reviewsList);
 
         $scope.commentsList = commentsList;
         $scope.reviewsList = reviewsList;
         $scope.chairDecision = chairDecision;
 
-        console.log("chair: "+ response.chair);
-        console.log("reviewer: "+response.reviewer);
-        console.log("canDecide: "+$scope.canDecide);
-        console.log("alreadyDecided: "+$scope.alreadyDecided);
-        console.log("canReview: "+$scope.canReview);
-        console.log("alreadyReviewed: "+$scope.alreadyReviewed);
         // Fine Prova
       }else {
         // Stop the loading gif
@@ -548,8 +527,6 @@ angular.module('EasyRashApp.controllers', [])
   $scope.loadRash = function(){
     Api.getArticle($routeParams.articleId, "unprocessed").then(function(response) {
 
-      //var rawArticle = parser.parseFromString(response.body, 'text/html');
-      console.log(response);
       if(response.success){
         $scope.annotatorMode = true;
 
@@ -558,7 +535,6 @@ angular.module('EasyRashApp.controllers', [])
 
         // Load the unprecessed rash file to #article-container
         $scope.articleBody = $sce.trustAsHtml(response.data.body);
-        console.log($scope.articleBody);
       }else{
         showErrors(response.message)
       }
@@ -591,7 +567,6 @@ angular.module('EasyRashApp.controllers', [])
       }
 
     });
-    console.log(article.html());
     return article.html();
   }
   // Function: dave the chair decision
@@ -609,7 +584,6 @@ angular.module('EasyRashApp.controllers', [])
       // If the chair can decide save the decision.
       if($scope.canDecide && !$scope.alreadyDecided){
         Api.saveDecision(data).then(function(response) {
-          console.log(response);
           callApiService();
         });
       }
@@ -620,7 +594,6 @@ angular.module('EasyRashApp.controllers', [])
 
   // Function: Save the list of comments by sending it to the server.
   $scope.saveAnnotations = function(){
-    console.log(review);
 
     if(review && review.comments.length > 0 ){
       if(review.article.eval.status !== "") {
@@ -630,7 +603,6 @@ angular.module('EasyRashApp.controllers', [])
         data.articleName = $routeParams.articleId;
 
         Api.saveAnnotations(data).then(function(response) {
-          console.log(response);
           review = null;
           callApiService();
         });
@@ -674,16 +646,13 @@ angular.module('EasyRashApp.controllers', [])
 
       }
 
-      console.log(comment.getText());
       review.pushComment(comment);
-      console.log(review);
     }
   }
 
   // Funciton: delete the comment relate to a fragment and the fragment too
   // INVOKED BY - Comment modal
   $scope.deleteComment = function(input){
-    console.log(input)
     var keepRef = false;
     var isSpan = input.fragmentId.indexOf('fragment') > -1;
 
@@ -694,7 +663,6 @@ angular.module('EasyRashApp.controllers', [])
     }
 
     if( keepRef ){
-      console.log(1);
       // TODO REMOVE ALL ATTRIBUTES
       $(input.fragmentId).removeClass();
       $(input.fragmentId).removeClass("highlight");
@@ -702,12 +670,10 @@ angular.module('EasyRashApp.controllers', [])
       $(input.fragmentId).removeAttr("data-target");
       $(input.fragmentId).removeAttr("ng-click");
     }else if(isSpan) {
-      console.log(2);
       $(input.fragmentId).replaceWith(function() {
         return $(this).contents();
       });
     }else {
-      console.log(3);
       $(input.fragmentId).removeClass();
       $(input.fragmentId).removeClass("highlight");
       $(input.fragmentId).removeAttr("data-toggle");
@@ -728,7 +694,6 @@ angular.module('EasyRashApp.controllers', [])
       var isSpan = input.fragmentId.indexOf('fragment') > -1;
       if(commentsList.length > 0)
       {
-        console.info("Comment List is not empty")
         for(var i=0; i<commentsList.length; i++){
           if (commentsList[i]['ref'] === input.fragmentId){
             keepRef = true;
@@ -736,7 +701,6 @@ angular.module('EasyRashApp.controllers', [])
           }
         }
       } else {
-        console.info("Comment List is empty")
         keepRef = false;
       }
 
@@ -762,7 +726,6 @@ angular.module('EasyRashApp.controllers', [])
   // Function: set of the modal used for insert, update, delete a comment on a fragment
   $scope.setupCommentOnModal = function(ref){
     $scope.commentModal = {};
-    console.log(ref);
     var comment = review.getComment(ref);
     if (comment){
       $scope.commentModal.fragmentId = comment.ref;
@@ -776,9 +739,7 @@ angular.module('EasyRashApp.controllers', [])
 
   // Function: evaluate article (reviewer)
   $scope.saveEval = function(e){
-    console.log(e);
     if(e.comment && e.status !== undefined && e.vote.current){
-      console.log(e);
       review.evaluateArticle(e.status, e.vote.current, e.comment);
     }
   }
@@ -787,7 +748,6 @@ angular.module('EasyRashApp.controllers', [])
   // INVOKED BY: #comment-list-modal
   $scope.showComments = function(){
     $scope.cs = review.comments;
-    console.log($scope.cs);
   }
 
   // Show the ref
@@ -805,9 +765,7 @@ angular.module('EasyRashApp.controllers', [])
   It is necessary to implement a function that handles this behavior.
   */
   $scope.scrollTo = function(id) {
-    console.log("cliccato");
     $location.hash(id);
-    console.log($location.hash());
     $anchorScroll();
   };
 
@@ -826,7 +784,6 @@ angular.module('EasyRashApp.controllers', [])
   $scope.highlight = function(){
     // Get the selection and the correspondent range.
     var s = selection();
-    console.log(s);
     var range = null;
     // If the selection is longer than 2 chars
     if(s.toString().length > 2){
@@ -840,15 +797,7 @@ angular.module('EasyRashApp.controllers', [])
       if(range.commonAncestorContainer.parentElement.nodeName === "P"){
         commonContainer = commonContainer.parentElement
       }
-      // console.log(range);
-      // console.log(commonContainer.parentElement.innerText);
-      //
-      // console.log(range.startPoint < 2);
-      // console.log(commonContainer.nodeName === "P");
-      // console.log(commonContainer.innerText.toString().length );
-      // console.log(range.toString().length)
       if( commonContainer.nodeName === "P"  && range.startPoint < 2 && commonContainer.innerText.toString().length - range.toString().length < 4 ){
-        console.log(range.commonAncestorContainer);
         var paraId = null;
         var ancestor = null;
 
@@ -914,7 +863,6 @@ angular.module('EasyRashApp.controllers', [])
 
           var newNode = document.createElement("span");
           var spanId = generateSpanId();
-          console.log(range);
 
           newNode.setAttribute('id', spanId);
           newNode.setAttribute('data-toggle', 'modal');
@@ -1008,7 +956,6 @@ angular.module('EasyRashApp.controllers', [])
   $scope.login = function() {
     // call the AuthService login funciton and post the user data in the func
     AuthService.login($scope.user).then(function(msg) {
-      console.log(msg);
       // reload the page
       // it will automatically check if the user is logged, then redirect to home
       $window.location.reload();
@@ -1089,7 +1036,6 @@ angular.module('EasyRashApp.controllers', [])
     } else {
       // if is all correct, then call the api update user with the data edited
       Api.updateUser(data).then(function(response) {
-        console.log(response)
         // if server's answer is success (true)
         if (response.data.success === true) {
           // update the client user scope with server's response
