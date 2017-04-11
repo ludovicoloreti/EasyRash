@@ -1,37 +1,43 @@
-<div class="container">
-  <div class="row">
-    <h1 class="page-header">
-      Article Page
-    </h1>
+<div class="jumbotron">
+  <div class="container animated fadeInLeft">
+    <h1>Welcome {{ userInfo.given_name }} to <span class="logo-emph">EasyRash</span>!</h1>
+    <p><b>EasyRash is an innovative platform that allows you to review annotate and evaluatearticles written in <a href="https://github.com/essepuntato/rash/" target="_blank">RASH</a></b></p>
   </div>
-
+</div>
+<div class="container animated fadeInDown">
   <div class="row">
-    <div class="col-md-3 col-sm-3 col-xs-12 col-lg-4" id="aside-area">
-      <div class="row" id="commented-docs-list-section">
-        <ul>
-          <li>Commented doc 1</li>
-          <li>Commented doc 2</li>
-          <li>Commented doc 3</li>
-          <li>Commented doc 4</li>
-        </ul>
-      </div>
-      <div class="row" id="annotations-list-section">
-        <ul>
-          <li>Annotation 1</li>
-          <li>Annotation 2</li>
-          <li>Annotation 3</li>
-          <li>Annotation 4</li>
-        </ul>
-      </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+      <h2>What you can do</h2>
+      <hr />
     </div>
-    <div class="col-md-9 col-sm-9 col-xs-12 col-lg-8" id="doc-area">
-      <div class="container" id="doc-container">
-        <div id="doc-content">
-          <h1>Doc header</h1>
-          <h2>Doc subheader</h2>
-          <p>Here we palce the doc content</p>
+    <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6" id="events-col">
+      <h3>View your events:</h3>
+      <div ng-if="events.length > 0" class="animated fadeInUp" ng-repeat="ev in events" >
+        <div class="card card-block">
+          <h3 class="card-title">{{ev.acronym}}</h3>
+          <p class="card-text">{{ev.conference}}</p>
+          <a ng-href="/#/event/{{ev._id}}" class="btn btn-primary">View</a>
         </div>
       </div>
+      <div ng-if="events.length == 0" class="animated fadeInLeft vertical-offset-70">
+        <span class="fa fa-calendar-o fa-3x"></span>
+        <h4 class="">No events yet...</h4>
+      </div>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6" id="articles-col">
+      <h3>Review this aricles: </h3>
+      <div ng-if="submissions.length > 0" class="animated fadeInUp" ng-repeat="sub in submissions">
+        <div class="card card-block">
+          <h4 class="card-title">{{sub.title.split("--")[0]}}</h4>
+          <p class="text-muted"><i>{{sub.title.split("--")[1]}}</i></p>
+          <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">Read</a>
+        </div>
+      </div>
+      <div ng-if="submissions.length == 0" class="animated fadeInLeft vertical-offset-70">
+        <span class="fa fa-edit fa-3x"></span>
+        <h4 class="">No articles yet...</h4>
+      </div>
     </div>
   </div>
+
 </div>
