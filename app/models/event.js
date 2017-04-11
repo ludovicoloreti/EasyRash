@@ -6,7 +6,11 @@ var EventSchema = Schema({
   acronym: String,
   chairs: [String],
   pc_members: [String],
-  submissions: [{type: Schema.ObjectId, ref: 'Submission'}]
+  submissions: [{titile: String,
+    url: String,
+    authors: [String],
+    reviewers: [String]
+  }]
 });
 
 var SubmissionSchema = Schema({
