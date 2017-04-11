@@ -15,7 +15,7 @@ TechWeb project MEAN
 
 (3) Avvia il server
 
-                node server.js
+                nodemon server.js
 
 
 (4) Apri il browser all'indirizzo:

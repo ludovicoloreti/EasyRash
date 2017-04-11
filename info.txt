@@ -1,0 +1,4 @@
+- Selection 
+
+https://developer.mozilla.org/it/docs/Web/API/Selection
+
