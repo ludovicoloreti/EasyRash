@@ -1,0 +1,42 @@
+<div class="jumbotron event">
+    <div class="container animated fadeInLeft">
+        <h1>{{eventInfo.acronym}}</h1>
+        <p><b><i>{{eventInfo.conference}}</i></b></p>
+    </div>
+</div>
+<div class="container">
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRight">
+      <!--1st Large Banner Image -->
+      <h3 class="display-4">Chairs</h3>
+      <ul>
+        <li ng-repeat="chair in eventInfo.chairs">{{chair}} <span ng-if="chair == userInfo._id"><i> (you)</i></span></li>
+      </ul>
+
+
+      <h3 class="display-4">Pc Members</h3>
+      <ul>
+        <li ng-repeat="member in eventInfo.pc_members">{{member}}</li>
+      </ul>
+
+      <h3 class="display-4">Submissions</h3>
+    </div>
+  </div>
+  <div class="row" ng-if="eventInfo.submissions.length != 0" id="submissions-container">
+    <div class="card col-md-12" ng-repeat="submission in eventInfo.submissions" >
+      <div class="card-block" >
+        <h4 class="card-title">{{submission.title.split("--")[0]}}</h4>
+        <p class="text-muted"><i>{{submission.title.split("--")[1]}}</i></p>
+        <span class="label label-primary">Authors</span>
+        <ul>
+          <li ng-repeat="author in submission.authors">{{author}}</li>
+        </ul>
+        <a ng-href="/#/annotation-page/{{submission.url.replace('.html', '')}}" class="btn btn-primary">View</a>
+      </div>
+    </div>
+  </div>
+  <div ng-if="eventInfo.submissions.length == 0">
+    <p>No submissions yet...</p>
+  </div>
+</div>

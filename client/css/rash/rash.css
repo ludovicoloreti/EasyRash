@@ -1,0 +1,249 @@
+/*
+rash.css - Version 0.4, February 16, 2016
+by Silvio Peroni
+
+This work is licensed under a Creative Commons Attribution 4.0 International License (http://creativecommons.org/licenses/by/4.0/).
+You are free to:
+* Share - copy and redistribute the material in any medium or format
+* Adapt - remix, transform, and build upon the material
+for any purpose, even commercially.
+
+The licensor cannot revoke these freedoms as long as you follow the license terms.
+
+Under the following terms:
+* Attribution - You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+*/
+
+@namespace mathml url(http://www.w3.org/1998/Math/MathML);
+
+/* Font */
+body { font-size: 12pt; }
+/* /END Font */
+
+/* Footnote counters */
+body { counter-reset: fn_pointer; }
+#article-container section p { text-align: justify;}
+#article-container section[role=doc-footnotes] { counter-reset: fn; }
+#article-container section[role=doc-footnotes] > section[role=doc-footnote]:before {
+    counter-increment: fn;
+    content: counter(fn);
+    float: left;
+    padding-right: 10px;
+}
+/* /END Footnote counters */
+
+/* Figure, table and formula */
+#article-container img {
+    max-width:90%;
+    height:auto;
+}
+
+#article-container table {
+    max-width:90%;
+}
+
+#article-container figure {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    text-align:center;
+}
+
+#article-container figure > p:not(mathml|math) {
+    margin-bottom:0px;
+}
+
+#article-container figure img:not([role=math]), figure svg {
+    border: 1px solid black;
+}
+
+#article-container figure > pre {
+    text-align:left;
+}
+
+#article-container figcaption {
+    margin-top:5px;
+}
+
+#article-container table {
+    margin: 0 auto;
+}
+
+#article-container td , #article-container th {
+    border:1px solid black;
+    padding:5px;
+}
+
+#article-container td p {
+    margin-bottom:0px;
+}
+
+#article-container th {
+    background-color: #606060;
+    color: white;
+    text-align:center;
+}
+/* /END Figure, table and formula */
+
+/* Heading counters */
+body { counter-reset: h1; }
+#article-container h1 { counter-reset: h2; }
+#article-containerh2 { counter-reset: h3; }
+#article-containerh3 { counter-reset: h4; }
+#article-containerh4 { counter-reset: h5; }
+#article-containerh5 { counter-reset: h6; }
+
+#article-containersection:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h1:before {
+    counter-increment: h1;
+    content: counter(h1) ". ";
+}
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h2:before{
+    counter-increment: h2;
+    content: counter(h1) "." counter(h2) ". ";
+}
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h3:before{
+    counter-increment: h3;
+    content: counter(h1) "." counter(h2) "." counter(h3) ". ";
+}
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h4:before{
+    counter-increment: h4;
+    content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) ". ";
+}
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h5:before{
+    counter-increment: h5;
+    content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) ". ";
+}
+
+#article-container section:not([role=doc-abstract]):not([role=doc-bibliography]):not([role=doc-acknowledgements]):not([role=doc-footnotes]) h6:before{
+    counter-increment: h6;
+    content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) "." counter(h6) ". ";
+}
+/* /END Heading counters */
+
+/* Header */
+#article-container .title {
+    font-size: 300%;
+}
+/* /END Header */
+
+/* Footer */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 70px;
+}
+
+#article-container .footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+#article-container .footer span , #article-container .footer div {
+    margin-left: 30px;
+}
+
+#layoutselection {
+    margin-left: 0px;
+    margin-right: 5px;
+}
+
+#article-container .footer div {
+    margin-top:-5px;
+}
+
+#article-container .footer p {
+    display: inline;
+}
+/* /END Footer */
+
+/* Not cited */
+#article-container .notcited {
+    color: lightgrey;
+    font-style:italic;
+    cursor:help;
+}
+/* /END Not cited */
+
+/* Error */
+#article-container .error {
+    color: red;
+    font-weight:bold;
+}
+#article-container .error:before {
+    content: "[[";
+}
+#article-container .error:after {
+    content: "]]";
+}
+/* /END Error */
+
+/* ### Rules for printing the document */
+@media print {
+    @page {
+        size: A4;
+        margin: 20mm 0mm 20mm 0mm;
+    }
+
+    html, body {
+        width: 210mm;
+        height: 297mm;
+    }
+
+    p {
+        font-size: 10pt;
+        text-align:justify;
+    }
+
+    pre {
+        text-align:left;
+    }
+
+    figcaption , figure > p {
+        text-align:center;
+    }
+
+    .title {
+        font-size: 16pt !important;
+    }
+
+    h1 {
+        font-size: 14pt !important;
+    }
+
+    h2 {
+        font-size: 12pt !important;
+    }
+
+    h3 {
+        font-size: 11pt !important;
+    }
+
+    h4, h5, h6 {
+        font-size: 10pt !important;
+    }
+
+    pre {
+        font-size: 8pt !important;
+    }
+
+    blockquote {
+        font-size: 10pt !important;
+    }
+
+    address {
+        font-size: 12pt !important;
+    }
+
+    table {
+        max-width:100%;
+        font-size: 80%;
+    }
+}

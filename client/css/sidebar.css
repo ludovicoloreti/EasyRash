@@ -1,0 +1,130 @@
+.sidebar-closed ~ #navigation-toggle {
+  left : 0px;
+}
+
+#navigation-toggle {
+  position : fixed;
+  left : 350px;
+  top: 70px;
+  text-decoration : none;
+  padding : 10px;
+  z-index: 1033;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  -o-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+#sidebar-wrapper .content {
+  padding-bottom: 40px;
+}
+
+.sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: 350px;
+  margin: 0;
+  padding: 10px 10px 10px 20px;
+  list-style: none;
+}
+
+#custom-search-input .input-group {
+  padding: 0;
+}
+
+@media(max-width:992px){
+
+  #article-page {
+    padding-left: 0px;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+  }
+
+  #article-page.sidebar-closed {
+    padding-left: 0px;
+  }
+
+  #sidebar-wrapper {
+    background-color: #ffffff;
+    z-index: 1031;
+    position: fixed;
+    left: 350px;
+    top:56px;
+    width: 350px;
+    height: 100%;
+    margin-left: -350px;
+    overflow-y: auto;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+    box-shadow: 4px 14px 20px rgba(156, 154, 154, 0.53);
+  }
+
+  #article-page.sidebar-closed #sidebar-wrapper {
+    left:0;
+  }
+
+  #page-content-wrapper {
+    width: 100%;
+    position: relative;
+    padding: 15px;
+  }
+
+  #article-page.sidebar-closed #page-content-wrapper {
+    position: relative;
+    margin-right: -350px;
+  }
+
+}
+
+@media(min-width:993px) {
+  #article-page {
+    padding-left: 350px;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+  }
+
+  #article-page.sidebar-closed {
+    padding-left: 0;
+  }
+
+  #sidebar-wrapper {
+    background-color: #ffffff;
+    z-index: 1031;
+    position: fixed;
+    left: 350px;
+    width: 350px;
+    height: 100%;
+    margin-left: -350px;
+    overflow-y: auto;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+    width: 350px;
+    top: 30px;
+  }
+
+  #article-page.sidebar-closed #sidebar-wrapper {
+    width: 0;
+    z-index: 1029;
+    top: 70px;
+  }
+
+  #page-content-wrapper {
+    padding: 20px;
+    position: relative;
+    width: 100%;
+  }
+
+  #article-page.sidebar-closed #page-content-wrapper {
+    position: relative;
+    margin-right: 0;
+  }
+}

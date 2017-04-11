@@ -1,0 +1,116 @@
+<div scroll-to-item scroll-to="#top-scroll" id="go-back">
+  <span class="fa fa-arrow-up"></span>
+</div>
+<div class="container animated fadeInDown">
+  <div class="row" class="page-header" id="top-scroll" name="top">
+    <div class="col-md-10 col-sm-12 col-xs-12 col-lg-8 col-md-offset-1 col-lg-offset-2 ">
+
+      <h1 class="page-header">Manual</h1>
+      <hr />
+      <h2>Index</h2>
+      <ul>
+        <li><a scroll-to-item scroll-to="#help-intro">Introduction</a></li>
+        <li><a scroll-to-item scroll-to="#help-actions">Article actions</a>
+          <ul>
+            <li><a scroll-to-item scroll-to="#help-accept-article">Accept or Reject article</a></li>
+            <li><a scroll-to-item scroll-to="#help-annotator-mode">Enter annotator mode</a></li>
+            <li><a scroll-to-item scroll-to="#help-vote-article">Vote article</a></li>
+            <li><a scroll-to-item scroll-to="#help-show-comments">Show comment list</a></li>
+            <li><a scroll-to-item scroll-to="#help-create-note">Create note</a></li>
+            <li><a scroll-to-item scroll-to="#help-save-annotations">Save annotations</a></li>
+            <li><a scroll-to-item scroll-to="#help-pick-color">Pick an highlighting color</a></li>
+            <li><a scroll-to-item scroll-to="#help-exit-annotator">Exit annotator mode</a></li>
+          </ul>
+        </li>
+        <li><a scroll-to-item scroll-to="#help-comment">Comment list actions</a>
+          <ul>
+            <li><a scroll-to-item scroll-to="#help-show-all">Show all comments</a></li>
+            <li><a scroll-to-item scroll-to="#help-scroll-all">Scroll to an article section</a></li>
+          </ul>
+        </li>
+        <li><a scroll-to-item scroll-to="#help-user">Account page</a></li>
+      </ul>
+      <hr />
+      <h2>Introduction</h2>
+      <p>
+        EasyRash is a project creted by <a href="mailto:filippo.boiani@studio.unibo.it">Filippo Boiani</a> and <a href="mailto:ludovico.loreti@studio.unibo.it">Ludovico Loreti</a>
+        with the aim to help researchers to comment and share articles in an easy and simple way.
+      </p>
+      <p>
+        The article should be written in <a href="https://github.com/essepuntato/rash/">RASH</a>, a framework which includes a markup language defined as a subset of HTML+RDF for writing
+        scientific articles, and related tools to convert it into different formats, to extract data from it, etc.
+      </p>
+      <h2 id="help-actions">Article Actions</h2>
+
+      <h3 id="help-accept-article" > <span class="fa fa-book"></span> <code>Accept or Recect article</code></h3>
+
+      <p>If you are a Chair you can watch what the reviewers have written about the article and decide either if accept or reject the article.</p>
+
+      <p>You can express your judgement only once ALL reviewers have commented the article and expressed a judgement.</p>
+
+      <h3 id="help-annotator-mode" > <span class="fa fa-briefcase"></span> <code>Enter annotator mode</code></h3>
+      <p>
+        When you click on this button you enter the annotator mode which allows you to create selections, underline text, create comments and
+        vote the article.
+      </p>
+      <p>
+        Only one person is allowed to be in annotator mode for each document. When you click on the button you acquire a lock. If someone has
+        acquired the lock before you should wait until it has finished.
+      </p>
+      <p>
+        When you have finished you can either save you comments or leave without saving by clicking on <code><span class="fa fa-remove"></span></code>
+      </p>
+      <h3 id="help-vote-article"> <span class="fa fa-check"></span>  <code>Vote article</code></h3>
+      <p>
+        When you are in annotator mode, you can give a general vote to the entire article. The vote is a number between 1 and 5.
+      </p>
+      <p>
+        The chair decides either to accept the article or reject the article on the average vote express by all reviewers.
+      </p>
+      <p>  Once you gave a vote to the article you can't express the vote another time.</p>
+
+      <h3 id="help-show-comments"> <span class="fa fa-th-list"></span> <code>Show comment list</code></h3>
+      <p>
+        By clicking on this button you will see a modal containing a table that lists all the comment you have written in annotator mode and
+        that are not saved.
+      </p>
+      <p>
+        You can update, delete and insert comments as you like.
+      </p>
+      <h3 id="help-create-note"> <span class="fa fa-pencil"> </span><code>Create note</code></h3>
+      <p>
+        After a selection you can press this button in order to highlight the selected text. By highlighting you will be able to comment the
+        fragment.
+      </p>
+      <p>
+        Overlapping fragment are not allowd, so you should verify what other users have commented.
+      </p>
+      <h3 id="help-save-annotations" > <span class="fa fa-save"> </span><code>Save your annotations</code></h3>
+      <p>Once you have finished your review, you can save the annotaions after the expression of a complexive judjement (using the <span class="fa fa-check"></span>  <code>Vote article</code> action).
+      </p>
+
+      <h3 id="help-pick-color" > <span class="fa fa-adjust"> </span><code>Pick an highlight color</code></h3>
+      <p>When you enter the annotator mode, you have the possibility to express a preveference over the highlighting color.</p>
+
+      <h3 id="help-exit-annotator"> <span class="fa fa-remove"></span> <code>Exit annotator mode</code></h3>
+      <p>
+        When you push this button you exit the annotator mode and al your comments will be saved or deleted.
+      </p>
+      <h2 id="help-comment">Comment Actions</h2>
+
+      <h3 id="help-show-all">Show all comments</h3>
+      <p>You can view all the comments by clicking the "show all" button. Every colour correspond to a reviewer but che color are Only
+        5 and could be repeated because they are assigned ranomically. Overlapping comments have slightly different color as a result of
+        addition of color layers. </p>
+
+      <h3 id="help-scroll-all">Scroll to the article section</h3>
+      <p>When you click on the comment the article will scroll to the related section within the article. </p>
+
+      <h2 id="help-user">Account Page</h2>
+
+      <p>The user can update his profile information by clicking the edit button and typing the old password to confirm. </p>
+
+      <p>The mail cannot be changed as well as the id. </p>
+    </div>
+  </div>
+</div>

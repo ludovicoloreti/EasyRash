@@ -1,0 +1,280 @@
+<div id="background-image"></div>
+
+<div id="article-page" ng-class="sidebarClosed">
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+    <div class="sidebar-nav animated fadeInLeft">
+      <div class="content">
+        <div id="doc-list" >
+          <h4><span class="fa fa-edit"></span> Assigned Reviews: </h4>
+          <div ng-if="submissions.length == 0" class="animated fadeInLeft text-center">
+            <span class="fa fa-book fa-3x"></span>
+            <h4 class="">No reviews...</h4>
+          </div>
+          <ol ng-if="submissions.length > 0">
+            <li ng-repeat="sub in submissions">
+              <a ng-href="/#/annotation-page/{{sub.url.replace('.html', '')}}">
+                <i>"{{sub.title | cut:true:50:' ...'}}"</i>
+              </a>
+            </li>
+
+          </ol>
+
+        </div>
+        <hr />
+        <div id="meta-list">
+          <h4><span class="fa fa-bookmark-o"></span> Comments: <button class="btn btn-sm btn-primary-outline pull-right" ng-click="showAllComments()">Show all</button></h4>
+          <div id="custom-search-input">
+            <div class="input-group col-md-12 ">
+              <input type="text" class="search-query form-control" placeholder="Search..." ng-model="commentFilter"/>
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button">
+                  <span class="fa fa-search text-primary"></span>
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="list-group comment-list">
+            <div class="list-group-item" ng-repeat="comment in commentsList | filter: commentFilter" scroll-to-item scroll-to="{{comment.ref}}" ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)">
+              <!-- ng-mouseover="showSelection($index)" ng-mouseout="hideSelection($index)" -->
+              <p class="small text-muted">{{comment.date | date:"dd MMM yyyy 'at' HH:mm"}}</p>
+              <blockquote class="blockquote">
+                <a class="m-b-0 small">{{comment.refText | cut:true:100:' ...'}}</a>
+              </blockquote>
+              <p ng-mouseenter="limit=500" ng-mouseleave="limit=100" ng-init="limit= 100">{{comment.text | cut:true:limit:' ...'}}</p>
+              <span class="label label-primary">{{comment["@type"]}}</span> <a class="small" ng-href="{{comment.author}}"> {{comment.author.replace("mailto:","")}}</a>
+
+            </div>
+          </div>
+
+          <div ng-if="commentsList.length == 0" class="animated fadeInLeft text-center vertical-offset-70">
+            <span class="fa fa-paperclip fa-3x"></span>
+            <h4 class="">No comments...</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Start error alert -->
+        <div ng-show="error" class="alert alert-danger alert-fixed alert-dismissible fade in" role="alert">
+          <button type="button" class="close" ng-click="hideErrors()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <strong>Error: </strong> {{message}}
+        </div><!--  End error alert -->
+
+        <div id="toolkit">
+          <div class="btn-group pull-md-right">
+            <!-- Annotate: if reviewer and not already reviewed and not chair -->
+            <button ng-hide="annotatorMode" ng-class="isReviewer && canReview ? '': 'disabled'" ng-disabled = "!canReview || !isReviewer" class="btn btn-secondary" title="Annotator mode" ng-click="loadRash()" uib-tooltip="Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-briefcase"></span></button>
+            <!-- Decide: if Chair -->
+            <button ng-hide="annotatorMode" ng-class="isChair ? '': 'disabled'" ng-disabled = "!isChair" class="btn btn-secondary" title="Accept/reject article" data-toggle="modal" data-target="#chair-modal" ng-click="" uib-tooltip="Approve/reject article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-book"></span></button>
+            <span ng-show="annotatorMode" class="btn-group">
+              <button class="btn btn-secondary" title="Pick a color" uib-tooltip="Pick a color" tooltip-placement="bottom" tooltip-append-to-body="true" id="dropdown-menu-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-adjust"></span></button>
+              <div class="dropdown-menu" aria-labelledby="dropdown-menu-2" >
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('yellow')"><span class="pick-color-circle yellow-intense"></span><span class="color-name">Yellow</span></div>
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('orange')"><span class="pick-color-circle orange-intense"></span><span class="color-name">Orange</span></div>
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('green')"><span class="pick-color-circle green-intense"></span><span class="color-name">Green</span></div>
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('blue')"><span class="pick-color-circle blue-intense"></span><span class="color-name">Blue</span></div>
+                <div class="dropdown-item" ng-model="selectionColor" ng-click="setColor('purple')"><span class="pick-color-circle purple-intense"></span><span class="color-name">Purple</span></div>
+              </div>
+              <button class="btn btn-secondary" title="Highlight selection" ng-click="highlight()"  uib-tooltip="Highlight and comment selection" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-pencil"></span></button>
+              <button class="btn btn-secondary" title="Evaluate" data-toggle="modal" data-target="#evaluate-article-modal" uib-tooltip="Evaluate article" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-check"></span></button>
+              <button class="btn btn-secondary" title="Save" ng-click="saveAnnotations()" uib-tooltip="Save annotations" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-save"></span></button>
+              <button class="btn btn-secondary" title="Show comments" ng-click="showComments()" uib-tooltip="Show Comments" data-toggle="modal" data-target="#comment-list-modal" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-th-list"></span></button>
+              <button class="btn btn-secondary" title="Exit annotator mode" ng-click="exit()" uib-tooltip="Exit Annotator mode" tooltip-placement="bottom" tooltip-append-to-body="true"><span class="fa fa-remove"></span></button>
+
+            </span>
+            </div>
+        </div>
+
+        <!-- START Right col -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInUp">
+          <img id="spinner" src="img/loader.gif" class="img-responsive center-block" ng-show="loading" />
+          <article id="article-container"
+          class=""
+          ng-bind-html="articleBody">
+        </article>
+      </div><!-- END Right col -->
+
+      <!-- START Comment modal -->
+      <div id="chair-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog" id="chair-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4>Statistics:</h4>
+              <div clas="row">
+                <div class="col-md-4">
+                  <h3 class="big text-center">{{articleStats.avgVote}}</h3>
+                  <p class="text-muted text-center" >Avg. vote</p>
+                </div>
+                <div class="col-md-4">
+                  <h3 class="big text-center">{{articleStats.numAccept}}/{{totalAssignedReviewers}}</h3>
+                  <p class="text-muted text-center" >Accepted</p>
+                </div>
+                <div class="col-md-4">
+                  <h3 class="big text-center">{{articleStats.numReject}}/{{totalAssignedReviewers}}</h3>
+                  <p class="text-muted text-center" >Rejected</p>
+                </div>
+                <div class="col-md-12">
+                  <p class="text-muted text-center">{{totalAssignedReviewers - reviewCounter}} missing. If the number is 0 you can express your decision. </p>
+                </div>
+              </div>
+
+              <div class="row" >
+                <div class="col-md-12" >
+                  <h4>Comment list:</h4>
+                  <ul class="list-group" id="comment-stat-list">
+                    <li class="list-group-item" ng-repeat="rev in reviewsList">
+                      <blockquote class="blockquote">{{rev.article.eval.comment}}</blockquote>
+                      <a class="small" ng-href="{{rev.article.eval.author}}"> {{rev.article.eval.author.replace("mailto:","")}}</a>
+                    </li>
+                  </ul>
+                  <p ng-if="reviewsList.length == 0">No evaluations yet...</p>
+                </div>
+              </div>
+              <hr />
+
+              <div class="row" >
+                <div class="col-md-12" ng-if="chairDecision">
+
+                  <h4>Decision</h4>
+                  <div class="list-group-item">
+                    <p>
+                      <b>Status: </b>
+                      <span ng-if="chairDecision.article.eval.status.indexOf('accepted') > -1">Accepted for publication</span>
+                      <span ng-if="chairDecision.article.eval.status.indexOf('rejected') > -1">Rejected for publication</span>
+
+                    </p>
+                    <p><b>Comment:</b></p>
+                    <blockquote class="blockquote">{{chairDecision.article.eval.comment}}</blockquote>
+                    <a class="small" ng-href="{{rev.article.eval.author}}"> {{chairDecision.article.eval.author.replace("mailto:","")}}</a>
+                  </div>
+
+                  <p ng-if="reviewsList.length == 0">No one has decided yet...</p>
+                </div>
+              </div>
+
+              <div class="row" ng-show="!chairDecision">
+                <div class="col-md-12">
+                  <p><b>Insert your valuation:</b></p>
+                  <fieldset class="form-group">
+                    <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Write here." ng-model ="d.text"></textarea>
+                  </fieldset>
+                  <label class="radio-inline"><input type="radio" class="radio" ng-model="d.status" value="true">Accept for Publication</label>
+                  <label class="radio-inline"><input type="radio" class="radio" ng-model="d.status" value="false">Reject for Publication</label>
+
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <span class="text-danger" ng-if="alreadyDecided">You have already decided.</span>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-diabled = "!canDecide || alreadyDecided" ng-class="canDecide && !alreadyDecided ? '': 'disabled'" ng-click="saveDecision(d)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- END #comment-modal -->
+
+      <!-- START Comment modal -->
+      <div id="comment-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog" id="comment-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-body">
+              <p><b>Insert your annotation:</b></p>
+              <fieldset class="form-group">
+                <textarea class="form-control" id="exampleTextarea" rows="2" placeholder="Insert your comment here." ng-model="commentModal.text" >{{commentModal.text}}</textarea>
+              </fieldset>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger btn-sm pull-left" data-dismiss="modal" ng-click="deleteComment(commentModal)">Delete</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveComment(commentModal)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="cancel(commentModal)">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- END #comment-modal -->
+
+      <!-- START #comment-list-modal modal -->
+      <div id="comment-list-modal" class="modal fade  bd-example-modal-lg" role="dialog">
+        <div class="modal-dialog modal-lg" id="comment-list-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">List of comments</h4>
+            </div>
+            <div class="modal-body">
+              <p>Below you have the list of your annotations on this document.</p>
+              <table class="table table-hover" id="comments-table">
+                <thead class="thead-inverse">
+                  <tr><th>Fragment id</th><th>Comment id</th><th>Comment text</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="c in cs">
+                    <td>{{c.key}}</td>
+                    <td>{{c.value.getId()}}</td>
+                    <td>{{c.value.text}}</td>
+                    <td>{{c.value.date | date: "MMMM dd 'at' H:mm"}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div ng-if="!cs || cs.lenght == 0">
+                <p class="text-center">No comments yet...</p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- END #comment-list-modal -->
+
+      <!-- START #evaluate-article-modal -->
+      <div id="evaluate-article-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog" id="evaluate-article-dialog">
+          <div class="modal-content"><!-- Modal content-->
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Vote this article</h4>
+            </div>
+            <div class="modal-body">
+              <p>Every comment is useful for the chair in order to accept or reject an article.</p>
+              <p><b>Your judgement: </b></p>
+              <textarea class="form-control" id="exampleTextarea" rows="4" placeholder="Insert your comment here." ng-model="eval.comment"></textarea>
+              <div id="rating-container" star-rating rating-value="eval.vote.current" max="eval.vote.max" on-rating-selected="getSelectedRating(rating)"></div>
+              <h4 id="rating-title">{{eval.vote.current}} / {{eval.vote.max}}</h4>
+              <label class="radio-inline"><input type="radio" class="radio" ng-model="eval.status" value="true">Accept for Publication</label>
+              <label class="radio-inline"><input type="radio" class="radio" ng-model="eval.status" value="false">Reject for Publication</label>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal" ng-click="saveEval(eval)">Save</button>
+              <button type="button" class="btn btn-secondary btn-sm pull-sm-right" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- END#evaluate-article-modal -->
+
+
+    </div><!-- END .row -->
+  </div><!-- END .container -->
+</div>
+
+</div><!-- END #article-page -->
+<div scroll-to-item scroll-to="body" id="go-back">
+  <span class="fa fa-arrow-up"></span>
+</div>
+<span class="btn btn-secondary fa fa-navicon animated fadeInLeft" id="navigation-toggle" ng-click="toggleSidebar()"></span>
