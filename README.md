@@ -3,7 +3,8 @@ Is a platform for reviewing and modifying scientific papers submitted to confere
 
 The application works in Node.js and AngularJS. 
 
-For more inforamtion about rash visit the follwing: [website](https://github.com/essepuntato/rash`
+For more inforamtion about rash visit the follwing: [website](https://github.com/essepuntato/rash)
+
 # GUIDA
 
 (1) Install all:
